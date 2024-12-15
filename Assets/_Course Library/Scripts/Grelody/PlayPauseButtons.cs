@@ -16,6 +16,7 @@ public class PlayPauseButtons : MonoBehaviour
 {
     // MIDI variables
     private const string OutputDeviceName = "Microsoft GS Wavetable Synth";
+    private const string OutputDeviceNameMac = "IAC Driver Bus 1";
     private OutputDevice _outputDevice;
     private Playback _playback;
 
@@ -86,18 +87,26 @@ public class PlayPauseButtons : MonoBehaviour
     // Initialize the MIDI output device
     private void InitializeOutputDevice()
     {
-        Debug.Log($"Initializing output device [{OutputDeviceName}]...");
+        Debug.Log($"Initializing output device [{OutputDeviceName}] or [{OutputDeviceNameMac}]...");
 
         var allOutputDevices = OutputDevice.GetAll();
         if (!allOutputDevices.Any(d => d.Name == OutputDeviceName))
         {
-            var allDevicesList = string.Join(Environment.NewLine, allOutputDevices.Select(d => $"  {d.Name}"));
-            Debug.Log($"There is no [{OutputDeviceName}] device presented in the system. Here the list of all device:{Environment.NewLine}{allDevicesList}");
-            return;
-        }
+            if (!allOutputDevices.Any(d => d.Name == OutputDeviceNameMac)) {
+                var allDevicesList = string.Join(Environment.NewLine, allOutputDevices.Select(d => $"  {d.Name}"));
+                Debug.Log($"There is no [{OutputDeviceName}] device presented in the system. Here the list of all device:{Environment.NewLine}{allDevicesList}");
+            }
 
-        _outputDevice = OutputDevice.GetByName(OutputDeviceName);
-        Debug.Log($"Output device [{OutputDeviceName}] initialized.");
+            else {
+                _outputDevice = OutputDevice.GetByName(OutputDeviceNameMac);
+                Debug.Log($"Output device [{OutputDeviceNameMac}] initialized.");
+            }
+            
+        }
+        else {
+            _outputDevice = OutputDevice.GetByName(OutputDeviceName);
+            Debug.Log($"Output device [{OutputDeviceName}] initialized.");
+        }
     }
 
     // Create a midi file (melody)
