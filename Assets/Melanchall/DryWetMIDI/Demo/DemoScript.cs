@@ -12,6 +12,7 @@ using UnityEngine;
 public class DemoScript : MonoBehaviour
 {
     private const string OutputDeviceName = "Microsoft GS Wavetable Synth";
+    private const string OutputDeviceNameMac = "IAC Driver Bus 1";
 
     private OutputDevice _outputDevice;
     private Playback _playback;
@@ -48,13 +49,23 @@ public class DemoScript : MonoBehaviour
         var allOutputDevices = OutputDevice.GetAll();
         if (!allOutputDevices.Any(d => d.Name == OutputDeviceName))
         {
-            var allDevicesList = string.Join(Environment.NewLine, allOutputDevices.Select(d => $"  {d.Name}"));
-            Debug.Log($"There is no [{OutputDeviceName}] device presented in the system. Here the list of all device:{Environment.NewLine}{allDevicesList}");
-            return;
+            if (!allOutputDevices.Any(d => d.Name == OutputDeviceNameMac)) {
+                var allDevicesList = string.Join(Environment.NewLine, allOutputDevices.Select(d => $"  {d.Name}"));
+                Debug.Log($"There is no [{OutputDeviceName}] device presented in the system. Here the list of all device:{Environment.NewLine}{allDevicesList}");
+            }
+
+            else {
+                _outputDevice = OutputDevice.GetByName(OutputDeviceNameMac);
+                Debug.Log($"Output device [{OutputDeviceNameMac}] initialized.");
+            }
+            
+        }
+        else {
+            _outputDevice = OutputDevice.GetByName(OutputDeviceName);
+            Debug.Log($"Output device [{OutputDeviceName}] initialized.");
         }
 
-        _outputDevice = OutputDevice.GetByName(OutputDeviceName);
-        Debug.Log($"Output device [{OutputDeviceName}] initialized.");
+        
     }
 
     private MidiFile CreateTestFile()
