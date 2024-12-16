@@ -327,6 +327,13 @@
       },
       "url": "https://packages.unity.com"
     },
+    "cz.omnibullet.fluidsynth-unity": {
+      "version": "https://github.com/ArbitraryCombination/FluidSynthUnity.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "36371198c99fea7a8e144a1545df0e616b32a6dc"
+    },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,
