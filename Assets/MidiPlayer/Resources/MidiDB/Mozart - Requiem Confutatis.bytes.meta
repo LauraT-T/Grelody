@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: d6d186b2bff7e8847b9c5a95d37eb0af
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 107994
+  packageName: Maestro - Midi Player Tool Kit - Free
+  packageVersion: 2.13.2
+  assetPath: Assets/MidiPlayer/Resources/MidiDB/Mozart - Requiem Confutatis.bytes
+  uploadId: 708691

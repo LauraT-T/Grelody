@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 52ed9505d2f0935408e25333780c0453
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 107994
+  packageName: Maestro - Midi Player Tool Kit - Free
+  packageVersion: 2.13.2
+  assetPath: Assets/MidiPlayer/Resources/MidiDB/Maji Call Jarr.bytes
+  uploadId: 708691

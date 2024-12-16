@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 3e8841cec17debe4293bcc164ec5b0e0
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 107994
+  packageName: Maestro - Midi Player Tool Kit - Free
+  packageVersion: 2.13.2
+  assetPath: Assets/MidiPlayer/Resources/MidiDB/Louis Armstrong - Hello Dolly.bytes
+  uploadId: 708691

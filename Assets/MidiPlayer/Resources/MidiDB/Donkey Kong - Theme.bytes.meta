@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 3dc813d0dad73a64891f10dbe38ee81f
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 107994
+  packageName: Maestro - Midi Player Tool Kit - Free
+  packageVersion: 2.13.2
+  assetPath: Assets/MidiPlayer/Resources/MidiDB/Donkey Kong - Theme.bytes
+  uploadId: 708691
