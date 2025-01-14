@@ -973,324 +973,6 @@ MonoBehaviour:
       m_SingletonActionBindings: []
       m_Flags: 0
     m_Reference: {fileID: 0}
---- !u!1 &274099765
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 274099767}
-  - component: {fileID: 274099766}
-  - component: {fileID: 274099771}
-  - component: {fileID: 274099770}
-  - component: {fileID: 274099769}
-  - component: {fileID: 274099772}
-  m_Layer: 0
-  m_Name: MelodyWithChords
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &274099766
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 274099765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1b45309934b228429705d9b50781263, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  streamPlayer: {fileID: 274099772}
---- !u!4 &274099767
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 274099765}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.0900002, y: 2.28, z: 0.5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!166 &274099769
-AudioChorusFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 274099765}
-  m_Enabled: 1
-  m_DryMix: 0.5
-  m_WetMix1: 0.5
-  m_WetMix2: 0.5
-  m_WetMix3: 0.5
-  m_Delay: 40
-  m_Rate: 0.8
-  m_Depth: 0.03
---- !u!164 &274099770
-AudioReverbFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 274099765}
-  m_Enabled: 1
-  m_DryLevel: 0
-  m_Room: 0
-  m_RoomHF: 0
-  m_DecayTime: 1
-  m_DecayHFRatio: 0.5
-  m_ReflectionsLevel: -10000
-  m_ReverbLevel: 0
-  m_ReverbDelay: 0.04
-  m_Diffusion: 100
-  m_Density: 100
-  m_HFReference: 5000
-  m_RoomLF: 0
-  m_LFReference: 250
-  m_ReflectionsDelay: 0
-  m_ReverbPreset: 27
---- !u!82 &274099771
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 274099765}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
---- !u!114 &274099772
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 274099765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a10fc17731b73e545b0078250340235c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioThreadMidi: 0
-  priorityThreadMidi: 0
-  DevicePerformance: 40
-  MaxDspLoad: 40
-  AudioBufferLenght: 0
-  AudioNumBuffers: 0
-  AudioEngine: FMOD
-  OutputRate: 0
-  playOnlyFirstWave: 0
-  playNoteOff: 0
-  MPTK_EnablePresetDrum: 0
-  MPTK_ReleaseSameNote: 1
-  MPTK_KillByExclusiveClass: 1
-  MPTK_ReleaseTimeMod: 1
-  MPTK_CutOffVolume: 0.0001
-  MPTK_LeanSynthStarting: 0.05
-  MPTK_AutoBuffer: 1
-  MPTK_AutoCleanVoiceLimit: 0
-  MPTK_AutoCleanVoiceTime: 0
-  MPTK_ApplyRealTimeModulator: 0
-  MPTK_ApplyModLfo: 0
-  MPTK_ApplyVibLfo: 0
-  MPTK_EffectSoundFont: {fileID: 971126989}
-  MPTK_ThreadMidiWait: 10
-  StatDspLoadPCT: 0
-  StatDspLoadMIN: 0
-  StatDspLoadMAX: 0
-  StatDspLoadAVG: 0
-  StatDspChannelCount: 0
-  GcCollectionCout: 0
-  AllocatedBytesForCurrentThread: 0
-  StatDeltaThreadMidiMS: 0
-  StatDeltaThreadMidiMAX: 0
-  StatDeltaThreadMidiMIN: 0
-  StatDeltaThreadMidiAVG: 0
-  StatReadMidiMS: 0
-  StatDeltaTimeMidi: 0
-  StatEnqueueMidiMS: 0
-  StatProcessMidiMS: 0
-  StatProcessMidiMAX: 0
-  DeltaTimeAudioCall: 0
-  StatAudioFilterReadMS: 0
-  StatAudioFilterReadMAX: 0
-  StatAudioFilterReadMIN: 0
-  StatAudioFilterReadAVG: 0
-  StatSampleWriteMS: 0
-  StatSampleWriteAVG: 0
-  StatProcessListMS: 0
-  StatProcessListAVG: 0
-  keepPlayingNonLooped: 0
-  MPTK_CorePlayer: 0
-  MPTK_AudioSettingFromUnity: 0
-  MPTK_EnableFreeSynthRate: 0
-  indexSynthRate: -1
-  indexBuffSize: -1
-  MPTK_DirectSendToPlayer: 0
-  MPTK_EnableChangeTempo: 0
-  maxDistance: 0
-  MPTK_EnablePanChange: 0
-  volumeGlobal: 0.5
-  dsp_64: 0
-  MPTK_LogEvents: 0
-  MPTK_LogWave: 0
-  MPTK_StatVoiceCountPlaying: 0
-  MPTK_StatVoiceCountActive: 0
-  MPTK_StatVoiceCountReused: 0
-  MPTK_StatVoiceCountFree: 0
-  MPTK_StatVoiceRatioReused: 0
-  MPTK_StatVoicePlayed: 0
-  playPause: 0
-  distanceToListener: 0
-  transpose: 0
-  transExcludedChannel: 9
-  InterpolationMethod: 1
-  gain: 1
-  VerboseSynth: 0
-  VerboseOverload: 0
-  VerboseVoice: 0
-  VerboseChannel: 0
-  VerboseKillByExclusive: 0
-  VerboseGenerator: 0
-  VerboseCalcGen: 0
-  VerboseCalcMod: 0
-  VerboseCalcVolADSR: 0
-  VerboseCalcModADSR: 0
-  VerboseController: 0
-  VerboseEnvVolume: 0
-  VerboseEnvModulation: 0
-  VerboseFilter: 0
-  VerboseVolume: 0
-  state: 0
-  AudiosourceTemplate: {fileID: 0}
-  AdsrSimplified: 0
-  MPTK_WeakDevice: 0
-  MPTK_ReleaseTimeMin: 500000
-  DampVolume: 0
-  OnEventSynthAwake:
-    m_PersistentCalls:
-      m_Calls: []
-  OnEventSynthStarted:
-    m_PersistentCalls:
-      m_Calls: []
-  showMidiInfo: 0
-  showSynthParameter: 0
-  showSpatialization: 0
-  showUnitySynthParameter: 0
-  showUnityPerformanceParameter: 0
-  showMidiPerformanceParameter: 0
-  showSoundFontEffect: 0
-  showUnitySynthEffect: 0
-  showMidiParameter: 0
-  showMidiPlaying: 0
-  showSynthEvents: 0
-  showEvents: 0
-  showDefault: 0
-  spatialize: 0
-  MPTK_EffectUnity: {fileID: 2015603067}
-  MPTK_ModeSpatializer: 0
-  MPTK_MaxSpatialSynth: 0
-  MPTK_SpatialSynthEnabled: 0
-  MPTK_InstrumentNum: 0
-  MPTK_LogChord: 0
 --- !u!1 &403382022
 GameObject:
   m_ObjectHideFlags: 0
@@ -1770,33 +1452,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 957756020}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &971126989
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc2b118d1a6c1154983be5ee4bf1b510, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  applySFReverb: 0
-  applySFChorus: 0
-  applySFFilter: 1
-  FilterFreqOffset: 0
-  ReverbAmplify: 0
-  ChorusAmplify: 0
-  filterQModOffset: 0
-  sfReverbRoomSize: 0.5
-  sfReverbDamp: 0.3
-  sfReverbWidth: 0.8
-  sfReverbLevel: 0.7
-  sfChorusLevel: 0.6
-  sfChorusSpeed: 0.2
-  sfChorusDepth: 4.25
-  sfChorusWidth: 10
 --- !u!114 &985815281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3328,10 +2983,19 @@ PrefabInstance:
       propertyPath: MPTK_EffectSoundFont
       value: 
       objectReference: {fileID: 1165195600}
+    - target: {fileID: 114971132768011762, guid: f1aa4788763f8854c9826e449686c328,
+        type: 3}
+      propertyPath: LoadWaveAtStartup
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1367716147436054, guid: f1aa4788763f8854c9826e449686c328,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1983414698}
   m_SourcePrefab: {fileID: 100100000, guid: f1aa4788763f8854c9826e449686c328, type: 3}
 --- !u!1 &1464103307
 GameObject:
@@ -4435,6 +4099,37 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1981460390}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1983414692 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1367716147436054, guid: f1aa4788763f8854c9826e449686c328,
+    type: 3}
+  m_PrefabInstance: {fileID: 1399779834}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1983414696 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114320350483668748, guid: f1aa4788763f8854c9826e449686c328,
+    type: 3}
+  m_PrefabInstance: {fileID: 1399779834}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1983414692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a10fc17731b73e545b0078250340235c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1983414698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1983414692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1b45309934b228429705d9b50781263, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  midiStreamPlayer: {fileID: 1983414696}
 --- !u!1 &2010018267
 GameObject:
   m_ObjectHideFlags: 0
@@ -4467,41 +4162,6 @@ Transform:
   - {fileID: 1036863072}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2015603067
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5fc8a054b054664d86e518b31d75b7c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  applyReverb: 0
-  reverbRoom: 0.9
-  reverbRoomHF: 0.99
-  reverbRoomLF: 1
-  reverbReflectionLevel: 0.67254543
-  reverbReflectionDelay: 0
-  reverbDryLevel: 1
-  reverbDecayTime: 1.49
-  reverbDecayHFRatio: 0.83
-  reverbLevel: 0.85
-  reverbDelay: 0.011
-  reverbHfReference: 5000
-  reverbLfReference: 250
-  reverbDiffusion: 1
-  reverbDensity: 1
-  applyChorus: 0
-  chorusDryMix: 0.5
-  chorusWetMix1: 0.5
-  chorusWetMix2: 0.5
-  chorusWetMix3: 0.5
-  chorusDelay: 40
-  chorusRate: 0.8
-  chorusDepth: 0.03
 --- !u!1 &2140560988
 GameObject:
   m_ObjectHideFlags: 0
@@ -4546,4 +4206,3 @@ SceneRoots:
   - {fileID: 2010018268}
   - {fileID: 1692938596}
   - {fileID: 1399779834}
-  - {fileID: 274099767}

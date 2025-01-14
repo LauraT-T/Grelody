@@ -5,7 +5,7 @@ using MidiPlayerTK;
 
 public class MelodyChordTest : MonoBehaviour
 {
-    public MidiStreamPlayer streamPlayer;
+    public MidiStreamPlayer midiStreamPlayer;
 
     List<int> cMajorScale = new List<int> { 60, 62, 64, 65, 67, 69, 71 }; // C Major Scale
     Dictionary<int, List<int>> chords = new Dictionary<int, List<int>>
@@ -20,7 +20,7 @@ public class MelodyChordTest : MonoBehaviour
         Debug.Log("Playing random melody in C Major");
 
         // Find the MidiFilePlayer in the scene
-        streamPlayer = (MidiStreamPlayer)FindFirstObjectByType(typeof(MidiStreamPlayer));
+        midiStreamPlayer = (MidiStreamPlayer)FindFirstObjectByType(typeof(MidiStreamPlayer));
 
         if (!MidiPlayerGlobal.MPTK_IsReady()) {
             Debug.Log("Not ready yet");
@@ -31,7 +31,7 @@ public class MelodyChordTest : MonoBehaviour
             Debug.Log("Ready after sleep");
         }
 
-        Debug.Log("streamPlayer: " + (streamPlayer != null ? "Initialized" : "Null"));
+        Debug.Log("streamPlayer: " + (midiStreamPlayer != null ? "Initialized" : "Null"));
 
         // Set instruments for channels
         // Change instrument to Marimba for channel 0
@@ -39,9 +39,9 @@ public class MelodyChordTest : MonoBehaviour
             Command = MPTKCommand.PatchChange,
             Value = 12, // generally Marimba but depend on the SoundFont selected
             Channel = 0 }; // Instrument are defined by channel (from 0 to 15). So at any time, only 16 différents instruments can be used simultaneously.
-        streamPlayer.MPTK_PlayEvent(PatchChange);    
+        midiStreamPlayer.MPTK_PlayEvent(PatchChange);    
 
-        streamPlayer.MPTK_PlayEvent(new MPTKEvent()
+        midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent()
         {
             Command = MPTKCommand.PatchChange,
             Value = 48, // Instrument for chords (e.g., Strings)
@@ -65,7 +65,7 @@ public class MelodyChordTest : MonoBehaviour
 
     void PlayMelody(int note)
     {
-        streamPlayer.MPTK_PlayEvent(new MPTKEvent
+        midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent
         {
             Command = MPTKCommand.NoteOn,
             Value = note,
@@ -81,7 +81,7 @@ public class MelodyChordTest : MonoBehaviour
         {
             foreach (var note in chords[rootNote])
             {
-                streamPlayer.MPTK_PlayEvent(new MPTKEvent
+                midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent
                 {
                     Command = MPTKCommand.NoteOn,
                     Value = note,
