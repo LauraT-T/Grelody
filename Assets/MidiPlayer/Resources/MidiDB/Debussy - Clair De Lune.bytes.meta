@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: f292fbd5e2a560746af6d9d889a08946
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 107994
+  packageName: Maestro - Midi Player Tool Kit - Free
+  packageVersion: 2.13.2
+  assetPath: Assets/MidiPlayer/Resources/MidiDB/Debussy - Clair De Lune.bytes
+  uploadId: 708691
