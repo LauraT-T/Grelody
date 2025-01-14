@@ -1,5 +1,5 @@
-#if UNITY_EDITOR
-//#define MPTK_PRO
+﻿#if UNITY_EDITOR
+#define MPTK_PRO
 using System;
 using UnityEditor;
 using UnityEngine;
@@ -138,7 +138,8 @@ namespace MidiPlayerTK
 
         public void AllPrefab(MidiSynth instance)
         {
-            float volume = EditorGUILayout.Slider(new GUIContent("Volume", "Set global volume for this MIDI playing"), instance.MPTK_Volume, 0f, 1f);
+
+            float volume = EditorGUILayout.Slider(new GUIContent("Volume", "Set global volume for this MIDI playing"), instance.MPTK_Volume, 0f, Constant.MAX_VOLUME);
             if (instance.MPTK_Volume != volume)
                 instance.MPTK_Volume = volume;
             string tooltip;
@@ -404,7 +405,7 @@ namespace MidiPlayerTK
 
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel("Speed");
-                float speed = EditorGUILayout.Slider(instance.MPTK_Speed, 0.1f, 10f);
+                float speed = EditorGUILayout.Slider(instance.MPTK_Speed, Constant.MIN_SPEED, Constant.MAX_SPEED);
                 //          Debug.Log("New speed " + instance.MPTK_Speed + " --> " + speed + " " + Event.current.type);
                 if (speed != instance.MPTK_Speed)
                 {
@@ -445,24 +446,32 @@ namespace MidiPlayerTK
                     if (EditorApplication.isPlaying && instance.MPTK_IsPlaying)
                         GUI.enabled = false;
 
-                    instance.IntegratedThreadMidi = EditorGUILayout.Toggle(new GUIContent("Thread Audio", integratedThreadExplanation), instance.IntegratedThreadMidi);
+                    instance.AudioThreadMidi = EditorGUILayout.Toggle(new GUIContent("Audio Thread", integratedThreadExplanation), instance.AudioThreadMidi);
 
                     GUI.enabled = true;
 
-                    GUI.enabled = !instance.IntegratedThreadMidi;
+                    GUI.enabled = !instance.AudioThreadMidi;
 
+                    EditorGUILayout.Space(3);
+                    string priorityThreadExplanation = "Change the thread priority for the MIDI sequencer (not available with Audio Thread). Does not apply to all operating systems.";
+                    EditorGUILayout.LabelField(priorityThreadExplanation, MPTKGui.myStyle.LabelGreen);
+                    instance.MPTK_ThreadMidiPriority = EditorGUILayout.IntPopup("Priority MIDI Thread", instance.MPTK_ThreadMidiPriority, midiThreadPriorityLabel, midiThreadPriorityIndex);
+
+                    GUI.enabled = true;
+
+                    EditorGUILayout.Space(3);
                     string waitThreadExplanation = "Delay in milliseconds between calls to the MIDI sequencer.\n" +
                      "Decrease for smoother playing, increase for better performance.\n" +
                      "A value of 0 removes all waiting, but is not recommended, the CPU will be overwhelmed!";
-                    instance.MPTK_ThreadMidiPriority = EditorGUILayout.IntPopup("Priority MIDI Thread", instance.MPTK_ThreadMidiPriority, midiThreadPriorityLabel, midiThreadPriorityIndex);
+                    EditorGUILayout.LabelField(waitThreadExplanation, MPTKGui.myStyle.LabelGreen);
                     instance.MPTK_ThreadMidiWait = EditorGUILayout.IntSlider(new GUIContent("Delay MIDI Thread", waitThreadExplanation), instance.MPTK_ThreadMidiWait, 1, 30);
 
-                    GUI.enabled = true;
-
-                    string rawseekExplanation = "This parameter is used when changing the playback position in a MIDI.\n\n" +
-                     "By default false, all events other than note-on are replayed from the beginning of the MIDI to the new position, to put the synthesizer back in the right context (tempo, selected instruments, controller, ...).\n\n" +
-                     "If set to true, the current playback position is set, but the current context is retained. This can produce undesired effects (or funny!) on some MIDIs, but it also makes it possible to change position instantly.\n\n" +
+                    EditorGUILayout.Space(3);
+                    string rawseekExplanation = "This parameter is used when changing the playback position in a MIDI.\n" +
+                     "By default false, all events other than note-on are replayed from the beginning of the MIDI to the new position, to put the synthesizer back in the right context (tempo, selected instruments, controller, ...).\n" +
+                     "If set to true, the current playback position is set, but the current context is retained. This can produce undesired effects (or funny!) on some MIDIs, but it also makes it possible to change position instantly.\n" +
                      "It's a choice to be made according to your needs.";
+                    EditorGUILayout.LabelField(rawseekExplanation, MPTKGui.myStyle.LabelGreen);
                     instance.MPTK_RawSeek = EditorGUILayout.Toggle(new GUIContent("Enable Raw Seek", rawseekExplanation), instance.MPTK_RawSeek);
                     EditorGUI.indentLevel--;
                 }

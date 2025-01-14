@@ -1,4 +1,4 @@
-using MidiPlayerTK;
+﻿using MidiPlayerTK;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -40,7 +40,7 @@ public class ReadmeEditor : Editor
     //    method.Invoke(null, new object[] { Path.Combine(Application.dataPath, "TutorialInfo/Layout.wlt"), false });
     //}
 
-    [MenuItem("Maestro/Show Tutorial Instructions", false, 51)]
+    [MenuItem(Constant.MENU_MAESTRO + "/Show Tutorial Instructions", false, 51)]
     static Readme SelectReadme()
     {
         var ids = AssetDatabase.FindAssets("Readme t:Readme");
@@ -59,7 +59,7 @@ public class ReadmeEditor : Editor
         }
     }
 
-    [MenuItem("Maestro/Open Logs Folder", false, 52)]
+    [MenuItem(Constant.MENU_MAESTRO + "/Open Logs Folder", false, 52)]
     static void OpenFolder(MenuCommand menuCommand)
     {
         Application.OpenURL("file://" + Application.persistentDataPath);

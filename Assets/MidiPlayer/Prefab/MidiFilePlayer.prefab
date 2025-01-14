@@ -49,10 +49,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fb0999ab241539438b0b012d2ea9779, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  integratedThreadMidi: 0
+  audioThreadMidi: 0
   priorityThreadMidi: 0
   DevicePerformance: 40
-  MaxDspLoad: 50
+  MaxDspLoad: 75
   AudioBufferLenght: 0
   AudioNumBuffers: 0
   AudioEngine: FMOD
@@ -77,7 +77,6 @@ MonoBehaviour:
   StatDspLoadMIN: 3.4028235e+38
   StatDspLoadMAX: 0
   StatDspLoadAVG: 0
-  StatDspBufferSize: 0
   StatDspChannelCount: 0
   GcCollectionCout: 0
   AllocatedBytesForCurrentThread: 0
@@ -90,7 +89,7 @@ MonoBehaviour:
   StatEnqueueMidiMS: 0
   StatProcessMidiMS: 0
   StatProcessMidiMAX: 0
-  StatDeltaAudioFilterReadMS: 0
+  DeltaTimeAudioCall: 0
   StatAudioFilterReadMS: 0
   StatAudioFilterReadMAX: 0
   StatAudioFilterReadMIN: 0
@@ -110,8 +109,8 @@ MonoBehaviour:
   maxDistance: 0
   MPTK_EnablePanChange: 1
   volumeGlobal: 0.5
-  dsp_64: 0
-  MPTK_LogEvents: 1
+  dsp_64: 1
+  MPTK_LogEvents: 0
   MPTK_LogWave: 0
   MPTK_StatVoiceCountPlaying: 0
   MPTK_StatVoiceCountActive: 0
@@ -156,11 +155,11 @@ MonoBehaviour:
   showSynthParameter: 0
   showSpatialization: 0
   showUnitySynthParameter: 0
-  showUnityPerformanceParameter: 1
-  showMidiPerformanceParameter: 1
+  showUnityPerformanceParameter: 0
+  showMidiPerformanceParameter: 0
   showSoundFontEffect: 0
   showUnitySynthEffect: 0
-  showMidiParameter: 1
+  showMidiParameter: 0
   showMidiPlaying: 0
   showSynthEvents: 0
   showEvents: 0
@@ -196,7 +195,7 @@ MonoBehaviour:
   replayMidi: 1
   stopMidi: 0
   midiIsPlaying: 1
-  midiAutoRestart: 1
+  midiAutoRestart: 0
   keepNoteOff: 0
   keepEndTrack: 0
   needDelayToStart: 0

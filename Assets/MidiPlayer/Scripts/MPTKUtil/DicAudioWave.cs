@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 
 namespace MidiPlayerTK
@@ -28,6 +29,9 @@ namespace MidiPlayerTK
             {
                 if (dicWave!= null && !dicWave.TryGetValue(smpl.Name, out c))
                 {
+#if DEBUG_LOAD_WAVE
+                    Debug.Log($"DicAudioWave.Add {dicWave.Count} {smpl.Name} {smpl.SampleRate} {smpl.End - smpl.Start}");
+#endif
                     dicWave.Add(smpl.Name, smpl);
                 }
             }

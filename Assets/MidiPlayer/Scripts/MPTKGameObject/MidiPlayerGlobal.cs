@@ -1,4 +1,4 @@
-using MEC;
+﻿using MEC;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -769,18 +769,23 @@ namespace MidiPlayerTK
                     if (MPTK_LoadWaveAtStartup)
                     {
                         LoadAudioClip();
-                        if (logDebug) Debug.Log($"{(DateTime.Now - start).TotalSeconds:F3} LoadAudioClip");
+#if DEBUG_LOAD_WAVE
+                        Debug.Log($"LoadAudioClip {(DateTime.Now - start).TotalSeconds:F3} second");
+#endif
+
                     }
 
                     // Load sample for core mode
                     // Attention, on ne peut pas utiliser AudioClip et Resources en dehors du main thread unity.
                     // Il faut donc charger tous les echantillons avant.
                     LoadWave();
+#if DEBUG_LOAD_WAVE
+                    Debug.Log($"LoadWave {(DateTime.Now - start).TotalSeconds:F3} second");
+#endif
 
                     if (Application.isPlaying && !DicAudioWave.Check())
                         Debug.Log($"<color=red>No sample found in the SoundFont {CurrentMidiSet.ActiveSounFontInfo.Name}. Have you extracted samples from the Maestro 'SoundFont Setup' menu in Unity Editor?</color>");
 
-                    if (logDebug) Debug.Log($"{(DateTime.Now - start).TotalSeconds:F3} LoadWave");
                     timeToLoadWave = watchLoadWave.Elapsed;
                     //Debug.Log("End loading Waves " + timeToLoadWave.TotalSeconds + " seconds" + " count:" + MPTK_CountWaveLoaded);
                 }

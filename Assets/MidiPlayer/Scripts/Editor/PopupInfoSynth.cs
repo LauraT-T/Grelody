@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 //#define DEBUG_STATUS_STAT // also in MidiSynth.cs
 
 using System;
@@ -49,12 +49,12 @@ namespace MidiPlayerTK
 
                 string info;
 
-                string modeSynth = MidiSynth.name + "\tMode: " + (MidiSynth.MPTK_CorePlayer ? "Core" : "AudioSource");
-                info = $"{modeSynth}\tRate: {MidiSynth.OutputRate}\tBuffer: {MidiSynth.DspBufferSize}\tDSP: {Math.Round(MidiSynth.StatDeltaAudioFilterReadMS, 2),-5:F2} ms\n";
+                string modeSynth = MidiSynth.name + "\tMode: " + (MidiSynth.MPTK_CorePlayer ? "Core" : "AudioSource") + "\tMIDI Thread:" + (MidiSynth.AudioThreadMidi ? "Audio" : "Internal");
+                info = $"{modeSynth}\tRate: {MidiSynth.OutputRate}\tBuffer: {MidiSynth.DspBufferSize}\tDSP: {Math.Round(MidiSynth.DeltaTimeAudioCall, 2),-5:F2} ms\n";
                 info += $"Voice Playing: {MidiSynth.MPTK_StatVoiceCountPlaying,-3}\tActive: {MidiSynth.MPTK_StatVoiceCountActive,-3}\n";
                 info += $"Voice Played:  {MidiSynth.MPTK_StatVoicePlayed,-3}\tReused: {MidiSynth.MPTK_StatVoiceCountReused,-3} {Mathf.RoundToInt(MidiSynth.MPTK_StatVoiceRatioReused)}%\tFree: {MidiSynth.MPTK_StatVoiceCountFree,-3}\n";
 
-#if DEBUG_STATUS_STAT
+#if DEBUG_STATUS_STAT 
                 if (MidiSynth.StatusStat != null && MidiSynth.StatusStat.Length >= (int)fluid_voice_status.FLUID_VOICE_OFF + 2)
                 {
                     info += string.Format("\t\tSustain:{0,-4}\tRelease:{1,-4}\n\n",

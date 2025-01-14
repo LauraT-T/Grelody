@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 using System;
@@ -12,17 +12,18 @@ namespace MidiPlayerTK
     public class AboutMPTK : PopupWindowContent
     {
 
-        /*static*/ private int winWidth = 838;
-        /*static*/ private int winHeight = 450;
+        /*static*/
+        private int winWidth = 838;
+        /*static*/
+        private int winHeight = 450;
         GUIStyle styleLabelUpperLeft, stylePanel;
         static Vector2 scrollPosAnalyze = Vector2.zero;
-
         public override Vector2 GetWindowSize()
         {
             return new Vector2(winWidth, winHeight);
         }
 
-        [MenuItem("Maestro/Version and Doc &V", false, 100)]
+        [MenuItem(Constant.MENU_MAESTRO + "/Version and Doc &V", false, 100)]
         private static void Display()
         {
             try
@@ -117,15 +118,19 @@ namespace MidiPlayerTK
                     Application.OpenURL(Constant.forumSite);
 
                 btx += btWidth + spaceH;
-                if (GUI.Button(new Rect(btx, yStart, btWidth, btHeight), "Discord Site"))
+                if (GUI.Button(new Rect(btx, yStart, btWidth, btHeight), "Discord"))
                     Application.OpenURL(Constant.DiscordSite);
 
                 btx += btWidth + spaceH;
-                if (GUI.Button(new Rect(btx, yStart, btWidth, btHeight), "Documentation Site"))
+                if (GUI.Button(new Rect(btx, yStart, btWidth, btHeight), "Custom GPT"))
+                    Application.OpenURL(Constant.CustomGptSite);
+
+                btx += btWidth + spaceH;
+                if (GUI.Button(new Rect(btx, yStart, btWidth, btHeight), "Documentation"))
                     Application.OpenURL(Constant.blogSite);
 
                 btx += btWidth + spaceH;
-                if (GUI.Button(new Rect(btx, yStart, btWidth, btHeight), "API Helper Site"))
+                if (GUI.Button(new Rect(btx, yStart, btWidth, btHeight), "API Helper"))
                     Application.OpenURL(Constant.apiSite);
 
                 btx += btWidth + spaceH;

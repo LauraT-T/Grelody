@@ -1,11 +1,4 @@
-//#define MPTK_PRO
-
-//#define DEBUG_HISTO_DSPSIZE 
-//#define DEBUG_PERF_NOTEON // warning: generate heavy cpu use
-//#define DEBUG_PERF_AUDIO
-//#define DEBUG_PERF_MIDI
-//#define DEBUG_STATUS_STAT // also in HelperDemo.cs 
-//#define LOG_STATUS_STAT // previous must be uncomment
+ï»¿#define MPTK_PRO
 //#define DEBUG_GC
 
 using MEC;
@@ -15,9 +8,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using UnityEngine;
-
-#if UNITY_EDITOR
-#endif
 
 #if MPTK_PRO && UNITY_ANDROID && UNITY_OBOE
 using Oboe.Stream;
@@ -91,12 +81,12 @@ namespace MidiPlayerTK
         protected double timeMidiFromStartPlay = 0d;
 
         //[HideInInspector]
-        public bool integratedThreadMidi = false;
+        public bool audioThreadMidi = false;
 
-        public bool IntegratedThreadMidi
+        public bool AudioThreadMidi
         {
-            get => integratedThreadMidi;
-            set => integratedThreadMidi = value;
+            get => audioThreadMidi;
+            set => audioThreadMidi = value;
         }
 
 
@@ -301,8 +291,8 @@ namespace MidiPlayerTK
         /// See more detailed information here https://paxstellar.fr/sound-effects/
         /// @note
         ///     - By default, only low-filter effect is enabled in Maestro. 
-        ///     - To enable them, you’ll need to adjust the settings from the prefab inspector (Synth Parameters / SoundFont Effect) or by script!
-        ///     - For enhanced sound quality, it’s beneficial to add a low-filter effect, it is enabled by default..
+        ///     - To enable them, youâ€™ll need to adjust the settings from the prefab inspector (Synth Parameters / SoundFont Effect) or by script!
+        ///     - For enhanced sound quality, itâ€™s beneficial to add a low-filter effect, it is enabled by default..
         /// @code
         /// // Find a MPTK Prefab, will works also for MidiStreamPlayer, MidiExternalPlayer ... all classes which inherit from MidiSynth.
         /// MidiFilePlayer fp = FindFirstObjectByType<MidiFilePlayer>();
@@ -314,7 +304,7 @@ namespace MidiPlayerTK
         public MPTKEffectSoundFont MPTK_EffectSoundFont;
 
         /// <summary>@brief
-        /// The MIDI thread’s priority shows how frequently a thread gains the access to CPU. 
+        /// The MIDI threadâ€™s priority shows how frequently a thread gains the access to CPU. 
         /// The default value is 0 (normal), you can increase the priority to 1 and 2 (higher).\n
         /// This is useful when the hardware is weak, to get a more stable reading of the MIDI.
         /// @note: A higher priority thread might consume all the CPU time. It's recommended to set MPTK_ThreadMidiWait higher than 5 ms.
@@ -350,7 +340,6 @@ namespace MidiPlayerTK
         public float StatDspLoadMIN;
         public float StatDspLoadMAX;
         public float StatDspLoadAVG;
-        public int StatDspBufferSize;
         public int StatDspChannelCount;
         public int GcCollectionCout;
         public long AllocatedBytesForCurrentThread;
@@ -367,7 +356,6 @@ namespace MidiPlayerTK
 
         //public float StatDspLoadLongAVG;
         public MovingAverage StatDspLoadMA;
-        //public MovingAverage StatDspLoadLongMA;
 
         [Header("MIDI Sequencer Statistics")]
 
@@ -404,12 +392,12 @@ namespace MidiPlayerTK
         /// Delta time in milliseconds between call to the MIDI Synth (OnAudioFilterRead). \n
         /// This value is constant during playing. Directly related to the buffer size and the synth rate values.
         /// </summary>
-        public double StatDeltaAudioFilterReadMS;
+        public double DeltaTimeAudioCall;
 
         /// <summary>@brief 
         /// Time in milliseconds for the whole MIDI Synth processing (OnAudioFilterRead)
         /// </summary>
-        public float StatAudioFilterReadMS;
+        public double StatAudioFilterReadMS;
         public double StatAudioFilterReadMAX;
         public double StatAudioFilterReadMIN;
         public float StatAudioFilterReadAVG;
@@ -439,13 +427,15 @@ namespace MidiPlayerTK
         /// </summary>
         public int[] StatusStat;
 #endif
+        public SynthInfo synthInfo = new SynthInfo();
+
 
         /// <summary>@brief 
         /// Time in millisecond for the last OnAudioFilter
         /// </summary>
         protected double lastTimePlayCore = 0d;
 
-        private System.Diagnostics.Stopwatch watchOnAudioFilterRead = new System.Diagnostics.Stopwatch();
+        private System.Diagnostics.Stopwatch watchSynth = new System.Diagnostics.Stopwatch();
 
         protected System.Diagnostics.Stopwatch watchMidi = new System.Diagnostics.Stopwatch();
         protected System.Diagnostics.Stopwatch pauseMidi = new System.Diagnostics.Stopwatch();
@@ -464,7 +454,7 @@ namespace MidiPlayerTK
         // When the option is on, NoteOff and Duration for non-looped samples are ignored and the samples play through to the end.
         public bool keepPlayingNonLooped /* V2.89.0 */;
 
-#if DEBUG_PERF_NOTEON
+#if LOG_PERF_NOTEON
         private float perf_time_cumul;
         private List<string> perfs;
         private System.Diagnostics.Stopwatch watchPerfNoteOn = new System.Diagnostics.Stopwatch(); // High resolution time
@@ -498,8 +488,6 @@ namespace MidiPlayerTK
             get { return (int)OutputRate; }
             set
             {
-                //if (MPTK_EnableFreeSynthRate)
-                //{
                 int valueClamped = Mathf.Clamp(value, 12000, 96000);
                 if (OutputRate != value)
                 {
@@ -509,7 +497,6 @@ namespace MidiPlayerTK
 #if MPTK_PRO && UNITY_ANDROID && UNITY_OBOE
                     InitOboe();
 #else
-                    // V2.89.0 if (CoreAudioSource != null) CoreAudioSource.Stop();
                     // Get current configuration
                     AudioConfiguration ac = AudioSettings.GetConfiguration();
                     if (ac.sampleRate != valueClamped)
@@ -541,13 +528,7 @@ namespace MidiPlayerTK
                         for (int i = 0; i < ActiveVoices.Count; i++)
                             ActiveVoices[i].output_rate = OutputRate; // was ac.sampleRate
                     needClearingFreeVoices = true;
-                    //if (FreeVoices != null)
-                    //    for (int i = 0; i < FreeVoices.Count; i++)
-                    //        FreeVoices[i].output_rate = ac.sampleRate;
-                    // V2.89.0 if (CoreAudioSource != null) CoreAudioSource.Play();
                 }
-                //}
-                //else Debug.LogWarning($"Set MPTK_SynthRate: MPTK_EnableFreeSynthRate must be set to true");
             }
         }
 
@@ -586,8 +567,6 @@ namespace MidiPlayerTK
             get { return indexSynthRate; }
             set
             {
-                //if (!MPTK_AudioSettingFromUnity)
-                //{
                 indexSynthRate = value;
                 if (VerboseSynth)
                     Debug.Log("MPTK_ChangeSynthRate " + indexSynthRate);
@@ -595,7 +574,7 @@ namespace MidiPlayerTK
                 {
 #if MPTK_PRO && UNITY_ANDROID && UNITY_OBOE
                     // Set a default value
-                    MPTK_SynthRate = 48000;
+                    MPTK_SynthRate = 0;
 #else
                     // No change
                     OnAudioConfigurationChanged(false);
@@ -605,27 +584,7 @@ namespace MidiPlayerTK
                 {
                     if (indexSynthRate > 6) indexSynthRate = 6;
                     MPTK_SynthRate = 24000 + (indexSynthRate * 12000);
-                    // V2.89.0 if (CoreAudioSource != null) CoreAudioSource.Stop();
-                    //int sampleRate = 24000 + (indexSynthRate * 12000);
-                    //AudioConfiguration ac = AudioSettings.GetConfiguration();
-                    //if (ac.sampleRate != sampleRate)
-                    //{
-                    //    if (VerboseSynth)
-                    //        Debug.Log($"Change Sample Rate from {ac.sampleRate} to {sampleRate}");
-                    //    ac.sampleRate = sampleRate;
-                    //    ResetAudio(ac);
-                    //}
-
-                    //Debug.Log("New OutputRate:" + OutputRate);
-                    //if (ActiveVoices != null)
-                    //    for (int i = 0; i < ActiveVoices.Count; i++)
-                    //        ActiveVoices[i].output_rate = OutputRate;
-                    //if (FreeVoices != null)
-                    //    for (int i = 0; i < FreeVoices.Count; i++)
-                    //        FreeVoices[i].output_rate = OutputRate;
-                    // V2.89.0 if (CoreAudioSource != null) CoreAudioSource.Play();
                 }
-                //}
             }
         }
 
@@ -644,8 +603,6 @@ namespace MidiPlayerTK
             get { return indexBuffSize; }
             set
             {
-                //if (!MPTK_AudioSettingFromUnity)
-                //{
                 indexBuffSize = value;
                 if (VerboseSynth) Debug.Log("MPTK_IndexSynthBuffSize " + indexBuffSize);
                 if (indexBuffSize < 0 || indexBuffSize >= tabDspBufferSize.Length)
@@ -659,7 +616,6 @@ namespace MidiPlayerTK
                 }
                 else
                 {
-                    // V2.89.0 if (CoreAudioSource != null) CoreAudioSource.Stop();
 #if MPTK_PRO && UNITY_ANDROID && UNITY_OBOE
                     if (indexBuffSize > 5) indexBuffSize = 5;
                     DspBufferSize = tabDspBufferSize[indexBuffSize];
@@ -667,23 +623,12 @@ namespace MidiPlayerTK
 #else
                     DspBufferSize = tabDspBufferSize[indexBuffSize];
                     AudioConfiguration ac = AudioSettings.GetConfiguration();
-                    //if (ac.dspBufferSize != DspBufferSize)
-                    {
-                        if (VerboseSynth)
-                            Debug.Log($"Change Buffer Size from {ac.dspBufferSize} to {DspBufferSize}");
-                        ac.dspBufferSize = DspBufferSize;
-                        ResetAudio(ac);
-                    }
+                    if (VerboseSynth)
+                        Debug.Log($"Change Buffer Size from {ac.dspBufferSize} to {DspBufferSize}");
+                    ac.dspBufferSize = DspBufferSize;
+                    ResetAudio(ac);
 #endif
-                    //if (ActiveVoices != null)
-                    //    for (int i = 0; i < ActiveVoices.Count; i++)
-                    //        ActiveVoices[i].output_rate = OutputRate;
-                    //if (FreeVoices != null)
-                    //    for (int i = 0; i < FreeVoices.Count; i++)
-                    //        FreeVoices[i].output_rate = OutputRate;
-                    // V2.89.0 if (CoreAudioSource != null) CoreAudioSource.Play();
                 }
-                //}
             }
         }
 
@@ -851,7 +796,10 @@ namespace MidiPlayerTK
             get { return volumeGlobal; }
             set
             {
-                if (value >= 0f && value <= 1f) volumeGlobal = value; else Debug.LogWarning($"Set Volume value {value} not valid, must be between 0 and 1");
+                if (value >= 0f && value <= Constant.MAX_VOLUME)
+                    volumeGlobal = value;
+                else
+                    Debug.LogWarning($"Set Volume value {value} not valid, must be between 0 and {Constant.MAX_VOLUME}");
             }
         }
 
@@ -1247,30 +1195,12 @@ namespace MidiPlayerTK
                     // Set buffer size
                     MPTK_IndexSynthBuffSize = indexBuffSize;
                 }
-                //else
-                //    // Get configuration set by Unity
-                //    OnAudioConfigurationChanged(false);
                 if (dsp_64)
                     fluid_dsp_float_64.fluid_dsp_float_config();
                 else
                     fluid_dsp_float.fluid_dsp_float_config();
 
-                //AudioConfiguration ac = AudioSettings.GetConfiguration();
-                //Debug.LogWarning("Debug mode buffer not a multiple of 64");
-                //ac.dspBufferSize = 100;
-                //AudioSettings.Reset(ac);
-
-                //#if !UNITY_ANDROID
                 GetInfoAudio();
-                //#endif
-                /* The number of buffers is determined by the higher number of nr
-                 * groups / nr audio channels.  If LADSPA is unused, they should be
-                 * the same. */
-                //nbuf = audio_channels;
-                //if (audio_groups > nbuf)
-                //{
-                //    nbuf = audio_groups;
-                //}
 
                 /* as soon as the synth is created it starts playing. */
                 // Too soon state = fluid_synth_status.FLUID_SYNTH_PLAYING;
@@ -1373,15 +1303,7 @@ namespace MidiPlayerTK
             OutputRate = ac.sampleRate;
             DspBufferSize = ac.dspBufferSize;
             if (VerboseSynth)
-            {
-                Debug.Log("------InfoAudio FMOD------");
-                Debug.Log("  " + (MPTK_CorePlayer ? "Core Player Activated" : "AudioSource Player Activated"));
-                Debug.Log("  bufferLenght:" + AudioBufferLenght + " 2nd method: " + ac.dspBufferSize);
-                Debug.Log("  numBuffers:" + AudioNumBuffers);
-                Debug.Log("  outputSampleRate:" + AudioSettings.outputSampleRate + " 2nd method: " + ac.sampleRate);
-                Debug.Log("  speakerMode:" + AudioSettings.speakerMode);
-                Debug.Log("---------------------");
-            }
+                LogInfoAudio();
 
             if (ac.dspBufferSize % FLUID_BUFSIZE != 0)
             {
@@ -1389,6 +1311,37 @@ namespace MidiPlayerTK
                 Debug.LogError($"Try to change the 'DSP Buffer Size' in the Unity Editor menu 'Edit / Project Settings / Audio'");
             }
 
+#endif
+        }
+
+        public void LogInfoAudio()
+        {
+#if MPTK_PRO && UNITY_ANDROID && UNITY_OBOE
+            Debug.Log("------InfoAudio Oboe------");
+            Debug.Log($"    MPTKRate:{MPTK_SynthRate} Oboe  SampleRate:{oboeAudioStream.SampleRate}");
+            Debug.Log($"    DspBufferSize:{DspBufferSize}");
+            Debug.Log($"    ChannelCount:{oboeAudioStream.ChannelCount}");
+            Debug.Log($"    BufferCapacityInFrames:{oboeAudioStream.BufferCapacityInFrames}");
+            Debug.Log($"    BufferSizeInFrames:{oboeAudioStream.BufferSizeInFrames}"); // https://developer.android.com/ndk/reference/group/audio#aaudiostream_setbuffersizeinframes
+            Debug.Log($"    FramesPerCallback:{oboeAudioStream.FramesPerCallback}");
+            Debug.Log($"    FramesPerBurst:{oboeAudioStream.FramesPerBurst}");
+            Debug.Log($"    BytesPerFrame:{oboeAudioStream.BytesPerFrame}");
+            Debug.Log($"    PerformanceMode:{oboeAudioStream.PerformanceMode}");
+            Debug.Log($"    SampleRateConversionQuality:{oboeAudioStream.SampleRateConversionQuality}");
+            Debug.Log($"    Audio Format:{oboeAudioStream.Format}");
+            Debug.Log($"    SessionId:{oboeAudioStream.SessionId}");
+            Debug.Log($"    Usage:{oboeAudioStream.Usage}");
+            Debug.Log($"    AudioApi:{oboeAudioStream.AudioApi}");
+            Debug.Log("---------------------");
+#else
+            AudioConfiguration ac = AudioSettings.GetConfiguration();
+            Debug.Log("------InfoAudio FMOD------");
+            Debug.Log("  " + (MPTK_CorePlayer ? "Core Player Activated" : "AudioSource Player Activated"));
+            Debug.Log("  bufferLenght:" + AudioBufferLenght + " 2nd method: " + ac.dspBufferSize);
+            Debug.Log("  numBuffers:" + AudioNumBuffers);
+            Debug.Log("  outputSampleRate:" + AudioSettings.outputSampleRate + " 2nd method: " + ac.sampleRate);
+            Debug.Log("  speakerMode:" + AudioSettings.speakerMode);
+            Debug.Log("---------------------");
 #endif
         }
 
@@ -1616,7 +1569,7 @@ namespace MidiPlayerTK
         /// </summary>
         public void MPTK_StartSequencerMidi()
         {
-            if (!IntegratedThreadMidi)
+            if (!AudioThreadMidi)
             {
                 if (VerboseSynth) Debug.Log($"MPTK_StartSequencerMidi {this.name} {((midiThread == null ? "Null" : "Alive:" + midiThread.IsAlive))}");
 
@@ -1634,8 +1587,7 @@ namespace MidiPlayerTK
                 }
                 else if (VerboseSynth) Debug.Log($"MPTK_StartSequencerMidi: Alive  {this.name} {IdSynth} ManagedThreadId:{midiThread.ManagedThreadId} Priority:{midiThread.Priority}");
             }
-            else
-            if (VerboseSynth) Debug.Log($"MPTK_StartSequencerMidi - MIDI Thread disabled, MIDI reader integrated");
+            else if (VerboseSynth) Debug.Log($"MPTK_StartSequencerMidi - MIDI MPTK Thread disabled, MIDI reader from Audio Thread");
 
         }
 
@@ -1901,7 +1853,7 @@ namespace MidiPlayerTK
         {
             if (ActiveVoices != null && ActiveVoices.Count > 0)
             {
-                Debug.Log("---- List active voice ---- IdSession/Index in MIDI, T/C=Track/Channel T=Time D=Duration V=Volume");
+                Debug.Log(fluid_voice.HeaderVoiceInfo());
                 for (int i = 0; i < ActiveVoices.Count; i++)
                     Debug.Log(ActiveVoices[i].ToString());
             }
@@ -1926,6 +1878,9 @@ namespace MidiPlayerTK
             if (Channels != null)
                 foreach (MPTKChannel mptkChannel in Channels)
                     mptkChannel.NoteCount = 0;
+#if DEBUG_HISTO_SYNTH
+            synthInfo.ClearHistoMinMax();
+#endif
 
 #if DEBUG_PERF_AUDIO
             StatSynthLatency = new MovingAverage();
@@ -1934,7 +1889,6 @@ namespace MidiPlayerTK
             StatSynthLatencyMAX = 0f;
 
             StatDspLoadMA = new MovingAverage();
-            //StatDspLoadLongMA = new MovingAverage();
             StatAudioFilterReadMIN = double.MaxValue;
             StatAudioFilterReadMAX = 0;
             StatAudioFilterReadMA = new MovingAverage();
@@ -2283,7 +2237,7 @@ namespace MidiPlayerTK
                 indexVoice++;
             }
 
-#if DEBUG_PERF_NOTEON
+#if LOG_PERF_NOTEON
             DebugPerf("After find existing voice:");
 #endif
             // No existing voice found, instantiate a new one
@@ -2388,7 +2342,7 @@ namespace MidiPlayerTK
 
                 //AddDefaultMod(voice);
 
-#if DEBUG_PERF_NOTEON
+#if LOG_PERF_NOTEON
                 DebugPerf("After instanciate voice:");
 #endif
             }
@@ -2426,8 +2380,16 @@ namespace MidiPlayerTK
             // Defined default voice value. Called also when a voice is reused.
             voice.fluid_voice_init(channel, mptkEvent.Value, mptkEvent.Velocity);
 
+#if LOG_PERF_NOTEON
+            DebugPerf("After fluid_voice_init:");
+#endif
+
             // pourquoi reinit mod si voice depuis le cache ? ... a tester
             AddDefaultMod(voice);
+#if LOG_PERF_NOTEON
+            DebugPerf("After AddDefaultMod:");
+#endif
+
 
             ActiveVoices.Add(voice);
             voice.IndexActive = ActiveVoices.Count - 1;
@@ -2446,10 +2408,6 @@ namespace MidiPlayerTK
         */
         private static void AddDefaultMod(fluid_voice voice)
         {
-#if DEBUG_PERF_NOTEON
-            DebugPerf("After fluid_voice_init:");
-#endif
-
             /* add the default modulators to the synthesis process. */
             voice.mods = new List<HiMod>();
             voice.fluid_voice_add_mod(MidiSynth.default_vel2att_mod, fluid_voice_addorover_mod.FLUID_VOICE_DEFAULT);    /* SF2.01 $8.4.1  */
@@ -2462,9 +2420,6 @@ namespace MidiPlayerTK
             voice.fluid_voice_add_mod(MidiSynth.default_reverb_mod, fluid_voice_addorover_mod.FLUID_VOICE_DEFAULT);     /* SF2.01 $8.4.8  */
             voice.fluid_voice_add_mod(MidiSynth.default_chorus_mod, fluid_voice_addorover_mod.FLUID_VOICE_DEFAULT);     /* SF2.01 $8.4.9  */
             voice.fluid_voice_add_mod(MidiSynth.default_pitch_bend_mod, fluid_voice_addorover_mod.FLUID_VOICE_DEFAULT); /* SF2.01 $8.4.10 */
-#if DEBUG_PERF_NOTEON
-            DebugPerf("After fluid_voice_add_mod:");
-#endif
         }
 
         public void fluid_synth_kill_by_exclusive_class(fluid_voice new_voice)
@@ -2565,7 +2520,7 @@ namespace MidiPlayerTK
         //        if (voice.status == fluid_voice_status.FLUID_VOICE_ON &&
         //            voice.volenv_section < fluid_voice_envelope_index.FLUID_VOICE_ENVRELEASE)
         //        {
-        //            //Debug.Log($"fluid_synth_noteoff Channel:{pchan} key:{pkey} Isloop:{voice.IsLoop} Ignore:{keepPlayingNonLooped} Naùe:{voice.sample.Name}");
+        //            //Debug.Log($"fluid_synth_noteoff Channel:{pchan} key:{pkey} Isloop:{voice.IsLoop} Ignore:{keepPlayingNonLooped} NaÃ¹e:{voice.sample.Name}");
         //            voice.fluid_voice_noteoff();
         //        }
         //    }
@@ -2586,7 +2541,7 @@ namespace MidiPlayerTK
                     (!keepPlayingNonLooped || voice.samplemode == fluid_loop.FLUID_LOOP_UNTIL_RELEASE || voice.samplemode == fluid_loop.FLUID_LOOP_DURING_RELEASE) &&
                     (pkey == -1 || voice.key == pkey))
                 {
-                    //Debug.Log($"fluid_synth_noteoff Channel:{pchan} key:{pkey} Isloop:{voice.IsLoop} Ignore:{keepPlayingNonLooped} Naùe:{voice.sample.Name}");
+                    //Debug.Log($"fluid_synth_noteoff Channel:{pchan} key:{pkey} Isloop:{voice.IsLoop} Ignore:{keepPlayingNonLooped} NaÃ¹e:{voice.sample.Name}");
                     voice.fluid_rvoice_noteoff();
                 }
             }
@@ -2805,10 +2760,10 @@ namespace MidiPlayerTK
                     return;
                 }
 
-#if DEBUG_PERF_NOTEON
+#if LOG_PERF_NOTEON
                 DebugPerf("-----> Init perf:", 0);
 #endif
-                if (MPTK_LogEvents)
+                if (MPTK_LogEvents && midiEvent != null)
                     Debug.Log(/*state.ToString() + " " + */midiEvent.ToString());
 
                 switch (midiEvent.Command)
@@ -2868,7 +2823,7 @@ namespace MidiPlayerTK
 #endif
                         break;
                 }
-#if DEBUG_PERF_NOTEON
+#if LOG_PERF_NOTEON
                 DebugPerf("<---- ClosePerf perf:", 2);
 #endif
             }
@@ -2880,22 +2835,17 @@ namespace MidiPlayerTK
         }
 
 
-#if DEBUG_HISTO_DSPSIZE
-        public int[] histoDspSize = new int[50];
-        public int histoCurrent = 0;
-#endif
-
 #if MPTK_PRO && UNITY_ANDROID && UNITY_OBOE
         public unsafe void OnAudioData(AudioStream audioStream, void* dataArray, int numFrames)
         {
 #else
         private void OnAudioFilterRead(float[] data, int channels)
         {
-#if DEBUG_HISTO_DSPSIZE
-            if (++histoCurrent >= histoDspSize.Length) histoCurrent = 0;
-            histoDspSize[histoCurrent] = data.Length;
+#if DEBUG_HISTO_SYNTH
+            synthInfo.NextHistoPosition();
+            synthInfo.SizeBuffOnAudio = data.Length;
 #endif
-            // data.Length == DspBufferSize * channels (so, in general the dobble
+            // data.Length == DspBufferSize * channels (so, in general the double
             // Debug.Log($"OnAudioFilterRead IdSynth:{IdSynth} length:{data.Length} channels:{channels} DspBufferSize:{DspBufferSize} state:{state}");
             //Debug.Log($"OnAudioFilterRead GetAllocatedBytesForCurrentThread:{GC.GetAllocatedBytesForCurrentThread()} CollectionCount:{GC.CollectionCount(0)}");
 #endif
@@ -2904,7 +2854,7 @@ namespace MidiPlayerTK
 
             if (state == fluid_synth_status.FLUID_SYNTH_PLAYING)
             {
-                if (IntegratedThreadMidi)
+                if (AudioThreadMidi)
                     PlayMidi();
 
                 //This uses the Unity specific float method we added to get the buffer
@@ -2914,25 +2864,38 @@ namespace MidiPlayerTK
 
                     long ticks = System.DateTime.UtcNow.Ticks;
 #if MPTK_PRO && UNITY_ANDROID && UNITY_OBOE
+                    //SynthElapsedMilli = ticks / 10000D;
+                    //DeltaTimeAudioCall = (watchSynth.ElapsedTicks) / (System.Diagnostics.Stopwatch.Frequency / 1000d);
+                    //watchSynth.Reset();
+                    //watchSynth.Start();
+
+                    if (lastTimePlayCore == 0d)
+                    {
+                        lastTimePlayCore = ticks / 10000D;
+                        return;
+                    }
+                    watchSynth.Reset();
+                    watchSynth.Start();
+
                     SynthElapsedMilli = ticks / 10000D;
-                    StatDeltaAudioFilterReadMS = (watchOnAudioFilterRead.ElapsedTicks) / (System.Diagnostics.Stopwatch.Frequency / 1000d);
-                    watchOnAudioFilterRead.Reset();
-                    watchOnAudioFilterRead.Start();
+                    DeltaTimeAudioCall = SynthElapsedMilli - lastTimePlayCore;
+                    lastTimePlayCore = SynthElapsedMilli;
+
 #else
                     if (lastTimePlayCore == 0d)
                     {
                         lastTimePlayCore = AudioSettings.dspTime * 1000d;
                         return;
                     }
-                    watchOnAudioFilterRead.Reset();
-                    watchOnAudioFilterRead.Start();
+                    watchSynth.Reset();
+                    watchSynth.Start();
 
                     SynthElapsedMilli = AudioSettings.dspTime * 1000d;
-                    StatDeltaAudioFilterReadMS = SynthElapsedMilli - lastTimePlayCore;
+                    DeltaTimeAudioCall = SynthElapsedMilli - lastTimePlayCore;
                     lastTimePlayCore = SynthElapsedMilli;
 #endif
 
-                    //Debug.Log($"SynthElapsedMilli: {SynthElapsedMilli} lastTimePlayCore: {lastTimePlayCore} StatDeltaAudioFilterReadMS:{StatDeltaAudioFilterReadMS} ");
+                    //Debug.Log($"SynthElapsedMilli: {SynthElapsedMilli} lastTimePlayCore: {lastTimePlayCore} DeltaTimeAudioCall:{DeltaTimeAudioCall} ");
 
 #if MPTK_PRO
                     StartFrame();
@@ -2992,13 +2955,28 @@ namespace MidiPlayerTK
 #endif
 
                                 float vol = MPTK_Volume * volumeStartStop;
-
-                                for (int i = 0; i < FLUID_BUFSIZE; i++)
+#if DEBUG_TRY_CATCH_AUDIODATA
+                                try
                                 {
-                                    int j = (block + i) << 1;// * 2; v2.10.0
-                                    data[j] = left_buf[i] * vol;
-                                    data[j + 1] = right_buf[i] * vol;
+#endif
+                                    for (int i = 0; i < FLUID_BUFSIZE; i++)
+                                    {
+                                        int j = (block + i) << 1;
+                                        data[j] = left_buf[i] * vol;
+                                        data[j + 1] = right_buf[i] * vol;
+                                    }
+#if DEBUG_TRY_CATCH_AUDIODATA
                                 }
+                                catch (Exception ex)
+                                {
+                                    Debug.Log($"DspSize:{DspBufferSize} data:{data.Length} channels:{channels} FLUIDBUF:{FLUID_BUFSIZE} left_buf:{left_buf.Length} {block} ElapsedMilli:{SynthElapsedMilli:F2} Delta:{DeltaTimeAudioCall:F2}");
+                                    Debug.LogError(ex);
+                                }
+#endif
+
+#if DEBUG_AUDIO_DATA_LOOP
+                                Debug.Log($"DspSize:{DspBufferSize} data:{data.Length} channels:{channels} FLUIDBUF:{FLUID_BUFSIZE} left_buf:{left_buf.Length} {block} ElapsedMilli:{SynthElapsedMilli:F2} Delta:{DeltaTimeAudioCall:F2}");
+#endif
                                 block += FLUID_BUFSIZE;
                             }
 
@@ -3007,11 +2985,22 @@ namespace MidiPlayerTK
                         //GC.EndNoGCRegion();
 
 #endif
-                        // Calculate time for processing all samples (watchOnAudioFilterRead is reset at start of OnAudioFilterRead)
-                        StatAudioFilterReadMS = ((float)watchOnAudioFilterRead.ElapsedTicks) / ((float)System.Diagnostics.Stopwatch.Frequency / 1000f);
-                        // StatDeltaAudioFilterReadMS is normally a constant related to the synth frequency.
+
+                        // Calculate time for processing all samples (watchSynth is reset at start of OnAudioFilterRead)
+                        StatAudioFilterReadMS = ((double)watchSynth.ElapsedTicks) / (System.Diagnostics.Stopwatch.Frequency / 1000d);
+                        // DeltaTimeAudioCall is normally a constant related to the synth frequency.
+                        // But it's not always the case, so DSP loading is an approximation.
+                        // At the start of the audio callback but after MIDI processing if Audio Thread is enabled, DeltaTimeAudioCall set to:
+                        // watchSynth.ElapsedTicks / (System.Diagnostics.Stopwatch.Frequency / 1000d);
+                        // 
                         // Build a load ratio
-                        StatDspLoadPCT = StatDeltaAudioFilterReadMS > 0f ? (StatAudioFilterReadMS * 100f) / (float)StatDeltaAudioFilterReadMS : 0f;
+                        StatDspLoadPCT = (float)(DeltaTimeAudioCall > 0d ? (StatAudioFilterReadMS * 100d) / DeltaTimeAudioCall : 0d);
+
+#if DEBUG_HISTO_SYNTH
+                        synthInfo.DeltaOnAudio = Convert.ToInt32(DeltaTimeAudioCall * 100f);
+                        synthInfo.TimeSynthProcess = Convert.ToInt32(StatAudioFilterReadMS * 100f);
+#endif
+
 #if DEBUG_PERF_AUDIO
                         StatAudioFilterReadMA.Add(Convert.ToInt32(StatAudioFilterReadMS * 1000f));
                         if (StatAudioFilterReadMS > StatAudioFilterReadMAX) StatAudioFilterReadMAX = StatAudioFilterReadMS;
@@ -3024,18 +3013,12 @@ namespace MidiPlayerTK
                         StatSampleWriteAVG = StatSampleWriteMA.Average / 1000f;
 
                         StatDspLoadMA.Add(Convert.ToInt32(StatDspLoadPCT * 1000f));
-                        //StatDspLoadLongMA.Add(Convert.ToInt32(StatDspLoadPCT * 1000f));
                         if (StatDspLoadPCT > StatDspLoadMAX) StatDspLoadMAX = StatDspLoadPCT;
                         if (StatDspLoadPCT < StatDspLoadMIN) StatDspLoadMIN = StatDspLoadPCT;
                         StatDspLoadAVG = StatDspLoadMA.Average / 1000f;
-                        //StatDspLoadLongAVG = StatDspLoadLongMA.Average / 1000f;
-
-                        StatDspBufferSize = data.Length;
-                        StatDspChannelCount = channels;
 #endif
                     }
                 }
-
             }
         }
 
@@ -3154,7 +3137,12 @@ namespace MidiPlayerTK
             // 4: fluid_voice_envelope_index.FLUID_VOICE_ENVRELEASE
             StatusStat = new int[(int)fluid_voice_status.FLUID_VOICE_OFF + 2];
 #endif
+
+#if MPTK_PRO && UNITY_ANDROID && UNITY_OBOE
+            // Overload is disabled with Oboe
+#else
             bool firstToKill = false;
+#endif
             int countActive = ActiveVoices.Count;
             for (int indexVoice = 0; indexVoice < ActiveVoices.Count;)
             {
@@ -3168,10 +3156,15 @@ namespace MidiPlayerTK
                         StatusStat[(int)voice.status]++;
 #endif
 
+#if MPTK_PRO && UNITY_ANDROID && UNITY_OBOE
+                    // Overload is disabled with Oboe
+#else
                     if (StatDspLoadPCT > MaxDspLoad)
                     {
-                        if (VerboseOverload) voice.DebugOverload($"ActiveVoice:{MPTK_StatVoiceCountActive} StatDspLoadPCT:{StatDspLoadPCT} StatAudioFilterReadMS:{StatAudioFilterReadMS}");
-                        // Check if there is voice wich are sustained: MIDI message ControlChange with Sustain (64)
+                        if (VerboseOverload)
+                            voice.DebugOverload($"OverLoad: DeltaTimeAudioCall:{DeltaTimeAudioCall:F2} StatAudioFilterReadMS:{StatAudioFilterReadMS:F2} ActiveVoice:{MPTK_StatVoiceCountActive}");
+
+                        // Check if there is voice which are sustained: MIDI message ControlChange with Sustain (64)
                         if (voice.status == fluid_voice_status.FLUID_VOICE_SUSTAINED)
                         {
                             if (VerboseOverload) voice.DebugOverload("Send noteoff");
@@ -3199,7 +3192,7 @@ namespace MidiPlayerTK
                             }
                         }
                     }
-
+#endif
                     if (voice.status == fluid_voice_status.FLUID_VOICE_OFF)
                     {
                         if (VerboseVoice) Debug.Log($"Voice {voice.id} - Voice Off, move to FreeVoices");
@@ -3226,7 +3219,7 @@ namespace MidiPlayerTK
             {
                 Debug.Log(Math.Round(SynthElapsedMilli, 2) +
 
-                    " deltaTimeCore:" + Math.Round(StatDeltaAudioFilterReadMS, 2) +
+                    " deltaTimeCore:" + Math.Round(DeltaTimeAudioCall, 2) +
                     " timeToProcessAudio:" + Math.Round(StatAudioFilterReadMS, 2) +
                     " dspLoad:" + Math.Round(StatDspLoadPCT, 2) +
                     " Active:" + countActive +
@@ -3294,45 +3287,44 @@ namespace MidiPlayerTK
 
         private void PlayMidi()
         {
-            if (!integratedThreadMidi)
+            double nowMs = 0d;
+            if (AudioThreadMidi)
             {
                 //Debug.Log($"{Thread.CurrentThread.ManagedThreadId} {Thread.CurrentThread.Name,15} {Thread.CurrentThread.IsThreadPoolThread} {Thread.CurrentThread.GetApartmentState()} {Thread.CurrentThread.Priority}");
-                double nowMs = (double)watchMidi.ElapsedTicks / ((double)System.Diagnostics.Stopwatch.Frequency / 1000d);
-                StatDeltaThreadMidiMS = nowMs - lastTimeMidi;
-                /*if (miditoplay.ReadyToPlay)*/
-                //Debug.Log($"ThreadMidiPlayer IdSynth:'{this.IdSynth}' watchMidi:{Math.Round(nowMs, 2)} lastTimeMidi:{Math.Round(lastTimeMidi, 2)} timeMidiFromStartPlay:{Math.Round(timeMidiFromStartPlay, 2)}  delta:{Math.Round(StatDeltaThreadMidiMS, 2)}");
-                lastTimeMidi = nowMs;
+                nowMs = (double)watchMidi.ElapsedTicks / ((double)System.Diagnostics.Stopwatch.Frequency / 1000d);
             }
             else
             {
-                if (watchMidi.IsRunning)
-                {
-                    //Debug.Log($"{Thread.CurrentThread.ManagedThreadId} {Thread.CurrentThread.Name,15} {Thread.CurrentThread.IsThreadPoolThread} {Thread.CurrentThread.GetApartmentState()} {Thread.CurrentThread.Priority}");
-                    double nowMs = AudioSettings.dspTime * 1000d;
-                    StatDeltaThreadMidiMS = nowMs - lastTimeMidi;
-                    if (StatDeltaThreadMidiMS > 100)
-                    {
-                        Debug.Log($"ThreadMidiPlayer IdSynth:'{this.IdSynth}' watchMidi:{Math.Round(nowMs, 2)} lastTimeMidi:{Math.Round(lastTimeMidi, 2)} timeMidiFromStartPlay:{Math.Round(timeMidiFromStartPlay, 2)}  delta:{Math.Round(StatDeltaThreadMidiMS, 2)}");
-                        StatDeltaThreadMidiMS = 0;
-                    }
-                    /*if (miditoplay.ReadyToPlay)*/
-                    //Debug.Log($"ThreadMidiPlayer IdSynth:'{this.IdSynth}' watchMidi:{Math.Round(nowMs, 2)} lastTimeMidi:{Math.Round(lastTimeMidi, 2)} timeMidiFromStartPlay:{Math.Round(timeMidiFromStartPlay, 2)}  delta:{Math.Round(StatDeltaThreadMidiMS, 2)}");
-                    lastTimeMidi = nowMs;
-                }
+                //Debug.Log($"{Thread.CurrentThread.ManagedThreadId} {Thread.CurrentThread.Name,15} {Thread.CurrentThread.IsThreadPoolThread} {Thread.CurrentThread.GetApartmentState()} {Thread.CurrentThread.Priority}");
+                nowMs = AudioSettings.dspTime * 1000d;
             }
+            if (lastTimeMidi <= 0d)
+            {
+                lastTimeMidi = nowMs;
+                return;
+            }
+            double delta = nowMs - lastTimeMidi;
+            if (delta < MPTK_ThreadMidiWait) // Why thre was delta > 100d, seems not useful.
+            {
+                //Debug.Log($"PlayMidi - time cancel - watchMidi:{Math.Round(nowMs, 2)} lastTimeMidi:{Math.Round(lastTimeMidi, 2)} timeMidiFromStartPlay:{Math.Round(timeMidiFromStartPlay, 2)}  delta:{Math.Round(delta, 2)}");
+                return;
+            }
+            StatDeltaThreadMidiMS = delta;
+            //Debug.Log($"PlayMidi -  watchMidi:{Math.Round(nowMs, 2):F2} lastTimeMidi:{Math.Round(lastTimeMidi, 2):F2} timeMidiFromStartPlay:{Math.Round(timeMidiFromStartPlay, 2):F2}  StatDeltaThreadMidiMS:{Math.Round(StatDeltaThreadMidiMS, 2):F2}");
+            lastTimeMidi = nowMs;
 
 #if DEBUG_PERF_MIDI
             if (StatDeltaThreadMidiMS > 0d && StatDeltaThreadMidiMS < 1000d)
             {
                 if (StatDeltaThreadMidiMS > StatDeltaThreadMidiMAX)
                     StatDeltaThreadMidiMAX = StatDeltaThreadMidiMS;
-                else
-                    StatDeltaThreadMidiMAX = (StatDeltaThreadMidiMAX * 999d + StatDeltaThreadMidiMS) / 1000d; // smooth regression
+                //else
+                //    StatDeltaThreadMidiMAX = (StatDeltaThreadMidiMAX * 999d + StatDeltaThreadMidiMS) / 1000d; // smooth regression
 
                 if (StatDeltaThreadMidiMS < StatDeltaThreadMidiMIN)
                     StatDeltaThreadMidiMIN = StatDeltaThreadMidiMS;
-                else
-                    StatDeltaThreadMidiMIN = (StatDeltaThreadMidiMIN * 999d + StatDeltaThreadMidiMS) / 1000d; // smooth regression
+                //else
+                //    StatDeltaThreadMidiMIN = (StatDeltaThreadMidiMIN * 999d + StatDeltaThreadMidiMS) / 1000d; // smooth regression
 
                 if (StatDeltaThreadMidiMA == null)
                     StatDeltaThreadMidiMA = new MovingAverage();
@@ -3343,10 +3335,10 @@ namespace MidiPlayerTK
             }
 #endif
 #if DEBUG_GC
-                    GcCollectionCout = 0;
-                    for (int i = 0; i <= GC.MaxGeneration; i++)
-                        GcCollectionCout += GC.CollectionCount(i);
-                    AllocatedBytesForCurrentThread = GC.GetAllocatedBytesForCurrentThread();
+            GcCollectionCout = 0;
+            for (int i = 0; i <= GC.MaxGeneration; i++)
+                GcCollectionCout += GC.CollectionCount(i);
+            AllocatedBytesForCurrentThread = GC.GetAllocatedBytesForCurrentThread();
 #endif
             if (midiLoaded != null && midiLoaded.MPTK_MidiEvents != null)
             {
@@ -3383,6 +3375,7 @@ namespace MidiPlayerTK
                             if (midievents != null && midievents.Count > 0)
                             {
 #if DEBUG_PERF_MIDI
+                                // Calculate time between two group of MIDI events processed. There is no MIDI event to play most of the time.
                                 StatDeltaTimeMidi = timeMidiFromStartPlay - lasttimeMidiFromStartPlay;
                                 //if (StatDeltaTimeMidi < -3 || StatDeltaTimeMidi > 3 || StatProcessMidiMS >= 0.5f)
                                 //Debug.Log($"EllapseMidi:{timeMidiFromStartPlay / 1000f:F2} delta:{StatDeltaTimeMidi:F2} PreviousTimeProcess:{StatProcessMidiMS:F2}");
@@ -3429,8 +3422,8 @@ namespace MidiPlayerTK
                                     StatProcessMidiMS = (float)watchPerfMidi.ElapsedTicks / ((float)System.Diagnostics.Stopwatch.Frequency / 1000f);
                                     if (StatProcessMidiMS > StatProcessMidiMAX)
                                         StatProcessMidiMAX = StatProcessMidiMS;
-                                    else
-                                        StatProcessMidiMAX = (StatProcessMidiMAX * 9f + StatProcessMidiMS) / 10f; // smooth regression
+                                    //else
+                                    //    StatProcessMidiMAX = (StatProcessMidiMAX * 9f + StatProcessMidiMS) / 10f; // smooth regression 
                                     watchPerfMidi.Reset();
 #endif
                                 }
@@ -3457,251 +3450,10 @@ namespace MidiPlayerTK
             }
         }
 
-        //double lasttimeMidiFromStartPlay = 0;
-
-        // To avoid realloc every frame
-        static private StringBuilder logSynthInfo;
-
         // @endcond
 
-        /// <summary>
-        /// Build a string with performance and information about the MIDI reader and the MIDI synthesizer.
-        /// DEBUG_PERF_AUDIO
-        /// DEBUG_HISTO_DSPSIZE
-        /// DEBUG_PERF_MIDI
-        /// </summary>
-        /// <param name="synth"></param>
-        /// <returns></returns>
-        public static StringBuilder MPTK_BuildInfoSynth(MidiSynth synth)
-        {
-            try
-            {
-                if (logSynthInfo == null)
-                    logSynthInfo = new StringBuilder(256);
-                if (synth != null)
-                {
 
-                    logSynthInfo.Clear();
-                    logSynthInfo.Append($"Maestro Mode:          {(synth.MPTK_CorePlayer ? "Core" : "AudioSource")}\t{(synth.AudioEngine != null ? synth.AudioEngine : "No Audio Engine found")}\tRate:{synth.OutputRate}\tBuffer:{synth.DspBufferSize}");
-
-                    logSynthInfo.Append($"\nMIDI Delta (ms):       Delta:{(int)Math.Round(synth.StatDeltaThreadMidiMS)}");
-                    // Available only when symbol DEBUG_PERF_MIDI is defined
-                    if (synth.StatDeltaThreadMidiMA != null && synth.StatDeltaThreadMidiMA.Count > 0 && synth.StatDeltaThreadMidiMIN < double.MaxValue)
-                    {
-                        logSynthInfo.Append($"\t\tMini:{(synth.StatDeltaThreadMidiMIN < double.MaxValue ? (int)Math.Round(synth.StatDeltaThreadMidiMIN) : 0)}   ");
-                        logSynthInfo.Append($"\tMaxi:{(int)Math.Round(synth.StatDeltaThreadMidiMAX)}");
-                        logSynthInfo.Append($"\t\tAverage:{(int)Math.Round(synth.StatDeltaThreadMidiAVG)}");
-                        logSynthInfo.Append($"\nMIDI Processing (ms):");
-                        logSynthInfo.Append($"  Read:{Math.Round(synth.StatReadMidiMS, 4)}");
-                        logSynthInfo.Append($"\tTreat:{Math.Round(synth.StatProcessMidiMS, 2)}");
-                        logSynthInfo.Append($"\tMaxi:{Math.Round(synth.StatProcessMidiMAX, 2)}");
-                        logSynthInfo.Append($"\tDeltaMidi:{Math.Round(synth.StatDeltaTimeMidi, 2)}");
-                    }
-
-                    logSynthInfo.Append($"\nVoice Stats:           Played:{synth.MPTK_StatVoicePlayed,-4}\tActive:{synth.MPTK_StatVoiceCountActive,-4}");
-                    logSynthInfo.Append($"\tReused:{synth.MPTK_StatVoiceCountReused,-4} Ratio:{Mathf.RoundToInt(synth.MPTK_StatVoiceRatioReused)}%");
-                    logSynthInfo.Append($"\tIn Cache:{synth.MPTK_StatVoiceCountFree,-4}");
-
-#if DEBUG_STATUS_STAT
-            if (synth.StatusStat != null && synth.StatusStat.Length >= (int)fluid_voice_status.FLUID_VOICE_OFF + 2)
-            {
-                logSynthInfo.Append("Status:");
-                logSynthInfo.Append($"\tOn:{synth.StatusStat[(int)fluid_voice_status.FLUID_VOICE_ON],-4}");
-                logSynthInfo.Append($"\tSustain:{synth.StatusStat[(int)fluid_voice_status.FLUID_VOICE_SUSTAINED],-4}");
-                logSynthInfo.Append($"\t\tRelease:{synth.StatusStat[(int)fluid_voice_status.FLUID_VOICE_OFF + 1],-4}\n");
-            }
-#endif
-
-                    logSynthInfo.Append($"\nSynth Processing (ms): Delta:{(int)Math.Round(synth.StatDeltaAudioFilterReadMS),-5}\tTime:{Math.Round(synth.StatAudioFilterReadMS, 3)}");
-                    // Available only when symbol DEBUG_PERF_AUDIO is defined 
-                    if (synth.StatAudioFilterReadMA != null)
-                    {
-                        logSynthInfo.Append($"\tMini:{(synth.StatAudioFilterReadMIN < double.MaxValue ? Math.Round(synth.StatAudioFilterReadMIN, 2) : 0)}");
-                        logSynthInfo.Append($"\tMaxi:{Math.Round(synth.StatAudioFilterReadMAX, 2)}");
-                        logSynthInfo.Append($"\tAverage:{Math.Round(synth.StatAudioFilterReadAVG, 2)}");
-                    }
-
-                    logSynthInfo.Append($"\nDSP Load (%):          Load:{(int)Math.Round(synth.StatDspLoadPCT)}");
-
-                    // Available only when symbol DEBUG_PERF_AUDIO is defined
-                    if (synth.StatDspLoadMAX != 0f)
-                    {
-                        logSynthInfo.Append($"\t\tMini:{(int)Math.Round(synth.StatDspLoadMIN)}");
-                        logSynthInfo.Append($"\t\tMaxi:{(int)Math.Round(synth.StatDspLoadMAX)}");
-                        logSynthInfo.Append($"\t\tAverage:{(int)Math.Round(synth.StatDspLoadAVG)}");
-                    }
-                    //else
-                    //    logSynthInfo.Append($"\tDSP Load:{Math.Round(synth.StatDspLoadPCT, 1)}");
-
-                    if (synth.StatDspLoadPCT >= 100f)
-                        logSynthInfo.Append($"\t<color=red>\tDSP Load over 100%</color>");
-                    else if (synth.StatDspLoadPCT >= synth.MaxDspLoad)
-                        logSynthInfo.Append($"\t<color=orange>\tDSP Load over {synth.MaxDspLoad}%</color>");
-                    //else logSynthInfo.Append("\n");
-
-
-#if DEBUG_HISTO_DSPSIZE
-                    int count_inf_64 = 0;
-                    int count_not_64 = 0;
-                    int min_size = 99999;
-                    int max_size = 0;
-                    for (int i = 0; i < synth.histoDspSize.Length; i++)
-                    {
-                        if (synth.histoDspSize[i] < 64) count_inf_64++;
-                        if (synth.histoDspSize[i] % 64 != 0) count_not_64++;
-                        if (synth.histoDspSize[i] < min_size) min_size = synth.histoDspSize[i];
-                        if (synth.histoDspSize[i] > max_size) max_size = synth.histoDspSize[i];
-                    }
-
-                    logSynthInfo.AppendLine($"\nFrame length historic: Size between:{min_size,-4} and {max_size,-4} LowerThan64:{count_inf_64,-2} NotModulo64:{count_not_64,-2}");
-                    for (int i = 0; i < synth.histoDspSize.Length; i++)
-                    {
-                        logSynthInfo.Append($"{synth.histoDspSize[i]:000} ");
-                        if (i % 20 == 0 && i != 0) logSynthInfo.AppendLine("");
-                    }
-#endif
-                    logSynthInfo.AppendLine("");
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.LogException(ex);
-                logSynthInfo.Append(ex.ToString());
-            }
-            return logSynthInfo;
-        }
-
-
-        //public static StringBuilder MPTK_BuildInfoSynth(MidiSynth synth)
-        //{
-        //    try
-        //    {
-        //        ClearInfo(0);
-        //        AddInfo(0, 0, $"Maestro Mode:          {(synth.MPTK_CorePlayer ? "Core" : "AudioSource")}{synth.AudioEngine}");
-        //        AddInfo(0, 1, synth.AudioEngine);
-        //        AddInfo(0, 2, $"Rate:{synth.OutputRate}");
-        //        AddInfo(0, 3, $"Buffer:{synth.DspBufferSize}");
-
-        //        //AddInfo(1, 0, $"MIDI Delta (ms):");
-        //        //AddInfo(1, 1, $"Delta:{(int)Math.Round(synth.StatDeltaThreadMidiMS)}");
-        //        //// Available only when symbol DEBUG_PERF_MIDI is defined
-        //        //if (synth.StatDeltaThreadMidiMA != null && synth.StatDeltaThreadMidiMA.Count > 0 && synth.StatDeltaThreadMidiMIN < double.MaxValue)
-        //        //{
-        //        //    AddInfo(1, 2, $"Mini:{(synth.StatDeltaThreadMidiMIN < double.MaxValue ? (int)Math.Round(synth.StatDeltaThreadMidiMIN) : 0)}");
-        //        //    AddInfo(1, 3, $"Maxi:{(int)Math.Round(synth.StatDeltaThreadMidiMAX)}");
-        //        //    AddInfo(1, 4, $"Average:{(int)Math.Round(synth.StatDeltaThreadMidiAVG)}");
-        //        //    AddInfo(2, 0, $"MIDI Processing (ms):");
-        //        //    AddInfo(2, 1, $"Read:{Math.Round(synth.StatReadMidiMS, 4)}");
-        //        //    AddInfo(2, 2, $"Treat:{Math.Round(synth.StatProcessMidiMS, 2)}");
-        //        //    AddInfo(2, 3, $"Maxi:{Math.Round(synth.StatProcessMidiMAX, 2)}");
-        //        //    AddInfo(2, 4, $"DeltaMidi:{Math.Round(synth.StatDeltaTimeMidi, 2)}");
-        //        //}
-
-        //        //                logSynthInfo.Append($"\nVoice Stats:           Played:{synth.MPTK_StatVoicePlayed,-4}\tActive:{synth.MPTK_StatVoiceCountActive,-4}");
-        //        //                logSynthInfo.Append($"\tReused:{synth.MPTK_StatVoiceCountReused,-4} Ratio:{Mathf.RoundToInt(synth.MPTK_StatVoiceRatioReused)}%");
-        //        //                logSynthInfo.Append($"\tIn Cache:{synth.MPTK_StatVoiceCountFree,-4}");
-
-        //        //#if DEBUG_STATUS_STAT
-        //        //            if (synth.StatusStat != null && synth.StatusStat.Length >= (int)fluid_voice_status.FLUID_VOICE_OFF + 2)
-        //        //            {
-        //        //                logSynthInfo.Append("Status:");
-        //        //                logSynthInfo.Append($"\tOn:{synth.StatusStat[(int)fluid_voice_status.FLUID_VOICE_ON],-4}");
-        //        //                logSynthInfo.Append($"\tSustain:{synth.StatusStat[(int)fluid_voice_status.FLUID_VOICE_SUSTAINED],-4}");
-        //        //                logSynthInfo.Append($"\t\tRelease:{synth.StatusStat[(int)fluid_voice_status.FLUID_VOICE_OFF + 1],-4}\n");
-        //        //            }
-        //        //#endif
-
-        //        //                logSynthInfo.Append($"\nSynth Processing (ms): Delta:{(int)Math.Round(synth.StatDeltaAudioFilterReadMS),-5}\tTime:{Math.Round(synth.StatAudioFilterReadMS, 3)}");
-        //        //                // Available only when symbol DEBUG_PERF_AUDIO is defined 
-        //        //                if (synth.StatAudioFilterReadMA != null)
-        //        //                {
-        //        //                    logSynthInfo.Append($"\tMini:{(synth.StatAudioFilterReadMIN < double.MaxValue ? Math.Round(synth.StatAudioFilterReadMIN, 2) : 0)}");
-        //        //                    logSynthInfo.Append($"\tMaxi:{Math.Round(synth.StatAudioFilterReadMAX, 2)}");
-        //        //                    logSynthInfo.Append($"\tAverage:{Math.Round(synth.StatAudioFilterReadAVG, 2)}");
-        //        //                }
-
-        //        //                logSynthInfo.Append($"\nDSP Load (%):          Load:{(int)Math.Round(synth.StatDspLoadPCT)}");
-
-        //        //                // Available only when symbol DEBUG_PERF_AUDIO is defined
-        //        //                if (synth.StatDspLoadMAX != 0f)
-        //        //                {
-        //        //                    logSynthInfo.Append($"\t\tMini:{(int)Math.Round(synth.StatDspLoadMIN)}");
-        //        //                    logSynthInfo.Append($"\t\tMaxi:{(int)Math.Round(synth.StatDspLoadMAX)}");
-        //        //                    logSynthInfo.Append($"\t\tAverage:{(int)Math.Round(synth.StatDspLoadAVG)}");
-        //        //                }
-        //        //                //else
-        //        //                //    logSynthInfo.Append($"\tDSP Load:{Math.Round(synth.StatDspLoadPCT, 1)}");
-
-        //        //                if (synth.StatDspLoadPCT >= 100f)
-        //        //                    logSynthInfo.Append($"\t<color=red>\tDSP Load over 100%</color>");
-        //        //                else if (synth.StatDspLoadPCT >= synth.MaxDspLoad)
-        //        //                    logSynthInfo.Append($"\t<color=orange>\tDSP Load over {synth.MaxDspLoad}%</color>");
-        //        //                //else logSynthInfo.Append("\n");
-
-
-        //        //#if DEBUG_HISTO_DSPSIZE
-        //        //                int count_inf_64 = 0;
-        //        //                int count_not_64 = 0;
-        //        //                int min_size = 99999;
-        //        //                int max_size = 0;
-        //        //                for (int i = 0; i < synth.histoDspSize.Length; i++)
-        //        //                {
-        //        //                    if (synth.histoDspSize[i] < 64) count_inf_64++;
-        //        //                    if (synth.histoDspSize[i] % 64 != 0) count_not_64++;
-        //        //                    if (synth.histoDspSize[i] < min_size) min_size = synth.histoDspSize[i];
-        //        //                    if (synth.histoDspSize[i] > max_size) max_size = synth.histoDspSize[i];
-        //        //                }
-
-        //        //                logSynthInfo.AppendLine($"\nFrame length historic: Size between:{min_size,-4} and {max_size,-4} LowerThan64:{count_inf_64,-2} NotModulo64:{count_not_64,-2}");
-        //        //                for (int i = 0; i < synth.histoDspSize.Length; i++)
-        //        //                {
-        //        //                    logSynthInfo.Append($"{synth.histoDspSize[i]:000} ");
-        //        //                    if (i % 20 == 0 && i != 0) logSynthInfo.AppendLine("");
-        //        //                }
-        //        //#endif
-        //        //                logSynthInfo.AppendLine("");
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.LogException(ex);
-        //        //logSynthInfo.Append(ex.ToString());
-        //    }
-
-        //    if (logSynthInfo == null)
-        //        logSynthInfo = new StringBuilder(512);
-        //    else
-        //        logSynthInfo.Clear();
-
-        //    foreach (StringBuilder sb in logsSynthInfo)
-        //        if (sb != null)
-        //            logSynthInfo.AppendLine(sb.ToString());
-        //    return logSynthInfo;
-        //}
-
-        //// To avoid realloc every frame
-        //static private StringBuilder[] logsSynthInfo;
-
-        //static public void AddInfo(int line, int col, string info)
-        //{
-        //    //if (logsSynthInfo[line] == null)
-        //    //    logsSynthInfo[line] = new StringBuilder(250);
-        //    int pos = col * 20;
-        //    if (pos > logsSynthInfo[line].Length)
-        //        logsSynthInfo[line].Append()
-        //    logsSynthInfo[line].Insert(pos, info);
-        //}
-        //static public void ClearInfo(int line)
-        //{
-        //    if (logsSynthInfo == null)
-        //        logsSynthInfo = new StringBuilder[10];
-        //    if (logsSynthInfo[line] == null)
-        //        logsSynthInfo[line] = new StringBuilder(250);
-        //    else
-        //        logsSynthInfo[line].Clear();
-        //}
-
-#if DEBUG_PERF_NOTEON
+#if LOG_PERF_NOTEON
         float perf_time_last;
         public void DebugPerf(string info, int mode = 1)
         {

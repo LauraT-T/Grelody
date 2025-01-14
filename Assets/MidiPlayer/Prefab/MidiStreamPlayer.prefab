@@ -24,6 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1096694347256618}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,7 +32,6 @@ Transform:
   m_Children:
   - {fileID: 4383479756525956}
   m_Father: {fileID: 4977113046780174}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &114681648490992334
 MonoBehaviour:
@@ -77,13 +77,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1357719386868926}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4217309516267254}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &82312774873939848
 AudioSource:
@@ -96,6 +96,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -271,6 +272,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1367716147436054}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -279,7 +281,6 @@ Transform:
   - {fileID: 4705791444233294}
   - {fileID: 4217309516267254}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &114320350483668748
 MonoBehaviour:
@@ -293,8 +294,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a10fc17731b73e545b0078250340235c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioThreadMidi: 0
   priorityThreadMidi: 0
-  waitThreadMidi: 10
   DevicePerformance: 40
   MaxDspLoad: 50
   AudioBufferLenght: 0
@@ -316,11 +317,11 @@ MonoBehaviour:
   MPTK_ApplyModLfo: 1
   MPTK_ApplyVibLfo: 1
   MPTK_EffectSoundFont: {fileID: 0}
+  MPTK_ThreadMidiWait: 10
   StatDspLoadPCT: 0
   StatDspLoadMIN: 0
   StatDspLoadMAX: 0
   StatDspLoadAVG: 0
-  StatDspBufferSize: 0
   StatDspChannelCount: 0
   GcCollectionCout: 0
   AllocatedBytesForCurrentThread: 0
@@ -333,7 +334,7 @@ MonoBehaviour:
   StatEnqueueMidiMS: 0
   StatProcessMidiMS: 0
   StatProcessMidiMAX: 0
-  StatDeltaAudioFilterReadMS: 0
+  DeltaTimeAudioCall: 0
   StatAudioFilterReadMS: 0
   StatAudioFilterReadMAX: 0
   StatAudioFilterReadMIN: 0
@@ -354,7 +355,7 @@ MonoBehaviour:
   MPTK_EnablePanChange: 1
   volumeGlobal: 0.5
   dsp_64: 0
-  MPTK_LogEvents: 0
+  MPTK_LogEvents: 1
   MPTK_LogWave: 0
   MPTK_StatVoiceCountPlaying: 0
   MPTK_StatVoiceCountActive: 0
@@ -399,11 +400,12 @@ MonoBehaviour:
   showSynthParameter: 0
   showSpatialization: 0
   showUnitySynthParameter: 0
-  showUnityPerformanceParameter: 1
+  showUnityPerformanceParameter: 0
   showMidiPerformanceParameter: 0
   showSoundFontEffect: 0
   showUnitySynthEffect: 0
   showMidiParameter: 0
+  showMidiPlaying: 0
   showSynthEvents: 0
   showEvents: 0
   showDefault: 0
@@ -425,6 +427,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 0
   m_Pitch: 1
@@ -572,13 +575,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1633396987740012}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4977113046780174}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &114971132768011762
 MonoBehaviour:

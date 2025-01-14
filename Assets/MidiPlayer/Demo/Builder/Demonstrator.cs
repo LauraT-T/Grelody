@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -44,6 +44,7 @@ namespace MidiPlayerTK
             try
             {
                 Demos = new List<Demonstrator>();
+                // CSV from Assets/MidiPlayer/Demo/Builder/Resources/DemosListCommon.csv
                 TextAsset mytxtData = Resources.Load<TextAsset>("DemosListCommon");
                 string text = System.Text.Encoding.UTF8.GetString(mytxtData.bytes);
                 text = text.Replace("\n", "");
@@ -78,8 +79,13 @@ namespace MidiPlayerTK
             }
         }
 
+        /// <summary>
+        /// Find all visual element and apply content or enable callback.
+        /// Works the same for Editor and Run mode.
+        /// </summary>
         public void FindVisualComponent()
         {
+
             GroupBox gbHeader = Root.Q<GroupBox>("gbHeader");
             gbHeader.style.backgroundColor = ColorBack;
             gbHeader.style.color = Color.black;
@@ -93,6 +99,7 @@ namespace MidiPlayerTK
             scrollView.style.backgroundColor = ColorContentList;
             scrollView.style.color = Color.black;
 
+            Root.Q<Label>("labTitle").text = "Maestro MPTK Demonstration Loader - All sources are available, see the Script column to find them - V" + Constant.version;
             Root.Q<Button>("btQuit").RegisterCallback<ClickEvent>(evt => { MidiPlayerGlobal.MPTK_Quit(); });
             Root.Q<Button>("btWebSite").RegisterCallback<ClickEvent>(evt => { Application.OpenURL("https://paxstellar.fr/"); });
         }
@@ -108,14 +115,13 @@ namespace MidiPlayerTK
             // To change the background color to blue
             groupBox.AddToClassList("blue");
             // To change the background color back to red
-            groupBox.RemoveFromClassList("blue");
+            groupBox.RemoveFromClassList("blue"); 
         */
         public void AddRow(Demonstrator demo, int index, int selected)
         {
             var row = rowTemplate.CloneTree();
             scrollView.Add(row);
 
-            row.Q<Label>("labHeadRow").text = index.ToString();
             row.Q<Label>("labTitle").text = demo.Title;
             row.Q<Label>("labVersion").text = demo.Version;
             row.Q<Label>("labDescription").text = demo.Description;
@@ -128,6 +134,7 @@ namespace MidiPlayerTK
 
             if (index == 1)
             {
+                row.Q<Label>("labHeadRow").text = "";
                 gbOneRow.style.backgroundColor = ColorHeaderList;
                 gbOneRow.style.backgroundColor = ColorHeaderList;
                 gbOneRow.style.color = Color.black;
@@ -138,6 +145,7 @@ namespace MidiPlayerTK
             }
             else
             {
+                row.Q<Label>("labHeadRow").text = (index - 1).ToString();
                 gbOneRow.style.fontSize = 14;
 
                 var backgroundcolorSaved = gbOneRow.style.backgroundColor;

@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 #define SHOWDEFAULT
 using UnityEditor;
 using UnityEngine;
@@ -56,7 +56,8 @@ namespace MidiPlayerTK
                 {
                     EditorGUI.indentLevel++;
                     commonEditor.DrawAlertOnDefault();
-                    DrawDefaultInspector();
+                    // Sometime, catch an error                        
+                    try { DrawDefaultInspector(); } catch { }
                     EditorGUI.indentLevel--;
                 }
 #endif

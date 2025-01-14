@@ -1,4 +1,4 @@
-/*
+﻿/*
  * 
  * this script has been replaced by ScenesDemonstrationEditor.cs and can be deleted
  * 
@@ -22,7 +22,7 @@ namespace MidiPlayerTK
         float totalLineHeight;
         static Demonstrator loadedDemos;
 
-        //[MenuItem("Maestro/Load Demonstration &D", false, 50)] // The MenuItem's are sorted in increasing order and if you add more then 10 between two items (so, create at 10, 30, 50,...    ), an Separator-Line is drawn before the menuitem.
+        //[MenuItem(Constant.MENU_MAESTRO + "Load Demonstration &D", false, 50)] // The MenuItem's are sorted in increasing order and if you add more then 10 between two items (so, create at 10, 30, 50,...    ), an Separator-Line is drawn before the menuitem.
         public static void Init()
         {
             // Get existing open window or if none, make a new one:

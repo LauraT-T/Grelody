@@ -1,4 +1,4 @@
-//#define MPTK_PRO
+﻿#define MPTK_PRO
 //#define DEBUGPERF
 //#define DEBUGTIME
 
@@ -278,6 +278,11 @@ namespace MidiPlayerTK
 
         // To avoid realloc every frame
         static private StringBuilder logSynthInfo;
+        public static string HeaderVoiceInfo()
+        {
+            return "ID:[session event] TCV:[track channel value] TT:[time_second tick] MB:[measure beat]" +
+                   "DD:[duration_second duration_ticks] VS:[volume ADSR_section] PR:[preset_num preset_name sample_name]";
+        }
         public override string ToString()
         {
             try
@@ -286,10 +291,10 @@ namespace MidiPlayerTK
                     logSynthInfo = new StringBuilder(256);
                 else
                     logSynthInfo.Clear();
-                
-                logSynthInfo.Append($"Id:{MptkEvent.IdSession}/{MptkEvent.Index} T/C:{MptkEvent.Track}/{MptkEvent.Channel} T:[{MptkEvent.RealTime / 1000f:F3} s. {MptkEvent.Tick,-7:0000000} t.] ");
-                logSynthInfo.Append($"{MptkEvent.Measure}/{MptkEvent.Beat} D:[{MptkEvent.Duration / 1000f:F2} s. {MptkEvent.Length} t.] V:{volenv_val:F2} ADSR:{volenv_section} ");
-                logSynthInfo.AppendLine($"'{synth.Channels[MptkEvent.Channel].HiPreset.Name}' '{sample.Name}'");
+
+                logSynthInfo.Append($"ID:[{MptkEvent.IdSession} {MptkEvent.Index}] TCV:[{MptkEvent.Track:00} {MptkEvent.Channel:00} {MptkEvent.Value:000}] TT:[{MptkEvent.RealTime / 1000f:F3} {MptkEvent.Tick,-7:0000000}] ");
+                logSynthInfo.Append($"MB[{MptkEvent.Measure}/{MptkEvent.Beat}] DD:[{MptkEvent.Duration / 1000f:F2} {MptkEvent.Length}] VS:[{volenv_val:F2} {volenv_section}] ");
+                logSynthInfo.AppendLine($"PR:['{synth.Channels[MptkEvent.Channel].HiPreset.Num} {synth.Channels[MptkEvent.Channel].HiPreset.Name}' '{sample.Name}']");
             }
             catch (Exception ex)
             {
@@ -2144,7 +2149,7 @@ namespace MidiPlayerTK
             float x;
 
             ticks = onAudioFilterTicks;
-            if (synth.VerboseSynth)
+            if (synth.VerboseSynth || synth.VerboseOverload)
             {
                 NewTimeWrite = ticks;
                 DeltaTimeWrite = NewTimeWrite - LastTimeWrite;
@@ -2500,11 +2505,13 @@ namespace MidiPlayerTK
 
             if (count > 0)
                 fluid_voice_effects(count, dsp_left_buf, dsp_right_buf, dsp_reverb_buf, dsp_chorus_buf);
-
+            else
+                Debug.Log("Count <= 0 in fluid_rvoice_write");
             /* turn off voice if short count (sample ended and not looping) */
             if (count < synth.FLUID_BUFSIZE)
             {
                 //fluid_profile(FLUID_PROF_VOICE_RELEASE, ref);
+                //Debug.Log($"Count: {count} in fluid_rvoice_write fluid_voice_off");
                 fluid_voice_off();
             }
 

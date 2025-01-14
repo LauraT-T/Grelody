@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 using UnityEngine;
 using System.Collections;
 using UnityEditor;
@@ -25,8 +25,8 @@ namespace AClockworkBerry
 
         public override void OnInspectorGUI()
         {
-            base.DrawDefaultInspector();
-
+            // Sometime, catch an error                        
+            try { base.DrawDefaultInspector(); } catch { }
             ScreenLogger.Instance.InspectorGUIUpdated();
         }
     }
@@ -35,7 +35,7 @@ namespace AClockworkBerry
 /*
 The MIT License
 
-Copyright � 2016 Screen Logger - Giuseppe Portelli <giuseppe@aclockworkberry.com>
+Copyright © 2016 Screen Logger - Giuseppe Portelli <giuseppe@aclockworkberry.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -1,4 +1,4 @@
-//#define MPTK_PRO
+﻿#define MPTK_PRO
 #define DEBUG_START_MIDIx
 using MEC;
 using System;
@@ -208,7 +208,7 @@ namespace MidiPlayerTK
             StopWhenAllVoicesEnded,
         }
         static public string[] ModeStopPlayLabel = { "Stop No Waiting", "Stop When All Voices Are Released", "Stop When All Voices Are Ended" };
-        
+
         /// <summary>@brief 
         /// Defined when the MIDI player is stopped or restarted when the last MIDI events is reached.
         /// @version 2.9.1
@@ -326,7 +326,7 @@ namespace MidiPlayerTK
                     if (value != speed)
                     {
                         //Debug.Log("set speed " + value);
-                        if (value >= 0.01f && value <= 10f)
+                        if (value >= Constant.MIN_SPEED && value <= Constant.MAX_SPEED)
                         {
                             speed = value;
                             if (midiLoaded != null)
@@ -1128,12 +1128,11 @@ namespace MidiPlayerTK
             }
         }
 
-        /// <summary>@brief
-        /// Stop playing immediately and clear all sounds. 
-        /// Note: clearing the sound is not possible out of the Unity thread, in this case set stopAllSound to false.
-        /// </summary>
-        /// <param name="stopAllSound">stop all sounds if true (default value) else notes will be stop after theirs normal duration.</param>
-        public void MPTK_Stop(bool stopAllSound = true)
+        /// <summary>
+        /// Stops MIDI playback and cancels all sounds. This operation is performed in the background, so MIDI may actually stop after this method is returned.
+        /// <param name="stopAllSound">Set to true to stop all sounds (default), otherwise notes already playing will stop after their duration.</param>
+        /// <param name="wait">If greater than 0, wait until MIDI is really stopped or the wait time in milliseconds is reached. Otherwise return immediately.</param>
+        public void MPTK_Stop(bool stopAllSound = true, float wait = 0f)
         {
             //Debug.Log($"MPTK_Stop");
 
@@ -1149,6 +1148,17 @@ namespace MidiPlayerTK
                     Routine.RunCoroutine(ThreadClearAllSound(true, IdSession), Segment.RealtimeUpdate);
                 else
                     Routine.RunCoroutine(ThreadClearAllSound(true, IdSession), Segment.EditorUpdate);
+            if (wait > 0f)
+            {
+                // V2.14 able to wait MIDI is really stop.
+                DateTime dateTime = DateTime.Now;
+                while (MPTK_IsPlaying)
+                {
+                    if ((DateTime.Now - dateTime).TotalMilliseconds > wait)
+                        break;
+                    System.Threading.Thread.Sleep(100);
+                }
+            }
         }
 
         /// <summary>@brief 
@@ -1371,7 +1381,7 @@ namespace MidiPlayerTK
         }
 
         /// <summary>@brief 
-        /// V2.88.2 - Read the list of midi events available in the MIDI from a ticks tick to an end tick.
+        /// Read the list of midi events available in the MIDI from a ticks tick to an end tick.
         /// @snippet TestMidiFilePlayerScripting.cs Example TheMostSimpleDemoForMidiPlayer
         /// </summary>
         /// <param name="fromTicks">ticks start, default 0</param>
@@ -1389,6 +1399,22 @@ namespace MidiPlayerTK
             midiLoaded.MPTK_LogLoadEvents = MPTK_LogLoadEvents;
             midiLoaded.MPTK_EnableChangeTempo = true;
             return midiLoaded.MPTK_ReadMidiEvents(fromTicks, toTicks);
+        }
+
+        /// <summary>
+        /// Force all notes to return to their original values before transposing.\n 
+        /// Useful when looping on a MIDI with a transpose value different than 0. 
+        /// When returning to 0 (no transpose) the note value can be reset to their original value.
+        /// @version V2.14.0
+        /// </summary>
+        public void MPTK_ResetTranspose()
+        {
+            if (midiLoaded == null || midiLoaded.MPTK_MidiEvents == null)
+                Debug.LogWarning("MidiFilePlayer - No MIDI loaded - MPTK_ResetTranpose canceled ");
+            else
+                foreach (MPTKEvent mPTKEvent in midiLoaded.MPTK_MidiEvents)
+                    if (mPTKEvent.Command == MPTKCommand.NoteOn)
+                        mPTKEvent.ResetTransposeValue();
         }
 
         //protected IEnumerator<float> TestFrameDelay()

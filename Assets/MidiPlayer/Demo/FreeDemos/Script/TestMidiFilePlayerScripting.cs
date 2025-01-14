@@ -1,10 +1,11 @@
-//#define MPTK_PRO
+ï»¿#define MPTK_PRO
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
 using MidiPlayerTK;
 using UnityEditor;
+using System.Threading;
 
 namespace DemoMPTK
 {
@@ -161,7 +162,7 @@ namespace DemoMPTK
             {
 #if MPTK_PRO
                 // OnMidiEvent (pro) and OnEventNotesMidi are triggered for each notes that the MIDI sequencer read
-                // However, the use of these methods depends on the specific requirements of the situation.”:
+                // However, the use of these methods depends on the specific requirements of the situation.â€:
                 //      OnEventNotesMidi is handled from the main Unity thread (in the Update loop) 
                 //          - The accuracy of this process is not guaranteed because it depends on the Unity process and the value of Time.deltaTime.
                 //            (interval in seconds from the last frame to the current one).
@@ -228,7 +229,7 @@ namespace DemoMPTK
                 midiFilePlayer.OnEventStartPlayMidi.AddListener(info =>
                     {
                         MaestroOnEventStartPlayMidi("Event set by script");
-                        // It’s a good opportunity to change the channel configuration.”
+                        // Itâ€™s a good opportunity to change the channel configuration.â€
                         // Example (uncomment to disable channel 0 at start)
                         // midiFilePlayer.MPTK_Channels[0].Enable = false;
                     });
@@ -709,6 +710,25 @@ namespace DemoMPTK
                 }
             }
 
+#if MPTK_UNITARY_TEST
+            if (GUILayout.Button("Stop"))
+                midiFilePlayer.MPTK_Stop();
+
+            if (GUILayout.Button("Play"))
+            {
+                midiFilePlayer.MPTK_Stop();
+                DateTime dateTime = DateTime.Now;
+                while (midiFilePlayer.MPTK_IsPlaying)
+                {
+                    if ((DateTime.Now - dateTime).TotalMilliseconds > 1000d)
+                        break;
+                    System.Threading.Thread.Sleep(100);
+                }
+                Debug.Log($"wait time {(DateTime.Now - dateTime).TotalMilliseconds} ms");
+                midiFilePlayer.MPTK_MidiName = "Animal Crossing";
+                midiFilePlayer.MPTK_Play();
+            }
+#endif
             if (midiFilePlayer.MPTK_IsPlaying && !midiFilePlayer.MPTK_IsPaused)
                 GUI.color = ButtonColor;
 
@@ -935,19 +955,27 @@ namespace DemoMPTK
             HelperDemo.GUI_Vertical(HelperDemo.Zone.BEGIN, myStyle.BacgDemosLight);
 
             // Define the global volume
-            midiFilePlayer.MPTK_Volume = HelperDemo.GUI_Slider("Global Volume:", midiFilePlayer.MPTK_Volume, 0f, 1f,
-                alignCaptionRight: false, enableButton: true, valueButton: 1f, widthCaption: 170, widthSlider: 250, widthLabelValue: 50);
+            midiFilePlayer.MPTK_Volume = HelperDemo.GUI_Slider("Global Volume:", midiFilePlayer.MPTK_Volume, 0f, Constant.MAX_VOLUME,
+                alignCaptionRight: false, enableButton: true, valueButton: dynamicDelta(midiFilePlayer.MPTK_Volume), widthCaption: 170, widthSlider: 250, widthLabelValue: 80);
 
             //// Transpose each note
             midiFilePlayer.MPTK_Transpose = (int)HelperDemo.GUI_Slider("Note Transpose:", (float)midiFilePlayer.MPTK_Transpose, -24, 24,
-                alignCaptionRight: false, enableButton: true, valueButton: 1f, widthCaption: 170, widthSlider: 250, widthLabelValue: 50);
+                alignCaptionRight: false, enableButton: true, valueButton: 1f, widthCaption: 170, widthSlider: 250, widthLabelValue: 80);
 
             // Change speed
-            midiFilePlayer.MPTK_Speed = HelperDemo.GUI_Slider("MIDI Reading Speed:", midiFilePlayer.MPTK_Speed, 0.1f, 10f,
-                alignCaptionRight: false, enableButton: true, valueButton: 0.1f, widthCaption: 170, widthSlider: 250, widthLabelValue: 50);
+            midiFilePlayer.MPTK_Speed = HelperDemo.GUI_Slider("MIDI Reading Speed:", midiFilePlayer.MPTK_Speed, Constant.MIN_SPEED, Constant.MAX_SPEED,
+                alignCaptionRight: false, enableButton: true, valueButton: dynamicDelta(midiFilePlayer.MPTK_Speed), widthCaption: 170, widthSlider: 250, widthLabelValue: 80);
 
             HelperDemo.GUI_Vertical(HelperDemo.Zone.END);
             HelperDemo.GUI_Horizontal(HelperDemo.Zone.END);
+        }
+
+        private float dynamicDelta(float value)
+        {
+            if (value <= 0.01f) return 0.001f;
+            if (value <= 0.1f) return 0.01f;
+            if (value <= 1f) return 0.1f;
+            return 1f;
         }
 
         private void OnGUI_MidiStartStopPosition()
@@ -1039,9 +1067,10 @@ namespace DemoMPTK
             HelperDemo.GUI_Vertical(HelperDemo.Zone.BEGIN);
 
             GUILayout.Label("Define a precise loop between three tick positions.\n" +
-                "  - Start: first position to start MIDI playback.\n" +
+                "  - Start:       first position to start MIDI playback.\n" +
                 "  - Resume: position to restart when the end of the loop is reached.\n" +
-                "  - End: position to loop to resume position.", myStyle.TitleLabel3);
+                "  - End:        position to loop to resume position.\n" +
+                "Available with Maestro MPTK Pro.", myStyle.TitleLabel3);
 
             HelperDemo.GUI_Horizontal(HelperDemo.Zone.BEGIN);
             InnerLoopEnabled = GUILayout.Toggle(InnerLoopEnabled, "   Enable Inner Loop");
@@ -1058,6 +1087,10 @@ namespace DemoMPTK
                 // Defining the User Interface
                 // ____________________________
 
+#if MPTK_PRO
+#else
+                GUI.enabled = false;
+#endif
                 HelperDemo.GUI_Horizontal(HelperDemo.Zone.BEGIN);
                 GUILayout.Label($"Loop Count: {InnerLoopCount,-3}", myStyle.TitleLabel3, GUILayout.Width(120));
                 GUILayout.Label($"Current Tick: {midiFilePlayer.MPTK_TickCurrent,-5}", myStyle.TitleLabel3, GUILayout.Width(160));
@@ -1090,6 +1123,8 @@ namespace DemoMPTK
                     InnerLoopEnd = InnerLoopResume + deltaTicks;
                 InnerLoopEnd = (long)HelperDemo.GUI_Slider("Loop end at:", InnerLoopEnd, 0, midiFilePlayer.MPTK_TickLast, false, true, deltaTicks, widthCaption: 200, widthSlider: 400, widthLabelValue: 100);
             }
+            GUI.enabled = true;
+
 #if MPTK_PRO
 
             // Apply selected values to the inner loop

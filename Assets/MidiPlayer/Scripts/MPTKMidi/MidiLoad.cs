@@ -1,4 +1,4 @@
-//#define MPTK_PRO
+﻿#define MPTK_PRO
 using MPTK.NAudio.Midi;
 using System;
 using System.Collections.Generic;
@@ -1400,7 +1400,7 @@ namespace MidiPlayerTK
             {
                 if (speed > 0)
                 {
-                    //Debug.Log($"ChangeSpeed from {speed} to {speed}");
+                    //Debug.Log($"ChangeSpeed from {this.speed:F3} to {speed:F3}");
                     //double lastSpeed = speed;
                     this.speed = speed;
                     fluid_player_set_midi_tempo(miditempo);

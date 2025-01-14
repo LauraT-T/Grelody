@@ -8,6 +8,24 @@ I hope you will appreciate it!
 
 Thank for your comments and talks, that help a lot to make Maestro better.
 
+V2.14.0 2024-12-22
+	New Features
+		Unlock global volume up to 10 (by default, limited to 1). Add script symbols MPTK_UNLOCK_VOLUME to unlock. Experimental, use with caution.
+		Unlock MIDI player speed from 0.0001 to 100 (by default between to 0.1 and 10). Add script symbols MPTK_UNLOCK_SPEED to unlock. Experimental, use with caution.
+		Add optionnal wait time to MPTK_Stop for waiting until MIDI is really stopped.
+		Improve MPTK debug mode with MPTK_BuildInfoSynth.
+		Move Maestro menu to Unity Tools menu when MPTK_MAESTRO_MENU_TOOLS symbol is defined.
+		Soundfont caching is now optional when loading SF dynamically, see MidiPlayerGlobal.MPTK_LoadLiveSF. 
+		Add MPTK_ResetTranspose to force cancel transpose when looping on a MIDI.
+	Demo & MVP
+		TestOboe: redesign (again!). Also good on non-Android devices for latency analysis.
+		TestLoadingExternalSoundFont: redesign
+		Create MVP demo MidiKeyboardThread
+	Fix
+		Correct Oboe setting to correct bad sound on some devices (buffer not a multiple of 64). 
+		Correct MIDI thread reader with OnAudio callback to improve accuracy.
+		Restore initial transpose value when looping.
+
 V2.13.2 2024-11-13
 	Fix
 		Correct build error

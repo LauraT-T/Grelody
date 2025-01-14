@@ -1,5 +1,5 @@
-#if UNITY_EDITOR
-//#define MPTK_PRO
+﻿#if UNITY_EDITOR
+#define MPTK_PRO
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,7 +11,7 @@ namespace MidiPlayerTK
     //[InitializeOnLoad]
     //class MPTKParameters
     //{
-    //    [MenuItem("Maestro/Folders")]
+    //    [MenuItem(Constant.MENU_MAESTRO + "/Folders")]
     //    static void Apply()
     //    {
     //        string path = EditorUtility.OpenFolderPanel("DB", "", "");

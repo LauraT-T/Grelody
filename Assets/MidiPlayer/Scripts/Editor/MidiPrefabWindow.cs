@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 using System;
 using UnityEditor;
 using UnityEngine;
@@ -22,7 +22,7 @@ namespace MidiPlayerTK
         static private string nameSequencer = "MidiPrefabEditor";
 
         // % (ctrl on Windows, cmd on macOS), # (shift), & (alt).
-        //[MenuItem("Maestro/Midi Prefab", false, 1)]
+        //[MenuItem(Constant.MENU_MAESTRO + "/Midi Prefab", false, 1)]
         static public void Init()
         {
             // Get existing open window or if none, make a new one:

@@ -1,6 +1,4 @@
-//#define MPTK_PRO
-
-//#define DEBUG_PERF_NOTEON // warning: generate heavy cpu use
+﻿#define MPTK_PRO
 
 using MEC;
 using System;
@@ -14,8 +12,6 @@ using UnityEngine.Analytics;
 
 namespace MidiPlayerTK
 {
-
-
     /// <summary> 
     /// Base class wich contains all the stuff to build a Wave Table Synth.
     /// 
@@ -44,16 +40,11 @@ namespace MidiPlayerTK
             fluid_voice voice;
             List<HiMod> mod_list = new List<HiMod>();
 
-            int key = note.Value;
-
+            // v2.15 - restaure intial value before transpose
             if (MPTK_Transpose != 0 && note.Channel != MPTK_TransExcludedChannel)
-            {
-                key += MPTK_Transpose;
-                note.Value = key;
-                //Debug.Log($"Channel {note.Channel} Transpose{MPTK_Transpose} ExcludedChannel:{MPTK_TransExcludedChannel} key:{key}");
-            }
+                note.TransposeValue(MPTK_Transpose);
 
-            int vel = note.Velocity;
+            //int vel = note.Velocity;
             HiPreset defpreset;
 
             //DebugPerf("Begin synth_noteon:");
@@ -84,7 +75,7 @@ namespace MidiPlayerTK
 
             // If the same note is hit twice on the same channel, then the older voice process is advanced to the release stage.  
             if (MPTK_ReleaseSameNote)
-                fluid_synth_release_voice_on_same_note(note.Channel, key);
+                fluid_synth_release_voice_on_same_note(note.Channel, note.Value);
 
             ImSoundFont sfont = MidiPlayerGlobal.ImSFCurrent;
             note.Voices = new List<fluid_voice>();
@@ -98,10 +89,10 @@ namespace MidiPlayerTK
                 // ---------------------------------
 
                 // check if the note falls into the key and velocity range of this preset 
-                if ((preset_zone.KeyLo <= key) &&
-                    (preset_zone.KeyHi >= key) &&
-                    (preset_zone.VelLo <= vel) &&
-                    (preset_zone.VelHi >= vel))
+                if ((preset_zone.KeyLo <= note.Value) &&
+                    (preset_zone.KeyHi >= note.Value) &&
+                    (preset_zone.VelLo <= note.Velocity) &&
+                    (preset_zone.VelHi >= note.Velocity))
                 {
                     if (preset_zone.Index >= 0)
                     {
@@ -140,22 +131,22 @@ namespace MidiPlayerTK
 
                             // check if the note falls into the key and velocity range of this instrument
                             // Line 939
-                            if ((voice_zone.KeyLo <= key) &&
-                                (voice_zone.KeyHi >= key) &&
-                                (voice_zone.VelLo <= vel) &&
-                                (voice_zone.VelHi >= vel))
+                            if ((voice_zone.KeyLo <= note.Value) &&
+                                (voice_zone.KeyHi >= note.Value) &&
+                                (voice_zone.VelLo <= note.Velocity) &&
+                                (voice_zone.VelHi >= note.Velocity))
                             {
                                 // Just to keep naming comptibility with FS
                                 // voice_zone is a inst_zone with a range
                                 HiZone inst_zone = voice_zone;
 
                                 voice = fluid_synth_alloc_voice_LOCAL(hiSample, note);
-#if DEBUG_PERF_NOTEON
+#if LOG_PERF_NOTEON
                                 DebugPerf("After fluid_synth_alloc_voice:");
 #endif
                                 if (voice == null) return;
 
-                                //voice.MptkEvent = note;
+                                //voice.MptkEvent = note; // V2.10, note set in fluid_synth_alloc_voice_LOCAL parameter, replace  note.Channel, note.IdSession, key, vel);
                                 note.Voices.Add(voice);
                                 //voice.Duration = note.Duration; // only for information, not used
 
@@ -297,13 +288,13 @@ namespace MidiPlayerTK
 
                                 }
 
-#if DEBUG_PERF_NOTEON
+#if LOG_PERF_NOTEON
                                 DebugPerf("After genmod init:");
 #endif
                                 /* Start the new voice */
                                 voice.fluid_voice_start();
 
-#if DEBUG_PERF_NOTEON
+#if LOG_PERF_NOTEON
                                 DebugPerf("After fluid_voice_start:");
 #endif
 
@@ -311,7 +302,7 @@ namespace MidiPlayerTK
                                 {
                                     sLogSampleUse.Clear();
                                     sLogSampleUse.Append($"Voice Channel:{note.Channel:00} Bank:{Channels[note.Channel].BankNum:000} Preset:{Channels[note.Channel].PresetNum:000} ");
-                                    sLogSampleUse.Append($"{defpreset.Name,-21} Key:{key,-3}({HelperNoteLabel.LabelFromMidi(key),-3}) Velocity:{vel,-3} ");
+                                    sLogSampleUse.Append($"{defpreset.Name,-21} Key:{note.Value,-3}({HelperNoteLabel.LabelFromMidi(note.Value),-3}) Velocity:{note.Velocity,-3} ");
                                     sLogSampleUse.Append(note.Duration >= 0 ? $"Duration:{note.Duration,6} ms {voice.DurationTick,9} ticks " : "Infinite ");
                                     sLogSampleUse.Append($"Instr:{inst.Name,-21} Sample:{sfont.HiSf.Samples[voice_zone.Index].Name,-21} ");
                                     sLogSampleUse.Append($"Atten:{fluid_conv.fluid_cb2amp(voice.attenuation):F2} Pano:{voice.pan:F2}");
@@ -338,12 +329,12 @@ namespace MidiPlayerTK
 
                 }
             }
-#if DEBUG_PERF_NOTEON
+#if LOG_PERF_NOTEON
             DebugPerf("After synth_noteon:");
 #endif
             if (MPTK_LogWave && note.Voices.Count == 0)
                 Debug.LogFormat("NoteOn [{0:00} {1:000} {2:000}]\t{3,-21}\tKey:{4,-3}\tVel:{5,-3}\tDuration:{6:0.000}\tInstr:{7,-21}",
-                note.Channel, Channels[note.Channel].BankNum, Channels[note.Channel].PresetNum, defpreset.Name, key, vel, note.Duration, "*** no wave found ***");
+                note.Channel, Channels[note.Channel].BankNum, Channels[note.Channel].PresetNum, defpreset.Name, note.Value, note.Velocity, note.Duration, "*** no wave found ***");
         }
 
 

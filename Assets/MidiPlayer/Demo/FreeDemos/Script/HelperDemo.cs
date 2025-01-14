@@ -1,5 +1,4 @@
-//#define MPTK_PRO
-//#define DEBUG_STATUS_STAT // also in MidiSynth.cs
+﻿#define MPTK_PRO
 
 using MidiPlayerTK;
 using System;
@@ -16,10 +15,8 @@ namespace DemoMPTK
 
         static public void DisplayInfoSynth(MidiSynth synth, int width, CustomStyle myStyle)
         {
-            StringBuilder infoSynth = MidiSynth.MPTK_BuildInfoSynth(synth);
+            StringBuilder infoSynth = synth.synthInfo.MPTK_BuildInfoSynth(synth);
 
-            //#if !UNITY_ANDROID
-            //#endif
             Color savedColor = GUI.color;
             Color savedBackColor = GUI.backgroundColor;
             GUI.color = Color.green;
@@ -28,10 +25,12 @@ namespace DemoMPTK
             Rect rectLabel = GUILayoutUtility.GetLastRect();
             GUI.color = savedColor;
             GUI.backgroundColor = savedBackColor;
-            if (GUI.Button(new Rect(rectLabel.width - 75, rectLabel.y + 1, 90, 20), "Reset Stat"))
+            if (GUI.Button(new Rect(rectLabel.width - 85, rectLabel.y + 20, 90, 20), "Reset Stat"))
                 synth.MPTK_ResetStat();
-            if (GUI.Button(new Rect(rectLabel.width - 75 - 95, rectLabel.y + 1, 90, 20), "Active Voice"))
+            if (GUI.Button(new Rect(rectLabel.width - 85 - 95, rectLabel.y + 20, 90, 20), "Active Voice"))
                 synth.MPTK_DebugActiveVoice();
+            if (GUI.Button(new Rect(rectLabel.width - 85, rectLabel.y + 20+20 , 90, 20), "Help"))
+                Application.OpenURL("https://paxstellar.fr/2024/11/23/deeper-dive-in-mptk/");
         }
 
         static public bool CheckSFExists()
@@ -465,7 +464,7 @@ namespace DemoMPTK
                 GUILayout.Label(caption, alignCaptionRight ? myStyle.LabelRight : myStyle.LabelLeft, GUILayout.Width(widthCaption), GUILayout.Height(25));
 
             if (widthLabelValue > 0f)
-                GUILayout.Label(Math.Round(val, 2).ToString(), myStyle.LabelRight, GUILayout.Width(widthLabelValue), GUILayout.Height(25));
+                GUILayout.Label(Math.Round(val, 3).ToString(), myStyle.LabelRight, GUILayout.Width(widthLabelValue), GUILayout.Height(25));
 
             if (enableButton)
             {

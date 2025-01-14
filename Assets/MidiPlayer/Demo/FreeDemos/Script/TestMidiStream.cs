@@ -1,4 +1,4 @@
-//#define MPTK_PRO
+﻿#define MPTK_PRO
 //#define DEBUG_MULTI
 using System.Collections;
 using System.Collections.Generic;
@@ -952,7 +952,7 @@ namespace DemoMPTK
             HelperDemo.GUI_Horizontal(HelperDemo.Zone.BEGIN, style: null, GUILayout.Width(350));
 
             // Change volume
-            midiStreamPlayer.MPTK_Volume = HelperDemo.GUI_Slider("Global Volume", midiStreamPlayer.MPTK_Volume, 0, 1);
+            midiStreamPlayer.MPTK_Volume = HelperDemo.GUI_Slider("Global Volume", midiStreamPlayer.MPTK_Volume, 0f, Constant.MAX_VOLUME);
 
             // Change velocity of the note: what force is applied on the key. Change volume and sound of the note.
             //CurrentVelocity = (int)Slider("Velocity", (int)CurrentVelocity, 0f, 127f, true);

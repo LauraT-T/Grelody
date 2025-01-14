@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -322,12 +322,12 @@ namespace MidiPlayerTK
                 float volume = MidiPlayerEditor.MidiPlayer.MPTK_Volume;
                 // Button to restore Volume to 0.5 with label style
                 if (GUILayout.Button("Volume: " + volume.ToString("F2"), MPTKGui.Label, GUILayout.Width(80))) volume = 0.5f;
-                MidiPlayerEditor.MidiPlayer.MPTK_Volume = GUILayout.HorizontalSlider(volume, 0.0f, 1f, MPTKGui.HorizontalSlider, MPTKGui.HorizontalThumb, GUILayout.Width(100));
+                MidiPlayerEditor.MidiPlayer.MPTK_Volume = GUILayout.HorizontalSlider(volume, 0f, Constant.MAX_VOLUME, MPTKGui.HorizontalSlider, MPTKGui.HorizontalThumb, GUILayout.Width(100));
 
                 float speed = MidiPlayerEditor.MidiPlayer.MPTK_Speed;
                 // Button to restore speed to 1 with label style
                 if (GUILayout.Button("Speed: " + speed.ToString("F2"), MPTKGui.Label, GUILayout.Width(80))) speed = 1f;
-                MidiPlayerEditor.MidiPlayer.MPTK_Speed = GUILayout.HorizontalSlider(speed, 0.01f, 10f, MPTKGui.HorizontalSlider, MPTKGui.HorizontalThumb, GUILayout.Width(100));
+                MidiPlayerEditor.MidiPlayer.MPTK_Speed = GUILayout.HorizontalSlider(speed, Constant.MIN_SPEED, Constant.MAX_SPEED, MPTKGui.HorizontalSlider, MPTKGui.HorizontalThumb, GUILayout.Width(100));
 
             }
             catch (Exception ex)
@@ -539,7 +539,7 @@ namespace MidiPlayerTK
                                     {
                                         case MPTKMeta.KeySignature: text = $"SharpsFlats:{MPTKEvent.ExtractFromInt((uint)mptkEvent.Value, 0)} MajorMinor:{MPTKEvent.ExtractFromInt((uint)mptkEvent.Value, 1)}"; break;
                                         case MPTKMeta.TimeSignature: text = $"Numerator:{MPTKEvent.ExtractFromInt((uint)mptkEvent.Value, 0)} Denominator:{MPTKEvent.ExtractFromInt((uint)mptkEvent.Value, 1)}"; break;
-                                        case MPTKMeta.SetTempo: text = $"�seconds:{mptkEvent.Value} Tempo:{MPTKEvent.QuarterPerMicroSecond2BeatPerMinute(mptkEvent.Value):F0}"; break;
+                                        case MPTKMeta.SetTempo: text = $"µseconds:{mptkEvent.Value} Tempo:{MPTKEvent.QuarterPerMicroSecond2BeatPerMinute(mptkEvent.Value):F0}"; break;
                                         default: text = mptkEvent.Info ?? ""; break;
                                     }
                                     if (text.Length > 60) text = text.Substring(0, 60);

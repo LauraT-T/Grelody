@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 //using DemoMPTK;
 using System;
 using UnityEditor;
@@ -17,7 +17,7 @@ namespace MidiPlayerTK
         // Priority 1 ensures it is grouped with the other menu items of the same kind
         // and propagated to the hierarchy dropdown and hierarch context menus.
         [MenuItem("GameObject/Maestro/Add Prefab MidiFilePlayer", false, 10)]
-        [MenuItem("Maestro/Add Prefab/MidiFilePlayer", false, 30)]
+        [MenuItem(Constant.MENU_MAESTRO + "/Add Prefab/MidiFilePlayer", false, 30)]
         static void CreateMidiFilePlayerGameObject(MenuCommand menuCommand)
         {
             CreatePrefab(menuCommand, "MidiFilePlayer", "Assets/MidiPlayer/Prefab/MidiFilePlayer.prefab");
@@ -27,7 +27,7 @@ namespace MidiPlayerTK
         // Priority 1 ensures it is grouped with the other menu items of the same kind
         // and propagated to the hierarchy dropdown and hierarch context menus.
         [MenuItem("GameObject/Maestro/Add Prefab MidiStreamPlayer", false, 11)]
-        [MenuItem("Maestro/Add Prefab/MidiStreamPlayer", false, 31)]
+        [MenuItem(Constant.MENU_MAESTRO + "/Add Prefab/MidiStreamPlayer", false, 31)]
         static void CreateMidiStreamPlayerGameObject(MenuCommand menuCommand)
         {
             CreatePrefab(menuCommand, "MidiStreamPlayer", "Assets/MidiPlayer/Prefab/MidiStreamPlayer.prefab");
@@ -35,7 +35,7 @@ namespace MidiPlayerTK
 
         // Deprecated with 2.10.1 - use MidiFile Player in place Add a menu item to create MidiStreamPlayer GameObjects.
         [MenuItem("GameObject/Maestro/Add Prefab MidiFileLoader", false, 12)]
-        [MenuItem("Maestro/Add Prefab/MidiFileLoader", false, 32)]
+        [MenuItem(Constant.MENU_MAESTRO + "/Add Prefab/MidiFileLoader", false, 32)]
         static void CreateMidiFileLoaderGameObject(MenuCommand menuCommand)
         {
             // Deprecated with 2.10.1 - CreatePrefab(menuCommand, "MidiFileLoader", "Assets/MidiPlayer/Prefab/MidiFileLoader.prefab");
@@ -48,7 +48,7 @@ namespace MidiPlayerTK
         // Priority 1 ensures it is grouped with the other menu items of the same kind
         // and propagated to the hierarchy dropdown and hierarch context menus.
         [MenuItem("GameObject/Maestro/Pro/Add Prefab MidiExternalPlay", false, 13)]
-        [MenuItem("Maestro/Add Prefab/MidiExternalPlay [Pro]", false, 33)]
+        [MenuItem(Constant.MENU_MAESTRO + "/Add Prefab/MidiExternalPlay [Pro]", false, 33)]
         static void CreateMidiExternalPlayGameObject(MenuCommand menuCommand)
         {
             CreatePrefab(menuCommand, "MidiExternalPlay", "Assets/MidiPlayer/Prefab/Pro/MidiExternalPlay.prefab");
@@ -57,7 +57,7 @@ namespace MidiPlayerTK
         // Priority 1 ensures it is grouped with the other menu items of the same kind
         // and propagated to the hierarchy dropdown and hierarch context menus.
         [MenuItem("GameObject/Maestro/Pro/Add Prefab MidiInReader", false, 14)]
-        [MenuItem("Maestro/Add Prefab/MidiInReader [Pro]", false, 34)]
+        [MenuItem(Constant.MENU_MAESTRO + "/Add Prefab/MidiInReader [Pro]", false, 34)]
         static void CreateMidiInReaderGameObject(MenuCommand menuCommand)
         {
             CreatePrefab(menuCommand, "MidiInReader", "Assets/MidiPlayer/Prefab/Pro/MidiInReader.prefab");
@@ -67,7 +67,7 @@ namespace MidiPlayerTK
         // Priority 1 ensures it is grouped with the other menu items of the same kind
         // and propagated to the hierarchy dropdown and hierarch context menus.
         [MenuItem("GameObject/Maestro/Pro/Add Prefab MidiListPlayer", false, 15)]
-        [MenuItem("Maestro/Add Prefab/MidiListPlayer [Pro]", false, 35)]
+        [MenuItem(Constant.MENU_MAESTRO + "/Add Prefab/MidiListPlayer [Pro]", false, 35)]
         static void CreateMidiListPlayerGameObject(MenuCommand menuCommand)
         {
             CreatePrefab(menuCommand, "MidiListPlayer", "Assets/MidiPlayer/Prefab/Pro/MidiListPlayer.prefab");
@@ -76,7 +76,7 @@ namespace MidiPlayerTK
         // Priority 1 ensures it is grouped with the other menu items of the same kind
         // and propagated to the hierarchy dropdown and hierarch context menus.
         [MenuItem("GameObject/Maestro/Pro/Add Prefab MidiSpatializer", false, 16)]
-        [MenuItem("Maestro/Add Prefab/MidiSpatializer [Pro]", false, 36)]
+        [MenuItem(Constant.MENU_MAESTRO + "/Add Prefab/MidiSpatializer [Pro]", false, 36)]
         static void CreateMidiSpatializerGameObject(MenuCommand menuCommand)
         {
             CreatePrefab(menuCommand, "MidiSpatializer", "Assets/MidiPlayer/Prefab/Pro/MidiSpatializer.prefab");

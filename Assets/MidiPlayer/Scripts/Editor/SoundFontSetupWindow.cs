@@ -1,5 +1,5 @@
-#if UNITY_EDITOR
-//#define MPTK_PRO
+﻿#if UNITY_EDITOR
+#define MPTK_PRO
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -59,7 +59,7 @@ namespace MidiPlayerTK
 
 
         // % (ctrl on Windows, cmd on macOS), # (shift), & (alt).
-        [MenuItem("Maestro/SoundFont Setup &F", false, 11)]
+        [MenuItem(Constant.MENU_MAESTRO + "/SoundFont Setup &F", false, 11)]
         public static void Init()
         {
             //Debug.Log("init");

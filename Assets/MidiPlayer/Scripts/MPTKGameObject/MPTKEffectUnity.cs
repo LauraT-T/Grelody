@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace MidiPlayerTK
@@ -11,7 +11,7 @@ namespace MidiPlayerTK
     /// @note
     ///     - Unity effects integration modules are exclusively available with the Maestro MPTK Pro version. 
     ///     - By default, these effects are disabled in Maestro. 
-    ///     - To enable them, you�ll need to adjust the settings from the prefab inspector: Synth Parameters / Unity Effect.
+    ///     - To enable them, you’ll need to adjust the settings from the prefab inspector: Synth Parameters / Unity Effect.
     ///     - Each settings are available by script.
     /// @code
     /// // Find a MPTK Prefab, will works also for MidiStreamPlayer, MidiExternalPlayer ... all classes which inherit from MidiSynth.

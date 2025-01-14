@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -22,8 +22,10 @@ namespace MidiPlayerTK
             // Nedd to load "manually" the template uxml
             loadedDemos.RowTemplate = Resources.Load<VisualTreeAsset>("OneRowDemo");
 
-            // Find VisualComponent 
+            /// Find all visual element and apply content or enable callback.
+            /// Works the same for Editor and Run mode.
             loadedDemos.FindVisualComponent();
+
 
             int index = 1;
             foreach (Demonstrator demo in loadedDemos.Demos)
