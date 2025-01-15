@@ -6,13 +6,28 @@ using MidiPlayerTK;
 public class MelodyChordTest : MonoBehaviour
 {
     public MidiStreamPlayer midiStreamPlayer;
+    private int noteCount = 0; // Number of notes that has been played
+    private const int NOTES_PER_CHORD = 4; // Number of notes played until chord change
+    private int chordIndex = 0; // Current index of chord being played
 
     List<int> cMajorScale = new List<int> { 60, 62, 64, 65, 67, 69, 71 }; // C Major Scale
-    Dictionary<int, List<int>> chords = new Dictionary<int, List<int>>
+
+    // I-V-vi-IV chord progression for the C Major scale
+    List<List<int>> cMajorChords = new List<List<int>>
     {
-        { 60, new List<int> { 60, 64, 67 } }, // C Major
-        { 62, new List<int> { 62, 65, 69 } }, // D Minor
-        { 64, new List<int> { 64, 67, 71 } }, // E Minor
+        new List<int> { 60, 64, 67 }, // C Major
+        new List<int> { 62, 67, 71 }, // G Major
+        new List<int> { 60, 64, 69 }, // A Minor
+        new List<int> { 60, 65, 69 }, // F Major
+    };
+
+    // Notes and passing notes for each chord of the chord progression
+    List<List<int>> cMajorAllowedNotes = new List<List<int>>
+    {
+        new List<int> { 60, 62, 64, 65, 67 }, // C Major
+        new List<int> { 60, 62, 67, 69, 71 }, // G Major
+        new List<int> { 60, 62, 64, 69, 71 }, // A Minor
+        new List<int> { 60, 65, 67, 69, 71 }, // F Major
     };
 
     void Start()
@@ -33,18 +48,18 @@ public class MelodyChordTest : MonoBehaviour
 
         Debug.Log("streamPlayer: " + (midiStreamPlayer != null ? "Initialized" : "Null"));
 
-        // Set instruments for channels
-        // Change instrument to Marimba for channel 0
+        // Set instrument for channel 0 (melody)
         MPTKEvent PatchChange = new MPTKEvent() {
             Command = MPTKCommand.PatchChange,
-            Value = 12, // generally Marimba but depend on the SoundFont selected
-            Channel = 0 }; // Instrument are defined by channel (from 0 to 15). So at any time, only 16 différents instruments can be used simultaneously.
+            Value = 12, // Marimba
+            Channel = 0 }; // Instrument are defined by channel (from 0 to 15). So at any time, only 16 differents instruments can be used simultaneously.
         midiStreamPlayer.MPTK_PlayEvent(PatchChange);    
 
+        // Set instrument for channel 1 (chords)
         midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent()
         {
             Command = MPTKCommand.PatchChange,
-            Value = 48, // Instrument for chords (e.g., Strings)
+            Value = 48, // Strings
             Channel = 1
         });
 
@@ -55,15 +70,25 @@ public class MelodyChordTest : MonoBehaviour
     {
         while (true)
         {
-            int melodyNote = cMajorScale[Random.Range(0, cMajorScale.Count)];
-            PlayMelody(melodyNote);
-            PlayChords(melodyNote);
+            // Get random note chosen from notes and passing notes of current chord
+            List<int> allowedNotes = cMajorAllowedNotes[chordIndex];
+            int melodyNote = allowedNotes[Random.Range(0, allowedNotes.Count)];
 
+            // Every four notes there is a chord change
+            if(noteCount % NOTES_PER_CHORD == 0) {
+                Debug.Log("Chord change");
+                melodyNote = 60;
+                PlayChord();
+            }
+
+            PlayNote(melodyNote);
+            
             yield return new WaitForSeconds(0.5f); // Adjust tempo
         }
     }
 
-    void PlayMelody(int note)
+    // Plays the given note and increments note counter
+    void PlayNote(int note)
     {
         midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent
         {
@@ -73,13 +98,16 @@ public class MelodyChordTest : MonoBehaviour
             Velocity = 100,
             Duration = 500
         });
+
+        noteCount++;
+        Debug.Log($"Note Count: {noteCount}, Note: {note}");
     }
 
-    void PlayChords(int rootNote)
+    // Plays current chord in chord progression
+    void PlayChord()
     {
-        if (chords.ContainsKey(rootNote))
-        {
-            foreach (var note in chords[rootNote])
+       
+            foreach (var note in cMajorChords[chordIndex])
             {
                 midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent
                 {
@@ -90,6 +118,8 @@ public class MelodyChordTest : MonoBehaviour
                     Duration = 500
                 });
             }
-        }
+
+            // Move to next chord in chord progression
+            chordIndex = (chordIndex + 1) % cMajorChords.Count;
     }
 }
