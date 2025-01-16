@@ -13,6 +13,7 @@ public class MelodyChordTest : MonoBehaviour
     private const int BEATS_PER_CHORD = 4; // Number of beats played until chord change
     private int chordIndex = 0; // Current index of chord being played (0 - 3)
     private float overallVolume = 0.5f; // Current volume (0.0 - 1.0)
+    private float tempo = 120f; // Default tempo in beats per minute
 
     void Start()
     {
@@ -67,7 +68,7 @@ public class MelodyChordTest : MonoBehaviour
         {
             this.overallVolume = Mathf.Clamp(this.overallVolume + 0.01f, 0.0f, 1.0f);
             SetOverallVolume(overallVolume);
-            Debug.Log($"Volume increased: {overallVolume}");
+            Debug.Log($"Volume increased: {this.overallVolume}");
         }
 
         // Decrease volume with Down Arrow
@@ -75,7 +76,7 @@ public class MelodyChordTest : MonoBehaviour
         {
             this.overallVolume = Mathf.Clamp(this.overallVolume - 0.01f, 0.0f, 1.0f);
             SetOverallVolume(overallVolume);
-            Debug.Log($"Volume decreased: {overallVolume}");
+            Debug.Log($"Volume decreased: {this.overallVolume}");
         }
 
         // Switch between major and minor when pressing K
@@ -88,6 +89,20 @@ public class MelodyChordTest : MonoBehaviour
                 this.compositionProvider = compositionDict[MusicalKey.MAJOR]; 
                 Debug.Log("Key switch to major");
             }
+        }
+
+        // Increase tempo with F
+        if (Input.GetKey(KeyCode.F))
+        {
+            tempo = Mathf.Clamp(this.tempo + 0.1f, 30f, 240f); // Limit between 30 BPM and 240 BPM
+            Debug.Log($"Tempo increased: {this.tempo} bpm");
+        }
+
+        // Decrease tempo with S
+        if (Input.GetKey(KeyCode.S))
+        {
+            tempo = Mathf.Clamp(this.tempo - 0.1f, 30f, 240f); // Limit between 30 BPM and 240 BPM
+            Debug.Log($"Tempo decreased: {tempo} bpm");
         }
     }
 
@@ -118,7 +133,7 @@ public class MelodyChordTest : MonoBehaviour
             {
                 // Play two short notes (0.25 each)
                 PlayNote(melodyNote);
-                yield return new WaitForSeconds(0.25f);
+                yield return new WaitForSeconds(getTimeBetweenNotes() / 2);
 
                 // Reset volume
                 SetChannelVolume(0, 75);
@@ -128,7 +143,7 @@ public class MelodyChordTest : MonoBehaviour
                 PlayNote(melodyNote);
                 beatCount++;
                 Debug.Log($"Beat Count: {beatCount}");
-                yield return new WaitForSeconds(0.25f);
+                yield return new WaitForSeconds(getTimeBetweenNotes() / 2);
             }
             else
             {
@@ -136,7 +151,7 @@ public class MelodyChordTest : MonoBehaviour
                 PlayNote(melodyNote);
                 beatCount++;
                 Debug.Log($"Beat Count: {beatCount}");
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(getTimeBetweenNotes());
             }
 
             // Reset volume
@@ -193,5 +208,10 @@ public class MelodyChordTest : MonoBehaviour
     // Sets volume for the whole melody / all channels
     void SetOverallVolume (float newVolume) {
         midiStreamPlayer.MPTK_Volume = newVolume;
+    }
+
+    // Calculate how long a note is played in seconds
+    private float getTimeBetweenNotes() {
+        return 60 / this.tempo;
     }
 }
