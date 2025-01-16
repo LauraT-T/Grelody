@@ -7,15 +7,22 @@ using UnityEngine.InputSystem;
 public class MelodyChordTest : MonoBehaviour
 {
     public MidiStreamPlayer midiStreamPlayer;
-
-    private CompositionProvider compositionProvider = new CMajorCompositionProvider(); // Default key is major
+    private Dictionary<MusicalKey, CompositionProvider> compositionDict; // Dictionary of two composition providers (a major key and its minor equivalent)
+    private CompositionProvider compositionProvider; // Current composition provider
     private double beatCount = 0; // Number of beats that has passed
     private const int BEATS_PER_CHORD = 4; // Number of beats played until chord change
-    private int chordIndex = 0; // Current index of chord being played
-    private float overallVolume = 0.5f; // Current volume
+    private int chordIndex = 0; // Current index of chord being played (0 - 3)
+    private float overallVolume = 0.5f; // Current volume (0.0 - 1.0)
 
     void Start()
     {
+        // Melody is in C Major and C Minor
+        this.compositionDict = new Dictionary<MusicalKey, CompositionProvider>(){
+        {MusicalKey.MAJOR, new CMajorCompositionProvider()},
+        {MusicalKey.MINOR, new CMinorCompositionProvider()}}; 
+
+        // Default key is major
+        this.compositionProvider = compositionDict[MusicalKey.MAJOR]; 
 
         Debug.Log("Playing random melody in C Major");
 
@@ -69,6 +76,18 @@ public class MelodyChordTest : MonoBehaviour
             this.overallVolume = Mathf.Clamp(this.overallVolume - 0.01f, 0.0f, 1.0f);
             SetOverallVolume(overallVolume);
             Debug.Log($"Volume decreased: {overallVolume}");
+        }
+
+        // Switch between major and minor when pressing K
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            if(this.compositionProvider.GetKey() == MusicalKey.MAJOR) {
+                this.compositionProvider = compositionDict[MusicalKey.MINOR];
+                Debug.Log("Key switch to minor"); 
+            } else {
+                this.compositionProvider = compositionDict[MusicalKey.MAJOR]; 
+                Debug.Log("Key switch to major");
+            }
         }
     }
 
@@ -156,7 +175,7 @@ public class MelodyChordTest : MonoBehaviour
             }
 
             // Move to next chord in chord progression
-            chordIndex = (chordIndex + 1) % cMajorChords.Count;
+            chordIndex = (chordIndex + 1) % chords.Count;
     }
 
     // Sets volume of the specified channel

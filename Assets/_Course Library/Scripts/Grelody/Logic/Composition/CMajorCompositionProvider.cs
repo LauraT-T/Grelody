@@ -7,6 +7,8 @@ public class CMajorCompositionProvider : CompositionProvider {
 
     public CMajorCompositionProvider() : base(
 
+            MusicalKey.MAJOR, // The key is major
+
             new List<int> { 60, 62, 64, 65, 67, 69, 71 }, // C Major Scale
 
             // I-V-vi-IV chord progression for the C Major scale

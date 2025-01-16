@@ -7,6 +7,8 @@ public class CMinorCompositionProvider : CompositionProvider {
 
     public CMinorCompositionProvider() : base(
 
+            MusicalKey.MINOR, // The key is minor
+
             new List<int> { 60, 62, 63, 65, 67, 68, 71 }, // Harmonic C minor Scale
 
             // i-V-VI-iv chord progression for the C Minor scale

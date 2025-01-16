@@ -4,17 +4,24 @@ using System.Collections.Generic;
 using UnityEngine;
 public abstract class CompositionProvider {
 
-
+    private MusicalKey key;
     private List<int> scale;
 
     private List<List<int>> chords;
     private List<List<int>> allowedNotes;
 
-    public CompositionProvider(List<int> scale, List<List<int>> chords, List<List<int>> allowedNotes)
+    public CompositionProvider(MusicalKey key, List<int> scale, List<List<int>> chords, List<List<int>> allowedNotes)
     {
+        this.key = key;
         this.scale = scale;
         this.chords = chords;
         this.allowedNotes = allowedNotes;
+    }
+
+    // Get key
+    public MusicalKey GetKey()
+    {
+        return this.key;
     }
 
     // Getter method for the scale
