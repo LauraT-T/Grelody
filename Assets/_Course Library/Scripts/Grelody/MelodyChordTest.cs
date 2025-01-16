@@ -4,6 +4,17 @@ using UnityEngine;
 using MidiPlayerTK;
 using UnityEngine.InputSystem;
 
+/*
+Controls (for testing)
+
+- Up arrow: increase volume
+- Down arrow: decrease volume
+- K: switch beween major and minor
+- F: increase tempo / faster
+- S: decrease tempo / slower
+
+*/
+
 public class MelodyChordTest : MonoBehaviour
 {
     public MidiStreamPlayer midiStreamPlayer;
@@ -14,6 +25,14 @@ public class MelodyChordTest : MonoBehaviour
     private int chordIndex = 0; // Current index of chord being played (0 - 3)
     private float overallVolume = 0.5f; // Current volume (0.0 - 1.0)
     private float tempo = 120f; // Default tempo in beats per minute
+    
+    // Drum pattern
+    List<int> drumPattern = new List<int>
+    {
+        35, 42, 38, 42, 35, 42, 38, 46 // Kick, hi-hat, snare, hi-hat, repeat
+    };
+
+    private int drumIndex = 0; // Current index of drum pattern note being played
 
     void Start()
     {
@@ -58,7 +77,11 @@ public class MelodyChordTest : MonoBehaviour
 
         SetOverallVolume(this.overallVolume);
 
-        StartCoroutine(PlayMelodyAndChords());
+        StartCoroutine(PlayMelody());
+        StartCoroutine(PlayChords());
+        StartCoroutine(PlayDrumPattern());
+        StartCoroutine(PlayBassNotes());
+
     }
 
     void Update()
@@ -106,7 +129,7 @@ public class MelodyChordTest : MonoBehaviour
         }
     }
 
-    IEnumerator PlayMelodyAndChords()
+    IEnumerator PlayMelody()
     {
         while (true)
         {
@@ -115,25 +138,18 @@ public class MelodyChordTest : MonoBehaviour
             List<int> allowedNotes = allAllowedNotes[chordIndex];
             int melodyNote = allowedNotes[Random.Range(0, allowedNotes.Count)];
 
-            // Every four beats there is a chord change
-            if(beatCount % BEATS_PER_CHORD == 0) {
-                Debug.Log("Chord change");
-                melodyNote = 60;
-                PlayChord();
-            }
-
             // Emphasize note on beat 1
             if(beatCount % BEATS_PER_CHORD == 0) {
                 Debug.Log("Emphasis");
                 SetChannelVolume(0, 127);
             }
 
-            // Randomly decide to play two eighth notes or one quarter note
+           /*  // Randomly decide to play two eighth notes or one quarter note
             if (Random.value > 0.5f)
             {
                 // Play two short notes (0.25 each)
                 PlayNote(melodyNote);
-                yield return new WaitForSeconds(getTimeBetweenNotes() / 2);
+                yield return new WaitForSeconds(getTimeBetweenNotes() / 4);
 
                 // Reset volume
                 SetChannelVolume(0, 75);
@@ -153,13 +169,61 @@ public class MelodyChordTest : MonoBehaviour
                 Debug.Log($"Beat Count: {beatCount}");
                 yield return new WaitForSeconds(getTimeBetweenNotes());
             }
+            */
+             // Play one long note (0.5)
+                PlayNote(melodyNote);
+                beatCount++;
+                Debug.Log($"Beat Count: {beatCount}");
+                yield return new WaitForSeconds(getTimeBetweenNotes());
+            
 
             // Reset volume
             SetChannelVolume(0, 75);
         }
     }
 
-    // Plays the given note and increments note counter
+    // Plays chords
+    IEnumerator PlayChords()
+    {
+        while (true)
+        {
+            // Pattern: 3/8, 3/8, 2/8
+            PlayChord();
+            yield return new WaitForSeconds(getTimeBetweenNotes() * 1.5f);
+            PlayChord();
+            yield return new WaitForSeconds(getTimeBetweenNotes() * 1.5f);
+            PlayChord();
+            yield return new WaitForSeconds(getTimeBetweenNotes());
+
+            // Move to next chord in chord progression (Every four beats there is a chord change)
+            List<List<int>> chords = compositionProvider.GetChords();
+            chordIndex = (chordIndex + 1) % chords.Count;
+            Debug.Log("Chord change");
+        }
+    }
+
+    // Plays drum pattern
+    IEnumerator PlayDrumPattern()
+    {
+        while (true)
+        {
+            PlayDrumNote(this.drumPattern[this.drumIndex]);
+            this.drumIndex = (this.drumIndex + 1) % this.drumPattern.Count;
+            yield return new WaitForSeconds(getTimeBetweenNotes() / 2);
+        }
+    }
+
+    // Plays bass note to current chord
+    IEnumerator PlayBassNotes()
+    {
+        while (true)
+        {
+            PlayBassNote(this.compositionProvider.GetBassNotes()[this.chordIndex]);
+            yield return new WaitForSeconds(getTimeBetweenNotes() / 2);
+        }
+    }
+
+    // Plays the given melody note
     void PlayNote(int note)
     {
         midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent
@@ -185,13 +249,37 @@ public class MelodyChordTest : MonoBehaviour
                     Value = note,
                     Channel = 1, // Chords on channel 1
                     Velocity = 80,
-                    Duration = 500
+                    Duration = 250
                 });
             }
-
-            // Move to next chord in chord progression
-            chordIndex = (chordIndex + 1) % chords.Count;
     }
+
+    // Plays the given beat note
+    void PlayDrumNote(int note)
+    {
+        midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent
+        {
+            Command = MPTKCommand.NoteOn,
+            Value = note,
+            Channel = 9, // Drum pattern on channel 9
+            Velocity = 100,
+            Duration = 500
+        });
+    }
+
+    // Plays the given bass note
+    void PlayBassNote(int note)
+    {
+        midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent
+        {
+            Command = MPTKCommand.NoteOn,
+            Value = note,
+            Channel = 3, // Bass notes on channel 3
+            Velocity = 100,
+            Duration = 500
+        });
+    }
+
 
     // Sets volume of the specified channel
     void SetChannelVolume (int channel, int newVolume) {

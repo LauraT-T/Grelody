@@ -9,13 +9,15 @@ public abstract class CompositionProvider {
 
     private List<List<int>> chords;
     private List<List<int>> allowedNotes;
+    private List<int> bassNotes;
 
-    public CompositionProvider(MusicalKey key, List<int> scale, List<List<int>> chords, List<List<int>> allowedNotes)
+    public CompositionProvider(MusicalKey key, List<int> scale, List<List<int>> chords, List<List<int>> allowedNotes, List<int> bassNotes)
     {
         this.key = key;
         this.scale = scale;
         this.chords = chords;
         this.allowedNotes = allowedNotes;
+        this.bassNotes = bassNotes;
     }
 
     // Get key
@@ -40,6 +42,11 @@ public abstract class CompositionProvider {
     public List<List<int>> GetAllowedNotes()
     {
         return this.allowedNotes;
+    }
+
+    public List<int> GetBassNotes() 
+    {
+        return this.bassNotes;
     }
 
 }

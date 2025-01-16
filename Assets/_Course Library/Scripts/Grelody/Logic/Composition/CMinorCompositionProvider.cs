@@ -27,7 +27,10 @@ public class CMinorCompositionProvider : CompositionProvider {
                 new List<int> { 60, 62, 67, 69, 71 }, // G Major
                 new List<int> { 60, 62, 63, 68, 71 }, // Ab Major
                 new List<int> { 65, 67, 68, 71, 72 }, // F Minor
-            }
+            }, 
+
+            // Chord bass notes
+           new List<int> { 36, 43, 44, 41 }
         )
     {}
 
