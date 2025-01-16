@@ -7,52 +7,12 @@ using UnityEngine.InputSystem;
 public class MelodyChordTest : MonoBehaviour
 {
     public MidiStreamPlayer midiStreamPlayer;
+
+    private CompositionProvider compositionProvider = new CMajorCompositionProvider(); // Default key is major
     private double beatCount = 0; // Number of beats that has passed
     private const int BEATS_PER_CHORD = 4; // Number of beats played until chord change
     private int chordIndex = 0; // Current index of chord being played
-
-    private float overallVolume = 0.5f;
-
-    List<int> cMajorScale = new List<int> { 60, 62, 64, 65, 67, 69, 71 }; // C Major Scale
-
-    // I-V-vi-IV chord progression for the C Major scale
-    List<List<int>> cMajorChords = new List<List<int>>
-    {
-        new List<int> { 60, 64, 67 }, // C Major
-        new List<int> { 62, 67, 71 }, // G Major
-        new List<int> { 60, 64, 69 }, // A Minor
-        new List<int> { 65, 69, 72 }, // F Major
-    };
-
-    // Notes and passing notes for each chord of the chord progression
-    List<List<int>> cMajorAllowedNotes = new List<List<int>>
-    {
-        new List<int> { 60, 62, 64, 65, 67 }, // C Major
-        new List<int> { 60, 62, 67, 69, 71 }, // G Major
-        new List<int> { 60, 62, 64, 69, 71 }, // A Minor
-        new List<int> { 65, 67, 69, 71, 72 }, // F Major
-    };
-
-    List<int> cMinorScale = new List<int> { 60, 62, 63, 65, 67, 68, 71 }; // Harmonic C minor Scale
-
-    // i-V-VI-iv chord progression for the C Minor scale
-    List<List<int>> cMinorChords = new List<List<int>>
-    {
-        new List<int> { 60, 63, 67 }, // C Minor
-        new List<int> { 62, 67, 71 }, // G Major
-        new List<int> { 60, 63, 68 }, // Ab Major
-        new List<int> { 65, 68, 72 }, // F Minor
-    };
-
-    // Notes and passing notes for each chord of the chord progression
-    List<List<int>> cMinorAllowedNotes = new List<List<int>>
-    {
-        new List<int> { 60, 62, 63, 65, 67 }, // C Minor
-        new List<int> { 60, 62, 67, 69, 71 }, // G Major
-        new List<int> { 60, 62, 63, 68, 71 }, // Ab Major
-        new List<int> { 65, 67, 68, 71, 72 }, // F Minor
-    };
-
+    private float overallVolume = 0.5f; // Current volume
 
     void Start()
     {
@@ -117,7 +77,8 @@ public class MelodyChordTest : MonoBehaviour
         while (true)
         {
             // Get random note chosen from notes and passing notes of current chord
-            List<int> allowedNotes = cMinorAllowedNotes[chordIndex];
+            List<List<int>> allAllowedNotes = compositionProvider.GetAllowedNotes();
+            List<int> allowedNotes = allAllowedNotes[chordIndex];
             int melodyNote = allowedNotes[Random.Range(0, allowedNotes.Count)];
 
             // Every four beats there is a chord change
@@ -180,8 +141,9 @@ public class MelodyChordTest : MonoBehaviour
     // Plays current chord in chord progression
     void PlayChord()
     {
+            List<List<int>> chords = compositionProvider.GetChords();
        
-            foreach (var note in cMinorChords[chordIndex])
+            foreach (var note in chords[chordIndex])
             {
                 midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent
                 {
