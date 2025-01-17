@@ -20,11 +20,19 @@ public class MelodyChordTest : MonoBehaviour
     public MidiStreamPlayer midiStreamPlayer;
     private Dictionary<MusicalKey, CompositionProvider> compositionDict; // Dictionary of two composition providers (a major key and its minor equivalent)
     private CompositionProvider compositionProvider; // Current composition provider
-    private double beatCount = 0; // Number of beats that has passed
+    private double beatCount = 0; // Number of beats that have passed
     private const int BEATS_PER_CHORD = 4; // Number of beats played until chord change
     private int chordIndex = 0; // Current index of chord being played (0 - 3)
     private float overallVolume = 0.5f; // Current volume (0.0 - 1.0)
     private float tempo = 120f; // Default tempo in beats per minute
+
+    // Variables for adding instruments
+    private InstrumentProvider instrumentProvider;
+    private bool melodyAdded = false;
+    private bool chordsAdded = false;
+    private bool bassAdded = false;
+    private bool drumsAdded = false;
+
     
     // Drum pattern
     List<int> drumPattern = new List<int>
@@ -44,6 +52,9 @@ public class MelodyChordTest : MonoBehaviour
         // Default key is major
         this.compositionProvider = compositionDict[MusicalKey.MAJOR]; 
 
+        // Instrument Provider specifies all available instruments
+        this.instrumentProvider = new InstrumentProvider();
+
         Debug.Log("Playing random melody in C Major");
 
         // Find the MidiFilePlayer in the scene
@@ -59,21 +70,6 @@ public class MelodyChordTest : MonoBehaviour
         }
 
         Debug.Log("streamPlayer: " + (midiStreamPlayer != null ? "Initialized" : "Null"));
-
-        // Set instrument for channel 0 (melody)
-        MPTKEvent PatchChange = new MPTKEvent() {
-            Command = MPTKCommand.PatchChange,
-            Value = 12, // Marimba
-            Channel = 0 }; // Instrument are defined by channel (from 0 to 15). So at any time, only 16 differents instruments can be used simultaneously.
-        midiStreamPlayer.MPTK_PlayEvent(PatchChange);    
-
-        // Set instrument for channel 1 (chords)
-        midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent()
-        {
-            Command = MPTKCommand.PatchChange,
-            Value = 48, // Strings
-            Channel = 1
-        });
 
         SetOverallVolume(this.overallVolume);
 
@@ -127,6 +123,43 @@ public class MelodyChordTest : MonoBehaviour
             tempo = Mathf.Clamp(this.tempo - 0.1f, 30f, 240f); // Limit between 30 BPM and 240 BPM
             Debug.Log($"Tempo decreased: {tempo} bpm");
         }
+
+        // Add piano with Q
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            AddInstrument(InstrumentType.PIANO);
+        }
+
+        // Add guitar with W
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            AddInstrument(InstrumentType.GUITAR);
+        }
+
+        // Add strings with E
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            AddInstrument(InstrumentType.STRINGS);
+        }
+
+        // Add trumpet with R
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            AddInstrument(InstrumentType.TRUMPET);
+        }
+
+        // Add drums with T
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            AddInstrument(InstrumentType.DRUMS);
+        }
+
+        // Add or remove bassline with B
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            this.bassAdded = !this.bassAdded;
+            Debug.Log("Bassline " + (this.bassAdded ? "added" : "removed"));
+        }
     }
 
     IEnumerator PlayMelody()
@@ -170,11 +203,14 @@ public class MelodyChordTest : MonoBehaviour
                 yield return new WaitForSeconds(getTimeBetweenNotes());
             }
             */
-             // Play one long note (0.5)
+
+            // Play one quarter note
+            if(this.melodyAdded) {
                 PlayNote(melodyNote);
-                beatCount++;
-                Debug.Log($"Beat Count: {beatCount}");
-                yield return new WaitForSeconds(getTimeBetweenNotes());
+            }
+            beatCount++;
+            //Debug.Log($"Beat Count: {beatCount}");
+            yield return new WaitForSeconds(getTimeBetweenNotes());
             
 
             // Reset volume
@@ -188,11 +224,19 @@ public class MelodyChordTest : MonoBehaviour
         while (true)
         {
             // Pattern: 3/8, 3/8, 2/8
-            PlayChord();
+            if(this.chordsAdded) {
+                PlayChord();
+            }
             yield return new WaitForSeconds(getTimeBetweenNotes() * 1.5f);
-            PlayChord();
+
+             if(this.chordsAdded) {
+                PlayChord();
+            }
             yield return new WaitForSeconds(getTimeBetweenNotes() * 1.5f);
-            PlayChord();
+
+             if(this.chordsAdded) {
+                PlayChord();
+            }
             yield return new WaitForSeconds(getTimeBetweenNotes());
 
             // Move to next chord in chord progression (Every four beats there is a chord change)
@@ -206,8 +250,10 @@ public class MelodyChordTest : MonoBehaviour
     IEnumerator PlayDrumPattern()
     {
         while (true)
-        {
-            PlayDrumNote(this.drumPattern[this.drumIndex]);
+        {   
+            if(this.drumsAdded) {
+                PlayDrumNote(this.drumPattern[this.drumIndex]);
+            }
             this.drumIndex = (this.drumIndex + 1) % this.drumPattern.Count;
             yield return new WaitForSeconds(getTimeBetweenNotes() / 2);
         }
@@ -218,7 +264,9 @@ public class MelodyChordTest : MonoBehaviour
     {
         while (true)
         {
-            PlayBassNote(this.compositionProvider.GetBassNotes()[this.chordIndex]);
+            if(this.bassAdded) {
+                PlayBassNote(this.compositionProvider.GetBassNotes()[this.chordIndex]);
+            }
             yield return new WaitForSeconds(getTimeBetweenNotes() / 2);
         }
     }
@@ -274,7 +322,7 @@ public class MelodyChordTest : MonoBehaviour
         {
             Command = MPTKCommand.NoteOn,
             Value = note,
-            Channel = 3, // Bass notes on channel 3
+            Channel = 2, // Bass notes on channel 3
             Velocity = 100,
             Duration = 500
         });
@@ -282,7 +330,7 @@ public class MelodyChordTest : MonoBehaviour
 
 
     // Sets volume of the specified channel
-    void SetChannelVolume (int channel, int newVolume) {
+    void SetChannelVolume(int channel, int newVolume) {
 
         midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent
         {
@@ -294,12 +342,69 @@ public class MelodyChordTest : MonoBehaviour
     }
 
     // Sets volume for the whole melody / all channels
-    void SetOverallVolume (float newVolume) {
+    void SetOverallVolume(float newVolume) {
         midiStreamPlayer.MPTK_Volume = newVolume;
     }
 
     // Calculate how long a note is played in seconds
     private float getTimeBetweenNotes() {
         return 60 / this.tempo;
+    }
+
+    // Sets an instrument for a channel
+    void SetInstrumentForChannel(int channel, int instrument) {
+        midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent()
+        {
+            Command = MPTKCommand.PatchChange,
+            Value = instrument,
+            Channel = channel
+        });
+    }
+
+    /*
+    Adds an instrument
+
+    What makes up our tune, sorted by priority:
+     1. Melody (channel 0)
+     2. Chords (channel 1)
+     3. Bass line for chords (channel 2)
+     4. Drums (channel 9)
+
+     When a non-rythm instrument is added, 
+     it plays the tune component with the highest priority still missing.
+
+     When a rythm instrument is added, it plays a rythm / the drums.
+    */
+    void AddInstrument(InstrumentType type)
+    {
+       Instrument newInstrument = this.instrumentProvider.GetInstrument(type);
+       Debug.Log("NEW INSTRUMENT:");
+       Debug.Log(newInstrument.GetMidiValue());
+       
+       if(!newInstrument.GetPlaysRythm()) {
+
+            if(!this.melodyAdded) {
+                SetInstrumentForChannel(0, newInstrument.GetMidiValue());
+                this.melodyAdded = true;
+                Debug.Log("Melody added");
+
+            } else if(!this.chordsAdded) {
+                SetInstrumentForChannel(1, newInstrument.GetMidiValue());
+                this.chordsAdded = true;
+                Debug.Log("Chords added");
+
+            } else if(!this.bassAdded) {
+                SetInstrumentForChannel(2, newInstrument.GetMidiValue());
+                this.bassAdded = true;
+                Debug.Log("Bass added");
+
+            } else {
+                Debug.Log("No new non-rythm instrument can be added");
+            }
+
+       } else {
+            this.drumsAdded = true;
+            Debug.Log("Drums added");
+       }
     }
 }
