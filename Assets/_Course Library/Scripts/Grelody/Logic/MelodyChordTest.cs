@@ -12,6 +12,11 @@ Controls (for testing)
 - K: switch beween major and minor
 - F: increase tempo / faster
 - S: decrease tempo / slower
+- Q: Add / remove piano
+- W: Add / remove guitar
+- E: Add / remove strings
+- R: Add / remove trumpet
+- T: Add / remove drum beat
 
 */
 
@@ -32,6 +37,7 @@ public class MelodyChordTest : MonoBehaviour
     private bool chordsAdded = false;
     private bool bassAdded = false;
     private bool drumsAdded = false;
+    private Dictionary<InstrumentType, TuneComponent> instrumentDict; // Which instrument plays what? (melody, chords, bass, drums)
 
     
     // Drum pattern
@@ -54,6 +60,9 @@ public class MelodyChordTest : MonoBehaviour
 
         // Instrument Provider specifies all available instruments
         this.instrumentProvider = new InstrumentProvider();
+
+        // Instrument dictionary to remember which instruments have been added and which part of the tune they are playing
+        this.instrumentDict = new Dictionary<InstrumentType, TuneComponent>(){}; 
 
         Debug.Log("Playing random melody in C Major");
 
@@ -124,41 +133,54 @@ public class MelodyChordTest : MonoBehaviour
             Debug.Log($"Tempo decreased: {tempo} bpm");
         }
 
-        // Add piano with Q
+        // Add or remove piano with Q
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            AddInstrument(InstrumentType.PIANO);
+            if (this.instrumentDict.ContainsKey(InstrumentType.PIANO)) { 
+                RemoveInstrument(InstrumentType.PIANO);
+            } else {
+                AddInstrument(InstrumentType.PIANO);
+            }
         }
 
-        // Add guitar with W
+        // Add or remove guitar with W
         if (Input.GetKeyDown(KeyCode.W))
         {
-            AddInstrument(InstrumentType.GUITAR);
+            if (this.instrumentDict.ContainsKey(InstrumentType.GUITAR)) { 
+                RemoveInstrument(InstrumentType.GUITAR);
+            } else {
+                AddInstrument(InstrumentType.GUITAR);
+            }
         }
 
-        // Add strings with E
+        // Add or remove strings with E
         if (Input.GetKeyDown(KeyCode.E))
-        {
-            AddInstrument(InstrumentType.STRINGS);
+        {   
+            if (this.instrumentDict.ContainsKey(InstrumentType.STRINGS)) { 
+                RemoveInstrument(InstrumentType.STRINGS);
+            } else {
+                AddInstrument(InstrumentType.STRINGS);
+            }
         }
 
-        // Add trumpet with R
+        // Add or remove trumpet with R
         if (Input.GetKeyDown(KeyCode.R))
         {
-            AddInstrument(InstrumentType.TRUMPET);
+            if (this.instrumentDict.ContainsKey(InstrumentType.TRUMPET)) { 
+                RemoveInstrument(InstrumentType.TRUMPET);
+            } else {
+                AddInstrument(InstrumentType.TRUMPET);
+            }
         }
 
-        // Add drums with T
+        // Add or remove drums with T
         if (Input.GetKeyDown(KeyCode.T))
         {
-            AddInstrument(InstrumentType.DRUMS);
-        }
-
-        // Add or remove bassline with B
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            this.bassAdded = !this.bassAdded;
-            Debug.Log("Bassline " + (this.bassAdded ? "added" : "removed"));
+            if (this.instrumentDict.ContainsKey(InstrumentType.DRUMS)) { 
+                RemoveInstrument(InstrumentType.DRUMS);
+            } else {
+                AddInstrument(InstrumentType.DRUMS);
+            }
         }
     }
 
@@ -386,16 +408,19 @@ public class MelodyChordTest : MonoBehaviour
             if(!this.melodyAdded) {
                 SetInstrumentForChannel(0, newInstrument.GetMidiValue());
                 this.melodyAdded = true;
+                this.instrumentDict[type] = TuneComponent.MELODY;
                 Debug.Log("Melody added");
 
             } else if(!this.chordsAdded) {
                 SetInstrumentForChannel(1, newInstrument.GetMidiValue());
                 this.chordsAdded = true;
+                this.instrumentDict[type] = TuneComponent.CHORDS;
                 Debug.Log("Chords added");
 
             } else if(!this.bassAdded) {
                 SetInstrumentForChannel(2, newInstrument.GetMidiValue());
                 this.bassAdded = true;
+                this.instrumentDict[type] = TuneComponent.BASSLINE;
                 Debug.Log("Bass added");
 
             } else {
@@ -404,7 +429,51 @@ public class MelodyChordTest : MonoBehaviour
 
        } else {
             this.drumsAdded = true;
+            this.instrumentDict[type] = TuneComponent.DRUMS;
             Debug.Log("Drums added");
        }
+    }
+
+    /*
+    Removes the instrument with the given type
+    if it is currently playing by looking up
+    in the instrument dictionary what part it is playing (melody, chords, bass, drums)
+    and muting the respective part of the tune
+    */
+     void RemoveInstrument(InstrumentType type)
+    {
+        // If the instrument is currently playing
+        if (instrumentDict.ContainsKey(type)) { 
+            
+            // Determine which part of the tune the instrument is playing and remove it
+            switch(instrumentDict[type]) {
+
+                case TuneComponent.MELODY:
+                {
+                    this.melodyAdded = false;
+                    this.instrumentDict.Remove(type);
+                    break;
+                }
+                case TuneComponent.CHORDS:
+                {
+                    this.chordsAdded = false;
+                    this.instrumentDict.Remove(type);
+                    break;
+                }
+                case TuneComponent.BASSLINE:
+                {
+                    this.bassAdded = false;
+                    this.instrumentDict.Remove(type);
+                    break;
+                }
+                case TuneComponent.DRUMS:
+                {
+                    this.drumsAdded = false;
+                    this.instrumentDict.Remove(type);
+                    break;
+                }
+                default: break;
+            }
+        }
     }
 }
