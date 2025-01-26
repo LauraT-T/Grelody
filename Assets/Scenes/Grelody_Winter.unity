@@ -3304,9 +3304,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   snowflakeLowDetail: {fileID: 5824945751181550652, guid: f66b11c7d216973478b704cb87085fd3,
     type: 3}
-  snowflakeMediumDetail: {fileID: 4610230738612316930, guid: e617be153e5d0164e87af0711cca1548,
+  snowflakeMediumDetail: {fileID: 2905693902256910691, guid: 2a82ad6f334ad6148893242b9c5e366c,
     type: 3}
-  snowflakeHighDetail: {fileID: 5137800575529969105, guid: 0cdcd96c0515b1347a0c244decd50031,
+  snowflakeHighDetail: {fileID: 6642917471626778240, guid: 96c8358b72e446349a0717cfacb5d79e,
     type: 3}
   grammophone: {fileID: 1798507708}
 --- !u!4 &1623091605

@@ -23,14 +23,16 @@ public class SnowflakeManager : MonoBehaviour
         // Instantiate the snowflake
         GameObject newSnowflake = Instantiate(snowflakePrefab, spawnPosition, Quaternion.identity);
 
-        // Set passed snowflake color
-        Renderer renderer = newSnowflake.GetComponent<Renderer>();
+        // Find the child object with the MeshRenderer
+        MeshRenderer renderer = newSnowflake.GetComponentInChildren<MeshRenderer>();
         if (renderer != null)
         {
-            Debug.Log("Renderer was found");
-            renderer.material.SetColor("_Color", snowflakeColor);
-        } else {
-            Debug.Log("Renderer is null");
+            Debug.Log("Renderer was found in child object");
+            renderer.material.color = snowflakeColor;
+        }
+        else
+        {
+            Debug.Log("Renderer is null, check prefab structure.");
         }
 
         // Add the snowflake to active list

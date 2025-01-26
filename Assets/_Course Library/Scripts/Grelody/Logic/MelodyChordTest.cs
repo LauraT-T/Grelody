@@ -304,7 +304,7 @@ public class MelodyChordTest : MonoBehaviour
                     Value = note,
                     Channel = 1, // Chords on channel 1
                     Velocity = 80,
-                    Duration = 250
+                    Duration = 300
                 });
             }
     }
@@ -517,15 +517,17 @@ public class MelodyChordTest : MonoBehaviour
 
     /*
     If the current key is major, the appearing snowflake is a warm color,
-    otherwise, in case of minor, a cold color
+    otherwise, in case of minor, a cold color.
+    The louder the volume, the less transparent the snowflake.
     */
     private Color GetSnowflakeColor()
     {
-        Color happyPink = new Color(0.86f, 0.54f, 0.53f, 1.0f);
-        Color sadBlue = new Color(0.27f, 0.66f, 0.72f, 1.0f);
+        float transparency = this.overallVolume; // Value between 0.0f and 1.0f
+        Color happyRed = new Color(0.8f, 0.22f, 0.12f, transparency);
+        Color sadBlue = new Color(0.11f, 0.54f, 0.58f, transparency);
 
         if(Object.ReferenceEquals(this.compositionProvider, compositionDict[MusicalKey.MAJOR])) {
-            return happyPink;
+            return happyRed;
         } else {
             return sadBlue;
         }
