@@ -39,6 +39,10 @@ public class MelodyChordTest : MonoBehaviour
     private bool drumsAdded = false;
     private Dictionary<InstrumentType, TuneComponent> instrumentDict; // Which instrument plays what? (melody, chords, bass, drums)
 
+
+    // Manages the appearance of snowflakes for the notes
+    private SnowflakeManager snowflakeManager;
+
     
     // Drum pattern
     List<int> drumPattern = new List<int>
@@ -69,6 +73,9 @@ public class MelodyChordTest : MonoBehaviour
         // Find the MidiFilePlayer in the scene
         midiStreamPlayer = (MidiStreamPlayer)FindFirstObjectByType(typeof(MidiStreamPlayer));
 
+        // Find the SnowflakeManager in the scene
+        snowflakeManager = (SnowflakeManager)FindFirstObjectByType<SnowflakeManager>();
+        
         if (!MidiPlayerGlobal.MPTK_IsReady()) {
             Debug.Log("Not ready yet");
             System.Threading.Thread.Sleep(2000);
@@ -199,42 +206,15 @@ public class MelodyChordTest : MonoBehaviour
                 SetChannelVolume(0, 127);
             }
 
-           /*  // Randomly decide to play two eighth notes or one quarter note
-            if (Random.value > 0.5f)
-            {
-                // Play two short notes (0.25 each)
-                PlayNote(melodyNote);
-                yield return new WaitForSeconds(getTimeBetweenNotes() / 4);
-
-                // Reset volume
-                SetChannelVolume(0, 75);
-
-                // Choose a different note for the second short note
-                melodyNote = allowedNotes[Random.Range(0, allowedNotes.Count)];
-                PlayNote(melodyNote);
-                beatCount++;
-                Debug.Log($"Beat Count: {beatCount}");
-                yield return new WaitForSeconds(getTimeBetweenNotes() / 2);
-            }
-            else
-            {
-                // Play one long note (0.5)
-                PlayNote(melodyNote);
-                beatCount++;
-                Debug.Log($"Beat Count: {beatCount}");
-                yield return new WaitForSeconds(getTimeBetweenNotes());
-            }
-            */
-
             // Play one quarter note
             if(this.melodyAdded) {
                 PlayNote(melodyNote);
+                MakeSnowflakeAppear();
             }
             beatCount++;
             //Debug.Log($"Beat Count: {beatCount}");
             yield return new WaitForSeconds(getTimeBetweenNotes());
             
-
             // Reset volume
             SetChannelVolume(0, 75);
         }
@@ -248,16 +228,19 @@ public class MelodyChordTest : MonoBehaviour
             // Pattern: 3/8, 3/8, 2/8
             if(this.chordsAdded) {
                 PlayChord();
+                MakeSnowflakeAppear();
             }
             yield return new WaitForSeconds(getTimeBetweenNotes() * 1.5f);
 
              if(this.chordsAdded) {
                 PlayChord();
+                MakeSnowflakeAppear();
             }
             yield return new WaitForSeconds(getTimeBetweenNotes() * 1.5f);
 
              if(this.chordsAdded) {
                 PlayChord();
+                MakeSnowflakeAppear();
             }
             yield return new WaitForSeconds(getTimeBetweenNotes());
 
@@ -275,6 +258,7 @@ public class MelodyChordTest : MonoBehaviour
         {   
             if(this.drumsAdded) {
                 PlayDrumNote(this.drumPattern[this.drumIndex]);
+                MakeSnowflakeAppear();
             }
             this.drumIndex = (this.drumIndex + 1) % this.drumPattern.Count;
             yield return new WaitForSeconds(getTimeBetweenNotes() / 2);
@@ -288,6 +272,7 @@ public class MelodyChordTest : MonoBehaviour
         {
             if(this.bassAdded) {
                 PlayBassNote(this.compositionProvider.GetBassNotes()[this.chordIndex]);
+                MakeSnowflakeAppear();
             }
             yield return new WaitForSeconds(getTimeBetweenNotes() / 2);
         }
@@ -476,4 +461,74 @@ public class MelodyChordTest : MonoBehaviour
             }
         }
     }
+
+    // Makes a snowflake appear with correct detail degree, color and transparency
+    private void MakeSnowflakeAppear() 
+    {
+        DetailDegree detailDegree = CalculateDetailDegree();
+        Color snowflakeColor = GetSnowflakeColor();
+        this.snowflakeManager.SpawnSnowflake(detailDegree, snowflakeColor);
+    }
+
+
+    /*
+    Calculates the detail degree of the appearing snowflake
+    - One instrument = low detail
+    - Two instruments = medium detail
+    - At least three instruments = high detail
+    */
+    private DetailDegree CalculateDetailDegree()
+    {
+        int degreeCounter = 0;
+        DetailDegree detailDegree;
+
+        if(this.melodyAdded) {
+            degreeCounter++;
+        }
+        if(this.chordsAdded) {
+            degreeCounter++;
+        }
+        if(this.bassAdded) {
+            degreeCounter++;
+        }
+        if(this.drumsAdded) {
+            degreeCounter++;
+        }
+
+         Debug.Log("Snowflake detail level: " + degreeCounter);
+
+        switch(degreeCounter) {
+            case 1:
+                detailDegree = DetailDegree.LOW;
+                break;
+            case 2:
+                detailDegree = DetailDegree.MEDIUM;
+                break;
+            case 3:
+                detailDegree = DetailDegree.HIGH;
+                break;
+            default:
+                detailDegree = DetailDegree.HIGH;
+                break;
+        }
+
+        return detailDegree;
+    }
+
+    /*
+    If the current key is major, the appearing snowflake is a warm color,
+    otherwise, in case of minor, a cold color
+    */
+    private Color GetSnowflakeColor()
+    {
+        Color happyPink = new Color(0.86f, 0.54f, 0.53f, 1.0f);
+        Color sadBlue = new Color(0.27f, 0.66f, 0.72f, 1.0f);
+
+        if(Object.ReferenceEquals(this.compositionProvider, compositionDict[MusicalKey.MAJOR])) {
+            return happyPink;
+        } else {
+            return sadBlue;
+        }
+    }
+
 }

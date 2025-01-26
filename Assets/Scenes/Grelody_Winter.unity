@@ -3273,6 +3273,57 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playButton: {fileID: 523978487}
   pauseButton: {fileID: 778890500}
+--- !u!1 &1623091603
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1623091605}
+  - component: {fileID: 1623091604}
+  m_Layer: 0
+  m_Name: SnowflakeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1623091604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623091603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b520d90e0403d4042b7469079c09835c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  snowflakeLowDetail: {fileID: 5824945751181550652, guid: f66b11c7d216973478b704cb87085fd3,
+    type: 3}
+  snowflakeMediumDetail: {fileID: 4610230738612316930, guid: e617be153e5d0164e87af0711cca1548,
+    type: 3}
+  snowflakeHighDetail: {fileID: 5137800575529969105, guid: 0cdcd96c0515b1347a0c244decd50031,
+    type: 3}
+  grammophone: {fileID: 1798507708}
+--- !u!4 &1623091605
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623091603}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.284, y: 0.937, z: -1.004}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1639994812
 GameObject:
   m_ObjectHideFlags: 0
@@ -3628,6 +3679,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1733182731}
   m_CullTransparentMesh: 1
+--- !u!1 &1798507708 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6125377157684126347, guid: a49206e40dd072d47b1844bb2d713e07,
+    type: 3}
+  m_PrefabInstance: {fileID: 957756020}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1864577659
 GameObject:
   m_ObjectHideFlags: 0
@@ -4206,3 +4263,4 @@ SceneRoots:
   - {fileID: 2010018268}
   - {fileID: 1692938596}
   - {fileID: 1399779834}
+  - {fileID: 1623091605}
