@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6642917471626778240
+--- !u!1 &272369464610226423
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,40 +8,38 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2539260482569284987}
-  - component: {fileID: 5819793249089551214}
-  - component: {fileID: 778432035739872395}
-  - component: {fileID: -734434259373337867}
+  - component: {fileID: 8497691093641647777}
+  - component: {fileID: 6471452532773536316}
   m_Layer: 0
-  m_Name: Snowflake-high-detail-color
+  m_Name: Snowflake-high-detail-color-collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2539260482569284987
+--- !u!4 &8497691093641647777
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6642917471626778240}
+  m_GameObject: {fileID: 272369464610226423}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.284, y: 0.937, z: -1.004}
   m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_ConstrainProportionsScale: 1
   m_Children:
-  - {fileID: 3763010613062180795}
+  - {fileID: 6455293577391019640}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5819793249089551214
+--- !u!114 &6471452532773536316
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6642917471626778240}
+  m_GameObject: {fileID: 272369464610226423}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f6be45df07ba4f46a7c2cc83c76cfbf, type: 3}
@@ -51,62 +49,13 @@ MonoBehaviour:
   swayAmount: 0.05
   moveLeftSpeed: 0.3
   stopXPosition: -1
---- !u!54 &778432035739872395
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6642917471626778240}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!64 &-734434259373337867
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6642917471626778240}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
---- !u!1001 &3725144614884472912
+--- !u!1001 &6782269529150845331
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2539260482569284987}
+    m_TransformParent: {fileID: 8497691093641647777}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 2e46f436103d2a64d8ba4899d3b3fc05,
         type: 3}
@@ -171,11 +120,74 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -5937261659041463258, guid: 2e46f436103d2a64d8ba4899d3b3fc05,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4808544601229391796}
+    - targetCorrespondingSourceObject: {fileID: -5937261659041463258, guid: 2e46f436103d2a64d8ba4899d3b3fc05,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1260067775770204866}
   m_SourcePrefab: {fileID: 100100000, guid: 2e46f436103d2a64d8ba4899d3b3fc05, type: 3}
---- !u!4 &3763010613062180795 stripped
+--- !u!4 &6455293577391019640 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2e46f436103d2a64d8ba4899d3b3fc05,
     type: 3}
-  m_PrefabInstance: {fileID: 3725144614884472912}
+  m_PrefabInstance: {fileID: 6782269529150845331}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8324320936051635637 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -5937261659041463258, guid: 2e46f436103d2a64d8ba4899d3b3fc05,
+    type: 3}
+  m_PrefabInstance: {fileID: 6782269529150845331}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &4808544601229391796
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8324320936051635637}
+  m_Material: {fileID: 13400000, guid: 578af6c1f6a5a214390dfee9857411e2, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2170443336716448473, guid: 2e46f436103d2a64d8ba4899d3b3fc05, type: 3}
+--- !u!54 &1260067775770204866
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8324320936051635637}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

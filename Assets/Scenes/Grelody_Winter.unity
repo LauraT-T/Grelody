@@ -1436,12 +1436,23 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3792944424772177851, guid: a49206e40dd072d47b1844bb2d713e07,
+        type: 3}
+      propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6125377157684126347, guid: a49206e40dd072d47b1844bb2d713e07,
         type: 3}
       propertyPath: m_Name
       value: SM_Gramophone
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 6125377157684126347, guid: a49206e40dd072d47b1844bb2d713e07,
+        type: 3}
+      propertyPath: m_TagString
+      value: Grammophone
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 49899699325394037, guid: a49206e40dd072d47b1844bb2d713e07, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -3302,11 +3313,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d90e0403d4042b7469079c09835c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snowflakeLowDetail: {fileID: 5824945751181550652, guid: f66b11c7d216973478b704cb87085fd3,
+  snowflakeLowDetail: {fileID: 972672253857116869, guid: b077fa866d5b20648b7ae067ddd727a2,
     type: 3}
-  snowflakeMediumDetail: {fileID: 2905693902256910691, guid: 2a82ad6f334ad6148893242b9c5e366c,
+  snowflakeMediumDetail: {fileID: 7276114446708190512, guid: 0380fb2be8a9a8e4a9d9d35f72fe1234,
     type: 3}
-  snowflakeHighDetail: {fileID: 6642917471626778240, guid: 96c8358b72e446349a0717cfacb5d79e,
+  snowflakeHighDetail: {fileID: 272369464610226423, guid: bfb196862b6c04643be5c23723ae28c0,
     type: 3}
   grammophone: {fileID: 1798507708}
 --- !u!4 &1623091605

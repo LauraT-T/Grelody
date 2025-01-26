@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Box
   - Trail
+  - Grammophone
   layers:
   - Default
   - TransparentFX

@@ -11,6 +11,9 @@ public class SnowflakeManager : MonoBehaviour
 
     private List<GameObject> activeSnowflakes = new List<GameObject>();
 
+    // If there would be less than this many snowflakes in the scene, the snowflakes do not disappear
+    private const int MIN_SNOWFLAKE_NUMBER = 20;
+
     public void SpawnSnowflake(DetailDegree detailDegree, Color snowflakeColor)
     {
 
@@ -42,6 +45,7 @@ public class SnowflakeManager : MonoBehaviour
         StartCoroutine(RemoveSnowflakeAfterTime(newSnowflake, 10f));
     }
 
+    // Get the snowflake prefab corresponding to the detail level the snowflake is supposed to have
     private GameObject GetSnowflakePrefab(DetailDegree detailLevel)
     {
         switch (detailLevel)
@@ -53,12 +57,13 @@ public class SnowflakeManager : MonoBehaviour
         }
     }
 
+    // Remove the snowflake from the scene to avoid cluttering
     private IEnumerator RemoveSnowflakeAfterTime(GameObject snowflake, float delay)
     {
         yield return new WaitForSeconds(delay);
-        if (snowflake != null)
+        if (snowflake != null && this.activeSnowflakes.Count > MIN_SNOWFLAKE_NUMBER)
         {
-            activeSnowflakes.Remove(snowflake);
+            this.activeSnowflakes.Remove(snowflake);
             Destroy(snowflake);
         }
     }

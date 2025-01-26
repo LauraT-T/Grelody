@@ -495,8 +495,6 @@ public class MelodyChordTest : MonoBehaviour
             degreeCounter++;
         }
 
-         Debug.Log("Snowflake detail level: " + degreeCounter);
-
         switch(degreeCounter) {
             case 1:
                 detailDegree = DetailDegree.LOW;

@@ -10,6 +10,9 @@ public class SnowflakeMovement : MonoBehaviour
     private Vector3 initialPosition;
     private bool hasStopped = false;
 
+    // Collison detection
+    private Rigidbody rb;
+
     void Start()
     {
         // Store the initial position for the sway effect
@@ -19,6 +22,19 @@ public class SnowflakeMovement : MonoBehaviour
         fallSpeed = Random.Range(0.3f, 0.7f);
         swayAmount = Random.Range(0.3f, 0.8f);
         moveLeftSpeed = Random.Range(0.1f, 0.3f);
+        stopXPosition = Random.Range(-0.1f, -1.5f);
+
+        Debug.Log("Random x-Position: " + stopXPosition);
+
+        // Ensure Rigidbody is added
+        rb = GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            rb = gameObject.AddComponent<Rigidbody>();  // Add Rigidbody if missing
+            rb.useGravity = false;  // Disable gravity
+            rb.isKinematic = false; // Allow physics interactions
+            rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        }
     }
 
     void Update()
@@ -36,6 +52,15 @@ public class SnowflakeMovement : MonoBehaviour
         {
             // Stop moving left after reaching the stop position
             hasStopped = true;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Grammophone"))
+        {
+            // Bounce effect when hitting the Grammophone
+            rb.AddForce(Vector3.up * 0.5f, ForceMode.Impulse);
         }
     }
 }
