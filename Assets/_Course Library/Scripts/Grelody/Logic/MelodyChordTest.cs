@@ -48,8 +48,7 @@ public class MelodyChordTest : MonoBehaviour
     private SnowmanManager snowmanManager;
 
     // Recording of the created tune
-    private List<MelodyEvent> recordedEvents = new List<MelodyEvent>();
-    private float startTime;
+    private MelodyRecorder melodyRecorder;
 
     
     // Drum pattern
@@ -105,8 +104,10 @@ public class MelodyChordTest : MonoBehaviour
         StartCoroutine(PlayDrumPattern());
         StartCoroutine(PlayBassNotes());
 
+        // Recorder to save the created melody
         // TODO: start recording when first instrument is added
-        StartRecording();
+        this.melodyRecorder = new MelodyRecorder();
+        this.melodyRecorder.StartRecording();
 
     }
 
@@ -208,7 +209,8 @@ public class MelodyChordTest : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.X))
         {
             snowmanManager.SpawnSnowman(1, true);
-            StartCoroutine(ReplayMelody()); // TODO: move elsewhere
+            Melody recordedMelody = this.melodyRecorder.GetMelody();
+            recordedMelody.StartReplay(this, this.midiStreamPlayer); // TODO: move elsewhere
         }
     }
 
@@ -303,7 +305,7 @@ public class MelodyChordTest : MonoBehaviour
         };
 
         midiStreamPlayer.MPTK_PlayEvent(midiEvent);
-        RecordEvent(midiEvent);
+        this.melodyRecorder.RecordEvent(midiEvent);
     }
 
     // Plays current chord in chord progression
@@ -322,7 +324,7 @@ public class MelodyChordTest : MonoBehaviour
                     Duration = 300
                 };
                 midiStreamPlayer.MPTK_PlayEvent(midiEvent);
-                RecordEvent(midiEvent);
+                this.melodyRecorder.RecordEvent(midiEvent);
             }
     }
 
@@ -338,7 +340,7 @@ public class MelodyChordTest : MonoBehaviour
             Duration = 500
         };
         midiStreamPlayer.MPTK_PlayEvent(midiEvent);
-        RecordEvent(midiEvent);
+        this.melodyRecorder.RecordEvent(midiEvent);
     }
 
     // Plays the given bass note
@@ -353,7 +355,7 @@ public class MelodyChordTest : MonoBehaviour
             Duration = 500
         };
         midiStreamPlayer.MPTK_PlayEvent(midiEvent);
-        RecordEvent(midiEvent);
+        this.melodyRecorder.RecordEvent(midiEvent);
     }
 
 
@@ -368,7 +370,7 @@ public class MelodyChordTest : MonoBehaviour
             Channel = channel
         };
         midiStreamPlayer.MPTK_PlayEvent(midiEvent);
-        RecordEvent(midiEvent);
+        this.melodyRecorder.RecordEvent(midiEvent);
     }
 
     // Sets volume for the whole melody / all channels
@@ -390,7 +392,7 @@ public class MelodyChordTest : MonoBehaviour
             Channel = channel
         };
         midiStreamPlayer.MPTK_PlayEvent(midiEvent);
-        RecordEvent(midiEvent);
+        this.melodyRecorder.RecordEvent(midiEvent);
     }
 
     /*
@@ -555,38 +557,5 @@ public class MelodyChordTest : MonoBehaviour
             return sadBlue;
         }
     }
-
-    void StartRecording()
-    {
-        recordedEvents.Clear();
-        startTime = Time.time;
-        Debug.Log("Recording started");
-    }
-
-    void RecordEvent(MPTKEvent midiEvent)
-    {
-        float currentTime = Time.time - startTime;
-        recordedEvents.Add(new MelodyEvent(currentTime, midiEvent));
-        Debug.Log("Event recorded at time " + currentTime);
-    }
-
-    IEnumerator ReplayMelody()
-    {
-        Debug.Log("Starting melody replay");
-        float playbackStartTime = Time.time;
-        foreach (var melodyEvent in recordedEvents)
-        {
-            float waitTime = melodyEvent.timeStamp - (Time.time - playbackStartTime);
-            if (waitTime > 0)
-                yield return new WaitForSeconds(waitTime);
-
-            if (melodyEvent.midiEvent != null)
-            {
-                Debug.Log("Replaying midiEvent");
-                midiStreamPlayer.MPTK_PlayEvent(melodyEvent.midiEvent);
-            }
-        }
-    }
-
 
 }
