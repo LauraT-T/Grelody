@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using MidiPlayerTK;
 
-class MelodyEvent
+public class MelodyEvent
 {
     public float timeStamp; // Time when the event occurs
     public MPTKEvent midiEvent; // The MIDI event (note, volume, etc.)

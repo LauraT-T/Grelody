@@ -5,7 +5,7 @@ using UnityEngine;
 using MidiPlayerTK;
 using UnityEngine.InputSystem;
 
-class Melody
+public class Melody
 {
     private List<MelodyEvent> recordedEvents;
 

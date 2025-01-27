@@ -26,7 +26,6 @@ public class MelodyChordTest : MonoBehaviour
     public MidiStreamPlayer midiStreamPlayer;
     private Dictionary<MusicalKey, CompositionProvider> compositionDict; // Dictionary of two composition providers (a major key and its minor equivalent)
     private CompositionProvider compositionProvider; // Current composition provider
-    private double beatCount = 0; // Number of beats that have passed
     private const int BEATS_PER_CHORD = 4; // Number of beats played until chord change
     private int chordIndex = 0; // Current index of chord being played (0 - 3)
     private float overallVolume = 0.5f; // Current volume (0.0 - 1.0)
@@ -49,6 +48,13 @@ public class MelodyChordTest : MonoBehaviour
 
     // Recording of the created tune
     private MelodyRecorder melodyRecorder;
+
+    // Count the number of beats in major and minor to determine the snowman's appearance
+    private int majorCounter = 0;
+    private int minorCounter = 0;
+
+    // Store which instruments were added in a HashMap to determine number of snowballs for snowman
+    private HashSet<InstrumentType> addedInstruments = new HashSet<InstrumentType>();
 
     
     // Drum pattern
@@ -208,8 +214,9 @@ public class MelodyChordTest : MonoBehaviour
         // Create snowman out of the tune
         if (Input.GetKeyDown(KeyCode.X))
         {
-            snowmanManager.SpawnSnowman(1, true);
             Melody recordedMelody = this.melodyRecorder.GetMelody();
+            bool isHappy = this.majorCounter >= this.minorCounter ? true : false;
+            snowmanManager.SpawnSnowman(this.addedInstruments.Count, isHappy, recordedMelody);
             recordedMelody.StartReplay(this, this.midiStreamPlayer); // TODO: move elsewhere
         }
     }
@@ -228,8 +235,16 @@ public class MelodyChordTest : MonoBehaviour
                 PlayNote(melodyNote);
                 MakeSnowflakeAppear();
             }
-            beatCount++;
-            //Debug.Log($"Beat Count: {beatCount}");
+
+            // Count major and minor beats
+            if(this.melodyAdded || this.chordsAdded || this.bassAdded || this.drumsAdded) {
+                if(Object.ReferenceEquals(this.compositionProvider, compositionDict[MusicalKey.MAJOR])) {
+                    this.majorCounter++;
+                } else {
+                    this.minorCounter++;
+                }
+            }
+            
             yield return new WaitForSeconds(getTimeBetweenNotes());
         }
     }
@@ -444,6 +459,9 @@ public class MelodyChordTest : MonoBehaviour
             this.instrumentDict[type] = TuneComponent.DRUMS;
             Debug.Log("Drums added");
        }
+
+        // Store added instrument types in HashMap
+        this.addedInstruments.Add(type);
     }
 
     /*

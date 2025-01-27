@@ -15,28 +15,39 @@ public class SnowmanManager : MonoBehaviour
     public GameObject snowmanHappyTwo;
     public GameObject snowmanHappyThree;
 
-    private List<GameObject> createdSnowmen = new List<GameObject>();
+    // List of all created and saved melodies with their corresponding snowman model
+    private List<SnowmanMelody> createdSnowmen = new List<SnowmanMelody>();
 
-    public void SpawnSnowman(int numberOfBalls, bool isHappy)
+    /*
+    Makes a snowman appear in the scene.
+    Is passed the created melody,
+    the number of snowballs the snowman has (reflects how many instruments were added)
+    and whether the snowman is happy or sad (reflects whether the melody is mostly mejor or minor)
+    */
+    public void SpawnSnowman(int instrumentNumber, bool isHappy, Melody melody)
     {
         
         // Spawn position
         Vector3 spawnPosition = new Vector3(0, 0, 0);
 
         // Get snowman
+        int numberOfBalls = CalculateSnowballNumber(instrumentNumber);
         GameObject snowmanPrefab = GetSnowmanPrefab(numberOfBalls, isHappy);
 
         // Instantiate the snowman
         GameObject newSnowman = Instantiate(snowmanPrefab, spawnPosition, Quaternion.identity);
 
-        // Add the snowman to list of created snowmen
-        createdSnowmen.Add(newSnowman);
+        // Add the snowman prefab together with the saved melody to list of created snowmen
+        SnowmanMelody newSnowmanMelody = new SnowmanMelody(newSnowman, melody);
+        createdSnowmen.Add(newSnowmanMelody);
        
     }
 
     // Get the snowman prefab with correct facial expression and number of snowballs
     private GameObject GetSnowmanPrefab(int numberOfBalls, bool isHappy)
     {
+       Debug.Log($"Snowman created with {(isHappy ? "happy" : "sad")} mood and {numberOfBalls} snowballs");
+
         switch (numberOfBalls)
         {
             case 1: 
@@ -58,6 +69,21 @@ public class SnowmanManager : MonoBehaviour
                     return snowmanSadTree;
                 }
             default: return snowmanHappyOne;
+        }
+    }
+
+    /*
+    Calculates number of snowballs (1-3) based on number of instruments which have been added to the melody
+    */
+    private int CalculateSnowballNumber(int instrumentNumber)
+    {
+        switch(instrumentNumber) 
+        {
+            case 0: return 1;
+            case 1: return 1;
+            case 2: return 2;
+            case 3: return 3;
+            default: return 3;
         }
     }
 
