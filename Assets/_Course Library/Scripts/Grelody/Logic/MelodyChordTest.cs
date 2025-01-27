@@ -17,6 +17,7 @@ Controls (for testing)
 - E: Add / remove strings
 - R: Add / remove trumpet
 - T: Add / remove drum beat
+- X: Make snowman appear and replay tune (STOP ALL INSTRUMENTS BEFOREHAND)
 
 */
 
@@ -42,6 +43,13 @@ public class MelodyChordTest : MonoBehaviour
 
     // Manages the appearance of snowflakes for the notes
     private SnowflakeManager snowflakeManager;
+
+    // Manages the appearance of snowmen for the finished tunes
+    private SnowmanManager snowmanManager;
+
+    // Recording of the created tune
+    private List<MelodyEvent> recordedEvents = new List<MelodyEvent>();
+    private float startTime;
 
     
     // Drum pattern
@@ -75,6 +83,9 @@ public class MelodyChordTest : MonoBehaviour
 
         // Find the SnowflakeManager in the scene
         snowflakeManager = (SnowflakeManager)FindFirstObjectByType<SnowflakeManager>();
+
+        // Find the SnowmanManager in the scene
+        snowmanManager = (SnowmanManager)FindFirstObjectByType<SnowmanManager>();
         
         if (!MidiPlayerGlobal.MPTK_IsReady()) {
             Debug.Log("Not ready yet");
@@ -93,6 +104,9 @@ public class MelodyChordTest : MonoBehaviour
         StartCoroutine(PlayChords());
         StartCoroutine(PlayDrumPattern());
         StartCoroutine(PlayBassNotes());
+
+        // TODO: start recording when first instrument is added
+        StartRecording();
 
     }
 
@@ -189,6 +203,13 @@ public class MelodyChordTest : MonoBehaviour
                 AddInstrument(InstrumentType.DRUMS);
             }
         }
+
+        // Create snowman out of the tune
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            snowmanManager.SpawnSnowman(1, true);
+            StartCoroutine(ReplayMelody()); // TODO: move elsewhere
+        }
     }
 
     IEnumerator PlayMelody()
@@ -200,12 +221,6 @@ public class MelodyChordTest : MonoBehaviour
             List<int> allowedNotes = allAllowedNotes[chordIndex];
             int melodyNote = allowedNotes[Random.Range(0, allowedNotes.Count)];
 
-            // Emphasize note on beat 1
-            if(beatCount % BEATS_PER_CHORD == 0) {
-                Debug.Log("Emphasis");
-                SetChannelVolume(0, 127);
-            }
-
             // Play one quarter note
             if(this.melodyAdded) {
                 PlayNote(melodyNote);
@@ -214,9 +229,6 @@ public class MelodyChordTest : MonoBehaviour
             beatCount++;
             //Debug.Log($"Beat Count: {beatCount}");
             yield return new WaitForSeconds(getTimeBetweenNotes());
-            
-            // Reset volume
-            SetChannelVolume(0, 75);
         }
     }
 
@@ -281,14 +293,17 @@ public class MelodyChordTest : MonoBehaviour
     // Plays the given melody note
     void PlayNote(int note)
     {
-        midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent
+        MPTKEvent midiEvent = new MPTKEvent
         {
             Command = MPTKCommand.NoteOn,
             Value = note,
             Channel = 0, // Melody on channel 0
             Velocity = 100,
             Duration = 500
-        });
+        };
+
+        midiStreamPlayer.MPTK_PlayEvent(midiEvent);
+        RecordEvent(midiEvent);
     }
 
     // Plays current chord in chord progression
@@ -298,54 +313,62 @@ public class MelodyChordTest : MonoBehaviour
        
             foreach (var note in chords[chordIndex])
             {
-                midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent
+                MPTKEvent midiEvent = new MPTKEvent
                 {
                     Command = MPTKCommand.NoteOn,
                     Value = note,
                     Channel = 1, // Chords on channel 1
                     Velocity = 80,
                     Duration = 300
-                });
+                };
+                midiStreamPlayer.MPTK_PlayEvent(midiEvent);
+                RecordEvent(midiEvent);
             }
     }
 
     // Plays the given beat note
     void PlayDrumNote(int note)
     {
-        midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent
+        MPTKEvent midiEvent = new MPTKEvent
         {
             Command = MPTKCommand.NoteOn,
             Value = note,
             Channel = 9, // Drum pattern on channel 9
             Velocity = 100,
             Duration = 500
-        });
+        };
+        midiStreamPlayer.MPTK_PlayEvent(midiEvent);
+        RecordEvent(midiEvent);
     }
 
     // Plays the given bass note
     void PlayBassNote(int note)
     {
-        midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent
+        MPTKEvent midiEvent = new MPTKEvent
         {
             Command = MPTKCommand.NoteOn,
             Value = note,
             Channel = 2, // Bass notes on channel 3
             Velocity = 100,
             Duration = 500
-        });
+        };
+        midiStreamPlayer.MPTK_PlayEvent(midiEvent);
+        RecordEvent(midiEvent);
     }
 
 
     // Sets volume of the specified channel
     void SetChannelVolume(int channel, int newVolume) {
 
-        midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent
+        MPTKEvent midiEvent = new MPTKEvent
         {
             Command = MPTKCommand.ControlChange,
             Controller = MPTKController.VOLUME_MSB,
             Value = newVolume, // MIDI Volume (0-127)
             Channel = channel
-        });
+        };
+        midiStreamPlayer.MPTK_PlayEvent(midiEvent);
+        RecordEvent(midiEvent);
     }
 
     // Sets volume for the whole melody / all channels
@@ -360,12 +383,14 @@ public class MelodyChordTest : MonoBehaviour
 
     // Sets an instrument for a channel
     void SetInstrumentForChannel(int channel, int instrument) {
-        midiStreamPlayer.MPTK_PlayEvent(new MPTKEvent()
+        MPTKEvent midiEvent = new MPTKEvent()
         {
             Command = MPTKCommand.PatchChange,
             Value = instrument,
             Channel = channel
-        });
+        };
+        midiStreamPlayer.MPTK_PlayEvent(midiEvent);
+        RecordEvent(midiEvent);
     }
 
     /*
@@ -530,5 +555,38 @@ public class MelodyChordTest : MonoBehaviour
             return sadBlue;
         }
     }
+
+    void StartRecording()
+    {
+        recordedEvents.Clear();
+        startTime = Time.time;
+        Debug.Log("Recording started");
+    }
+
+    void RecordEvent(MPTKEvent midiEvent)
+    {
+        float currentTime = Time.time - startTime;
+        recordedEvents.Add(new MelodyEvent(currentTime, midiEvent));
+        Debug.Log("Event recorded at time " + currentTime);
+    }
+
+    IEnumerator ReplayMelody()
+    {
+        Debug.Log("Starting melody replay");
+        float playbackStartTime = Time.time;
+        foreach (var melodyEvent in recordedEvents)
+        {
+            float waitTime = melodyEvent.timeStamp - (Time.time - playbackStartTime);
+            if (waitTime > 0)
+                yield return new WaitForSeconds(waitTime);
+
+            if (melodyEvent.midiEvent != null)
+            {
+                Debug.Log("Replaying midiEvent");
+                midiStreamPlayer.MPTK_PlayEvent(melodyEvent.midiEvent);
+            }
+        }
+    }
+
 
 }

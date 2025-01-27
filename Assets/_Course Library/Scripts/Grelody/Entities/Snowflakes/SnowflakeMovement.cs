@@ -24,8 +24,6 @@ public class SnowflakeMovement : MonoBehaviour
         moveLeftSpeed = Random.Range(0.1f, 0.3f);
         stopXPosition = Random.Range(-0.1f, -1.5f);
 
-        Debug.Log("Random x-Position: " + stopXPosition);
-
         // Ensure Rigidbody is added
         rb = GetComponent<Rigidbody>();
         if (rb == null)
