@@ -26,6 +26,8 @@ public class SnowmanManager : MonoBehaviour
     // List of all created and saved melodies with their corresponding snowman model
     private List<SnowmanMelody> createdSnowmen = new List<SnowmanMelody>();
 
+    public SnowmanInventoryManager inventoryManager;
+
     /*
     Makes a snowman appear in the scene.
     Is passed the created melody,
@@ -55,6 +57,42 @@ public class SnowmanManager : MonoBehaviour
         // Show option to save or delete
         saveDeleteCanvas.SetActive(true);
        
+    }
+
+    // Save the last created snowman to the inventory
+    public void SaveSnowman()
+    {
+        if (createdSnowmen.Count > 0)
+        {
+            SnowmanMelody snowmanToSave = createdSnowmen[createdSnowmen.Count - 1];
+            inventoryManager.SaveSnowman(snowmanToSave);
+            Destroy(snowmanToSave.GetSnowmanPrefab());
+            Debug.Log("Snowman saved to inventory");
+        }
+        else
+        {
+            Debug.LogWarning("No snowman to save");
+        }
+
+        saveDeleteCanvas.SetActive(false);  
+    }
+
+    // Delete the last created snowman (burn in hell hehe)
+    public void DeleteSnowman()
+    {
+        if (createdSnowmen.Count > 0)
+        {
+            SnowmanMelody snowmanToDelete = createdSnowmen[createdSnowmen.Count - 1];
+            Destroy(snowmanToDelete.GetSnowmanPrefab());
+            createdSnowmen.RemoveAt(createdSnowmen.Count - 1);
+            Debug.Log("Snowman deleted");
+        }
+        else
+        {
+            Debug.LogWarning("No snowman to delete");
+        }
+
+        saveDeleteCanvas.SetActive(false);
     }
 
     // Get the snowman prefab with correct facial expression and number of snowballs
