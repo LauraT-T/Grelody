@@ -17,19 +17,32 @@ Controls (for testing)
 - E: Add / remove strings
 - R: Add / remove trumpet
 - T: Add / remove drum beat
-- X: Make snowman appear and replay tune (STOP ALL INSTRUMENTS BEFOREHAND)
+- X: Make snowman appear and replay tune
+- M: Make adding instruments possible again after stopping the music with X
 
 */
 
 public class MelodyChordTest : MonoBehaviour
 {
+    // Constants
+    private const float DEFAULT_VOLUME = 0.5f;
+    private const float DEFAULT_TEMPO = 120f;
+
+    // Variables
     public MidiStreamPlayer midiStreamPlayer;
     private Dictionary<MusicalKey, CompositionProvider> compositionDict; // Dictionary of two composition providers (a major key and its minor equivalent)
     private CompositionProvider compositionProvider; // Current composition provider
     private const int BEATS_PER_CHORD = 4; // Number of beats played until chord change
     private int chordIndex = 0; // Current index of chord being played (0 - 3)
-    private float overallVolume = 0.5f; // Current volume (0.0 - 1.0)
-    private float tempo = 120f; // Default tempo in beats per minute
+    private float overallVolume = DEFAULT_VOLUME; // Current volume (0.0 - 1.0)
+    private float tempo = DEFAULT_TEMPO; // Default tempo in beats per minute
+
+    // Coroutines
+    private IEnumerator melodyCoroutine;
+    private IEnumerator chordCoroutine;
+    private IEnumerator bassCoroutine;
+    private IEnumerator drumsCoroutine;
+    private bool coroutinesRunning = false;
 
     // Variables for adding instruments
     private InstrumentProvider instrumentProvider;
@@ -105,15 +118,11 @@ public class MelodyChordTest : MonoBehaviour
 
         SetOverallVolume(this.overallVolume);
 
-        StartCoroutine(PlayMelody());
-        StartCoroutine(PlayChords());
-        StartCoroutine(PlayDrumPattern());
-        StartCoroutine(PlayBassNotes());
+        // Start the coroutines (nothing is heard until instrument is added)
+        StartMusic();
 
         // Recorder to save the created melody
-        // TODO: start recording when first instrument is added
         this.melodyRecorder = new MelodyRecorder();
-        this.melodyRecorder.StartRecording();
 
     }
 
@@ -214,11 +223,69 @@ public class MelodyChordTest : MonoBehaviour
         // Create snowman out of the tune
         if (Input.GetKeyDown(KeyCode.X))
         {
-            Melody recordedMelody = this.melodyRecorder.GetMelody();
-            bool isHappy = this.majorCounter >= this.minorCounter ? true : false;
-            snowmanManager.SpawnSnowman(this.addedInstruments.Count, isHappy, recordedMelody);
-            recordedMelody.StartReplay(this, this.midiStreamPlayer); // TODO: move elsewhere
+            StopMusic();
         }
+
+        // Make recording a new tune possible
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            StartMusic();
+        }
+    }
+
+    void StartMusic()
+    {
+        this.melodyCoroutine = PlayMelody();
+        this.chordCoroutine = PlayChords();
+        this.bassCoroutine = PlayBassNotes();
+        this.drumsCoroutine = PlayDrumPattern();
+
+        StartCoroutine(this.melodyCoroutine);
+        StartCoroutine(this.chordCoroutine);
+        StartCoroutine(this.drumsCoroutine);
+        StartCoroutine(this.bassCoroutine);
+
+        this.coroutinesRunning = true;
+        Debug.Log("Coroutines started");
+    }
+
+    /*
+    Stops the music, makes snowflakes disappear, creates snowman out of the recorded melody
+    */
+    void StopMusic()
+    {
+        // Stop music
+        this.melodyAdded = false;
+        this.chordsAdded = false;
+        this.bassAdded = false;
+        this.drumsAdded = false;
+
+        StopCoroutine(this.melodyCoroutine);
+        StopCoroutine(this.chordCoroutine);
+        StopCoroutine(this.drumsCoroutine);
+        StopCoroutine(this.bassCoroutine);
+
+        this.coroutinesRunning = false;
+        Debug.Log("Coroutines stopped");
+
+        // Get the recorded melody and stop recording
+        Melody recordedMelody = this.melodyRecorder.GetMelody();
+        this.melodyRecorder.SetIsRecording(false);
+
+        // Make smowman appear
+        bool isHappy = this.majorCounter >= this.minorCounter ? true : false;
+        snowmanManager.SpawnSnowman(this.addedInstruments.Count, isHappy, recordedMelody);
+
+        // Start replay of recorded melody
+        recordedMelody.StartReplay(this, this.midiStreamPlayer); // TODO: move elsewhere?
+
+        // Reset variables
+        this.addedInstruments.Clear();
+        this.majorCounter = 0;
+        this.minorCounter = 0;
+        this.overallVolume = DEFAULT_VOLUME;
+        this.tempo = DEFAULT_TEMPO;
+        this.compositionProvider = compositionDict[MusicalKey.MAJOR];
     }
 
     IEnumerator PlayMelody()
@@ -426,6 +493,16 @@ public class MelodyChordTest : MonoBehaviour
     */
     void AddInstrument(InstrumentType type)
     {
+        // No instruments can be added if coroutines are not running and, thus, no music can be heard
+        if(!this.coroutinesRunning) {
+            return;
+        }
+
+        // Start recording if instrument is added for the first time
+        if(this.addedInstruments.Count == 0 && !this.melodyRecorder.GetIsRecording()) {
+            this.melodyRecorder.StartRecording();
+        }
+
        Instrument newInstrument = this.instrumentProvider.GetInstrument(type);
        Debug.Log("NEW INSTRUMENT:");
        Debug.Log(newInstrument.GetMidiValue());
