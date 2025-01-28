@@ -83,7 +83,7 @@ public class SnowflakeManager : MonoBehaviour
         return grammophone.transform.position + new Vector3(0, grammophoneHeight, 0);
     }
 
-    public void DisappearAllSnowflakes(System.Action onComplete)
+    /* public void DisappearAllSnowflakes(System.Action onComplete)
     {
         // Sort snowflakes by their X position in descending order (rightmost first)
         List<GameObject> sortedSnowflakes = activeSnowflakes.OrderByDescending(s => s.transform.position.x).ToList();
@@ -109,5 +109,38 @@ public class SnowflakeManager : MonoBehaviour
 
         // Invoke the callback after all snowflakes are gone
         onComplete?.Invoke();
+    } */
+
+    // Snowflakes all move towards the position, where the snowman appears, then disappear
+    public void DisappearAllSnowflakes(Vector3 targetPosition, System.Action onComplete)
+    {
+        // Iterate through all active snowflakes and set their target position
+        foreach (GameObject snowflake in activeSnowflakes)
+        {
+            if (snowflake != null)
+            {
+                SnowflakeMovement movement = snowflake.GetComponent<SnowflakeMovement>();
+                if (movement != null)
+                {
+                    movement.MoveToTarget(targetPosition); // Move to target
+                }
+            }
+        }
+
+        // Start coroutine to check when all snowflakes are destroyed
+        StartCoroutine(WaitForSnowflakesToDisappear(onComplete));
     }
+
+    // Coroutine to wait until all snowflakes are destroyed
+    private IEnumerator WaitForSnowflakesToDisappear(System.Action onComplete)
+    {
+        while (activeSnowflakes.Any(s => s != null))
+        {
+            yield return null;
+        }
+
+        // Invoke the callback once all snowflakes are gone
+        onComplete?.Invoke();
+    }
+
 }

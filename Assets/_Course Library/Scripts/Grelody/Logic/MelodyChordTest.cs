@@ -27,6 +27,7 @@ public class MelodyChordTest : MonoBehaviour
     // Constants
     private const float DEFAULT_VOLUME = 0.5f;
     private const float DEFAULT_TEMPO = 120f;
+    private readonly Vector3 SNOWMAN_POSITION = new Vector3(-0.2f, 1.0f, -1.1f);
 
     // Variables
     public MidiStreamPlayer midiStreamPlayer;
@@ -277,13 +278,13 @@ public class MelodyChordTest : MonoBehaviour
         this.melodyRecorder.SetIsRecording(false);
 
         // Make snowflakes disappear with a callback
-        this.snowflakeManager.DisappearAllSnowflakes(() =>
+        this.snowflakeManager.DisappearAllSnowflakes(SNOWMAN_POSITION, () =>
         {
             // Make smowman appear
             bool isHappy = this.majorCounter >= this.minorCounter ? true : false;
             int beatCount = this.majorCounter + this.minorCounter;
             Debug.Log($"Beat count in MelodyChordTest : {this.majorCounter} major + {this.minorCounter} minor = {beatCount}");
-            snowmanManager.SpawnSnowman(this.addedInstruments.Count, isHappy, recordedMelody, beatCount);
+            snowmanManager.SpawnSnowman(SNOWMAN_POSITION, this.addedInstruments.Count, isHappy, recordedMelody, beatCount);
 
             // Start replay of recorded melody
             recordedMelody.StartReplay(this, this.midiStreamPlayer); // TODO: move elsewhere?

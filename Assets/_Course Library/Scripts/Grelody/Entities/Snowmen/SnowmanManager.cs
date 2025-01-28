@@ -30,11 +30,8 @@ public class SnowmanManager : MonoBehaviour
     the number of snowballs the snowman has (reflects how many instruments were added)
     and whether the snowman is happy or sad (reflects whether the melody is mostly mejor or minor)
     */
-    public void SpawnSnowman(int instrumentNumber, bool isHappy, Melody melody, int beatCount)
+    public void SpawnSnowman(Vector3 spawnPosition, int instrumentNumber, bool isHappy, Melody melody, int beatCount)
     {
-        
-        // Spawn position
-        Vector3 spawnPosition = new Vector3(0, 0, 0);
 
         // Get snowman
         int numberOfBalls = CalculateSnowballNumber(instrumentNumber);
