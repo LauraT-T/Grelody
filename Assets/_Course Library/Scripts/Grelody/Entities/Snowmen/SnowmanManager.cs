@@ -16,6 +16,8 @@ public class SnowmanManager : MonoBehaviour
     public GameObject snowmanHappyThree;
 
     public GameObject grammophone;
+    public GameObject saveDeleteCanvas;
+
 
     // Scale depends on length of created melody
     private const float MIN_SCALE = 0.15f;
@@ -49,6 +51,9 @@ public class SnowmanManager : MonoBehaviour
         // Add the snowman prefab together with the saved melody to list of created snowmen
         SnowmanMelody newSnowmanMelody = new SnowmanMelody(newSnowman, melody);
         createdSnowmen.Add(newSnowmanMelody);
+
+        // Show option to save or delete
+        saveDeleteCanvas.SetActive(true);
        
     }
 
