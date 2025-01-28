@@ -4271,6 +4271,7 @@ MonoBehaviour:
     type: 3}
   snowmanHappyThree: {fileID: 856512442802094315, guid: f5afa0dcda7b08c45b8fe54aa3da3f9d,
     type: 3}
+  grammophone: {fileID: 1798507708}
 --- !u!4 &2038711992
 Transform:
   m_ObjectHideFlags: 0

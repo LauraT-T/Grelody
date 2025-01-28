@@ -15,6 +15,12 @@ public class SnowmanManager : MonoBehaviour
     public GameObject snowmanHappyTwo;
     public GameObject snowmanHappyThree;
 
+    public GameObject grammophone;
+
+    // Scale depends on length of created melody
+    private const float MIN_SCALE = 0.15f;
+    private const float MAX_SCALE = 0.35f;
+
     // List of all created and saved melodies with their corresponding snowman model
     private List<SnowmanMelody> createdSnowmen = new List<SnowmanMelody>();
 
@@ -24,7 +30,7 @@ public class SnowmanManager : MonoBehaviour
     the number of snowballs the snowman has (reflects how many instruments were added)
     and whether the snowman is happy or sad (reflects whether the melody is mostly mejor or minor)
     */
-    public void SpawnSnowman(int instrumentNumber, bool isHappy, Melody melody)
+    public void SpawnSnowman(int instrumentNumber, bool isHappy, Melody melody, int beatCount)
     {
         
         // Spawn position
@@ -34,8 +40,14 @@ public class SnowmanManager : MonoBehaviour
         int numberOfBalls = CalculateSnowballNumber(instrumentNumber);
         GameObject snowmanPrefab = GetSnowmanPrefab(numberOfBalls, isHappy);
 
+        // Determine scale factor based on melody length
+        // Scale factor is between minimum and maximum scale factor
+        float scaleFactor = Mathf.Clamp(MIN_SCALE + (beatCount * 0.001f), MIN_SCALE, MAX_SCALE); 
+        Debug.Log($"Beat count: {beatCount} Snowman scale factor: {scaleFactor}");
+
         // Instantiate the snowman
         GameObject newSnowman = Instantiate(snowmanPrefab, spawnPosition, Quaternion.identity);
+        newSnowman.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
 
         // Add the snowman prefab together with the saved melody to list of created snowmen
         SnowmanMelody newSnowmanMelody = new SnowmanMelody(newSnowman, melody);

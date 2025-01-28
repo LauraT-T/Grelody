@@ -36,7 +36,7 @@ public class SnowflakeManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Renderer is null, check prefab structure.");
+            Debug.Log("Renderer is null");
         }
 
         // Add the snowflake to active list
@@ -83,31 +83,6 @@ public class SnowflakeManager : MonoBehaviour
         return grammophone.transform.position + new Vector3(0, grammophoneHeight, 0);
     }
 
-    /* // Maked all snowflakes disappear from right to left
-    public void DisappearAllSnowflakes()
-    {
-        // Sort snowflakes by their X position in descending order (rightmost first)
-        List<GameObject> sortedSnowflakes = activeSnowflakes.OrderByDescending(s => s.transform.position.x).ToList();
-        StartCoroutine(DisappearSnowflakesInOrder(sortedSnowflakes));
-    }
-
-    // TODO: If still time left, synchronize disappearing with hand gesture
-    private IEnumerator DisappearSnowflakesInOrder(List<GameObject> sortedSnowflakes)
-    {
-        foreach (GameObject snowflake in sortedSnowflakes)
-        {
-            if (snowflake != null)
-            {
-                // Destroy the snowflake
-                activeSnowflakes.Remove(snowflake);
-                Destroy(snowflake);
-            }
-
-            // Wait a short delay between each disappearance
-            yield return new WaitForSeconds(0.02f);
-        }
-    } */
-
     public void DisappearAllSnowflakes(System.Action onComplete)
     {
         // Sort snowflakes by their X position in descending order (rightmost first)
@@ -129,7 +104,7 @@ public class SnowflakeManager : MonoBehaviour
             }
 
             // Wait a short delay between each disappearance
-            yield return new WaitForSeconds(0.05f); // Adjust delay for desired effect
+            yield return new WaitForSeconds(0.03f);
         }
 
         // Invoke the callback after all snowflakes are gone

@@ -235,6 +235,8 @@ public class MelodyChordTest : MonoBehaviour
 
     void StartMusic()
     {
+        StopAllCoroutines();
+
         this.melodyCoroutine = PlayMelody();
         this.chordCoroutine = PlayChords();
         this.bassCoroutine = PlayBassNotes();
@@ -265,6 +267,8 @@ public class MelodyChordTest : MonoBehaviour
         StopCoroutine(this.drumsCoroutine);
         StopCoroutine(this.bassCoroutine);
 
+        StopAllCoroutines();
+
         this.coroutinesRunning = false;
         Debug.Log("Coroutines stopped");
 
@@ -277,21 +281,23 @@ public class MelodyChordTest : MonoBehaviour
         {
             // Make smowman appear
             bool isHappy = this.majorCounter >= this.minorCounter ? true : false;
-            snowmanManager.SpawnSnowman(this.addedInstruments.Count, isHappy, recordedMelody);
+            int beatCount = this.majorCounter + this.minorCounter;
+            Debug.Log($"Beat count in MelodyChordTest : {this.majorCounter} major + {this.minorCounter} minor = {beatCount}");
+            snowmanManager.SpawnSnowman(this.addedInstruments.Count, isHappy, recordedMelody, beatCount);
 
             // Start replay of recorded melody
             recordedMelody.StartReplay(this, this.midiStreamPlayer); // TODO: move elsewhere?
+
+            // Reset variables needed for snowman creation
+            this.majorCounter = 0;
+            this.minorCounter = 0;
+            this.addedInstruments.Clear();
         });
 
-        // Reset variables
-        this.addedInstruments.Clear();
-        this.majorCounter = 0;
-        this.minorCounter = 0;
+        // Reset other variables
         this.overallVolume = DEFAULT_VOLUME;
         this.tempo = DEFAULT_TEMPO;
         this.compositionProvider = compositionDict[MusicalKey.MAJOR];
-
-        
     }
 
     IEnumerator PlayMelody()
@@ -501,6 +507,7 @@ public class MelodyChordTest : MonoBehaviour
     {
         // No instruments can be added if coroutines are not running and, thus, no music can be heard
         if(!this.coroutinesRunning) {
+            Debug.Log("No coroutines running, so no instrument can be added.");
             return;
         }
 
