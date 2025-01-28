@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class SnowflakeManager : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class SnowflakeManager : MonoBehaviour
     private List<GameObject> activeSnowflakes = new List<GameObject>();
 
     // If there would be less than this many snowflakes in the scene, the snowflakes do not disappear
-    private const int MIN_SNOWFLAKE_NUMBER = 20;
+    private const int MIN_SNOWFLAKE_NUMBER = 30;
 
     public void SpawnSnowflake(DetailDegree detailDegree, Color snowflakeColor)
     {
@@ -80,5 +81,58 @@ public class SnowflakeManager : MonoBehaviour
 
         // Spawn position is at the top of the grammophone
         return grammophone.transform.position + new Vector3(0, grammophoneHeight, 0);
+    }
+
+    /* // Maked all snowflakes disappear from right to left
+    public void DisappearAllSnowflakes()
+    {
+        // Sort snowflakes by their X position in descending order (rightmost first)
+        List<GameObject> sortedSnowflakes = activeSnowflakes.OrderByDescending(s => s.transform.position.x).ToList();
+        StartCoroutine(DisappearSnowflakesInOrder(sortedSnowflakes));
+    }
+
+    // TODO: If still time left, synchronize disappearing with hand gesture
+    private IEnumerator DisappearSnowflakesInOrder(List<GameObject> sortedSnowflakes)
+    {
+        foreach (GameObject snowflake in sortedSnowflakes)
+        {
+            if (snowflake != null)
+            {
+                // Destroy the snowflake
+                activeSnowflakes.Remove(snowflake);
+                Destroy(snowflake);
+            }
+
+            // Wait a short delay between each disappearance
+            yield return new WaitForSeconds(0.02f);
+        }
+    } */
+
+    public void DisappearAllSnowflakes(System.Action onComplete)
+    {
+        // Sort snowflakes by their X position in descending order (rightmost first)
+        List<GameObject> sortedSnowflakes = activeSnowflakes.OrderByDescending(s => s.transform.position.x).ToList();
+
+        // Start the disappearance coroutine with the callback
+        StartCoroutine(DisappearSnowflakesInOrder(sortedSnowflakes, onComplete));
+    }
+
+    private IEnumerator DisappearSnowflakesInOrder(List<GameObject> sortedSnowflakes, System.Action onComplete)
+    {
+        foreach (GameObject snowflake in sortedSnowflakes)
+        {
+            if (snowflake != null)
+            {
+                // Destroy the snowflake
+                activeSnowflakes.Remove(snowflake);
+                Destroy(snowflake);
+            }
+
+            // Wait a short delay between each disappearance
+            yield return new WaitForSeconds(0.05f); // Adjust delay for desired effect
+        }
+
+        // Invoke the callback after all snowflakes are gone
+        onComplete?.Invoke();
     }
 }

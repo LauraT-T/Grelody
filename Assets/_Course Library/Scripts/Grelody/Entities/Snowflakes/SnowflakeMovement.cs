@@ -9,6 +9,7 @@ public class SnowflakeMovement : MonoBehaviour
 
     private Vector3 initialPosition;
     private bool hasStopped = false;
+    private bool isDisappearing = false; 
 
     // Collison detection
     private Rigidbody rb;
@@ -60,5 +61,10 @@ public class SnowflakeMovement : MonoBehaviour
             // Bounce effect when hitting the Grammophone
             rb.AddForce(Vector3.up * 0.5f, ForceMode.Impulse);
         }
+    }
+
+    public void StopAndDisappear()
+    {
+        isDisappearing = true;
     }
 }

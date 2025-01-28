@@ -272,12 +272,16 @@ public class MelodyChordTest : MonoBehaviour
         Melody recordedMelody = this.melodyRecorder.GetMelody();
         this.melodyRecorder.SetIsRecording(false);
 
-        // Make smowman appear
-        bool isHappy = this.majorCounter >= this.minorCounter ? true : false;
-        snowmanManager.SpawnSnowman(this.addedInstruments.Count, isHappy, recordedMelody);
+        // Make snowflakes disappear with a callback
+        this.snowflakeManager.DisappearAllSnowflakes(() =>
+        {
+            // Make smowman appear
+            bool isHappy = this.majorCounter >= this.minorCounter ? true : false;
+            snowmanManager.SpawnSnowman(this.addedInstruments.Count, isHappy, recordedMelody);
 
-        // Start replay of recorded melody
-        recordedMelody.StartReplay(this, this.midiStreamPlayer); // TODO: move elsewhere?
+            // Start replay of recorded melody
+            recordedMelody.StartReplay(this, this.midiStreamPlayer); // TODO: move elsewhere?
+        });
 
         // Reset variables
         this.addedInstruments.Clear();
@@ -286,6 +290,8 @@ public class MelodyChordTest : MonoBehaviour
         this.overallVolume = DEFAULT_VOLUME;
         this.tempo = DEFAULT_TEMPO;
         this.compositionProvider = compositionDict[MusicalKey.MAJOR];
+
+        
     }
 
     IEnumerator PlayMelody()
