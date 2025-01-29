@@ -124,113 +124,114 @@ public class MelodyChordTest : MonoBehaviour
 
         // Recorder to save the created melody
         this.melodyRecorder = new MelodyRecorder();
+        
+
+        
+        // UNCOMMENT TO TEST BUILD ON QUEST
+        
+        /* AddInstrument(InstrumentType.PIANO);
+        AddInstrument(InstrumentType.GUITAR);
+        AddInstrument(InstrumentType.TRUMPET);
+        AddInstrument(InstrumentType.DRUMS);
+
+        Invoke("StopMusic", 5f); */
 
     }
 
     void Update()
     {
         // Increase volume with Up Arrow
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Keyboard.current.upArrowKey.isPressed)
         {
-            this.overallVolume = Mathf.Clamp(this.overallVolume + 0.01f, 0.0f, 1.0f);
+            overallVolume = Mathf.Clamp(overallVolume + 0.01f, 0.0f, 1.0f);
             SetOverallVolume(overallVolume);
-            Debug.Log($"Volume increased: {this.overallVolume}");
+            Debug.Log($"Volume increased: {overallVolume}");
         }
 
         // Decrease volume with Down Arrow
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (Keyboard.current.downArrowKey.isPressed)
         {
-            this.overallVolume = Mathf.Clamp(this.overallVolume - 0.01f, 0.0f, 1.0f);
+            overallVolume = Mathf.Clamp(overallVolume - 0.01f, 0.0f, 1.0f);
             SetOverallVolume(overallVolume);
-            Debug.Log($"Volume decreased: {this.overallVolume}");
+            Debug.Log($"Volume decreased: {overallVolume}");
         }
 
         // Switch between major and minor when pressing K
-        if (Input.GetKeyDown(KeyCode.K))
+        if (Keyboard.current.kKey.wasPressedThisFrame)
         {
-            if(this.compositionProvider.GetKey() == MusicalKey.MAJOR) {
-                this.compositionProvider = compositionDict[MusicalKey.MINOR];
-                Debug.Log("Key switch to minor"); 
-            } else {
-                this.compositionProvider = compositionDict[MusicalKey.MAJOR]; 
-                Debug.Log("Key switch to major");
-            }
+            compositionProvider = compositionProvider.GetKey() == MusicalKey.MAJOR
+                ? compositionDict[MusicalKey.MINOR]
+                : compositionDict[MusicalKey.MAJOR];
+
+            Debug.Log($"Key switch to {(compositionProvider.GetKey() == MusicalKey.MAJOR ? "major" : "minor")}");
         }
 
         // Increase tempo with F
-        if (Input.GetKey(KeyCode.F))
+        if (Keyboard.current.fKey.isPressed)
         {
-            tempo = Mathf.Clamp(this.tempo + 0.1f, 30f, 240f); // Limit between 30 BPM and 240 BPM
-            Debug.Log($"Tempo increased: {this.tempo} bpm");
+            tempo = Mathf.Clamp(tempo + 0.1f, 30f, 240f);
+            Debug.Log($"Tempo increased: {tempo} bpm");
         }
 
         // Decrease tempo with S
-        if (Input.GetKey(KeyCode.S))
+        if (Keyboard.current.sKey.isPressed)
         {
-            tempo = Mathf.Clamp(this.tempo - 0.1f, 30f, 240f); // Limit between 30 BPM and 240 BPM
+            tempo = Mathf.Clamp(tempo - 0.1f, 30f, 240f);
             Debug.Log($"Tempo decreased: {tempo} bpm");
         }
 
         // Add or remove piano with Q
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Keyboard.current.qKey.wasPressedThisFrame)
         {
-            if (this.instrumentDict.ContainsKey(InstrumentType.PIANO)) { 
-                RemoveInstrument(InstrumentType.PIANO);
-            } else {
-                AddInstrument(InstrumentType.PIANO);
-            }
+            ToggleInstrument(InstrumentType.PIANO);
         }
 
         // Add or remove guitar with W
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Keyboard.current.wKey.wasPressedThisFrame)
         {
-            if (this.instrumentDict.ContainsKey(InstrumentType.GUITAR)) { 
-                RemoveInstrument(InstrumentType.GUITAR);
-            } else {
-                AddInstrument(InstrumentType.GUITAR);
-            }
+            ToggleInstrument(InstrumentType.GUITAR);
         }
 
         // Add or remove strings with E
-        if (Input.GetKeyDown(KeyCode.E))
-        {   
-            if (this.instrumentDict.ContainsKey(InstrumentType.STRINGS)) { 
-                RemoveInstrument(InstrumentType.STRINGS);
-            } else {
-                AddInstrument(InstrumentType.STRINGS);
-            }
+        if (Keyboard.current.eKey.wasPressedThisFrame)
+        {
+            ToggleInstrument(InstrumentType.STRINGS);
         }
 
         // Add or remove trumpet with R
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Keyboard.current.rKey.wasPressedThisFrame)
         {
-            if (this.instrumentDict.ContainsKey(InstrumentType.TRUMPET)) { 
-                RemoveInstrument(InstrumentType.TRUMPET);
-            } else {
-                AddInstrument(InstrumentType.TRUMPET);
-            }
+            ToggleInstrument(InstrumentType.TRUMPET);
         }
 
         // Add or remove drums with T
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Keyboard.current.tKey.wasPressedThisFrame)
         {
-            if (this.instrumentDict.ContainsKey(InstrumentType.DRUMS)) { 
-                RemoveInstrument(InstrumentType.DRUMS);
-            } else {
-                AddInstrument(InstrumentType.DRUMS);
-            }
+            ToggleInstrument(InstrumentType.DRUMS);
         }
 
-        // Create snowman out of the tune
-        if (Input.GetKeyDown(KeyCode.X))
+        // Stop music and create a snowman
+        if (Keyboard.current.xKey.wasPressedThisFrame)
         {
             StopMusic();
         }
 
-        // Make recording a new tune possible
-        if (Input.GetKeyDown(KeyCode.M))
+        // Start recording a new tune
+        if (Keyboard.current.mKey.wasPressedThisFrame)
         {
             StartMusic();
+        }
+    }
+
+    void ToggleInstrument(InstrumentType instrument)
+    {
+        if (instrumentDict.ContainsKey(instrument))
+        {
+            RemoveInstrument(instrument);
+        }
+        else
+        {
+            AddInstrument(instrument);
         }
     }
 

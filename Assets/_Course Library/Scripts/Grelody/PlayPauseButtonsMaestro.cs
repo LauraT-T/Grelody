@@ -18,14 +18,14 @@ public class PlayPauseButtonsMaestro : MonoBehaviour
     void Start()
     {
 
-        playButton.onClick.AddListener(PlayTrack);
-        pauseButton.onClick.AddListener(PauseTrack);
+        /* playButton.onClick.AddListener(PlayTrack);
+        pauseButton.onClick.AddListener(PauseTrack); */
         
     }
 
     private void Awake()
         {
-            Debug.Log("Awake: dynamically add MidiFilePlayer component");
+            /* Debug.Log("Awake: dynamically add MidiFilePlayer component");
 
             // MidiPlayerGlobal is a singleton: only one instance can be created. 
             if (MidiPlayerGlobal.Instance == null)
@@ -37,7 +37,7 @@ public class PlayPauseButtonsMaestro : MonoBehaviour
             midiFilePlayer.MPTK_DirectSendToPlayer = true;
 
             // Select a MIDI from the MIDI DB (with exact name)
-            midiFilePlayer.MPTK_MidiName = "Bach - Fugue";
+            midiFilePlayer.MPTK_MidiName = "Bach - Fugue"; */
         }
 
     // Update is called once per frame
@@ -58,7 +58,7 @@ public class PlayPauseButtonsMaestro : MonoBehaviour
     private void PauseTrack() 
     {
         Debug.Log("Pause track");
-         midiFilePlayer.MPTK_Pause();
+        midiFilePlayer.MPTK_Pause();
         
     }
 }
