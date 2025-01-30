@@ -5879,17 +5879,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dd7392436e97e54a8f3ff8be1c9cae7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snowmanSadOne: {fileID: 856512442802094315, guid: f5afa0dcda7b08c45b8fe54aa3da3f9d,
+  snowmanSadOne: {fileID: 8202539654858788876, guid: 489ff0ac9b172724a8ad113de9cf952b,
     type: 3}
-  snowmanSadTwo: {fileID: 856512442802094315, guid: f5afa0dcda7b08c45b8fe54aa3da3f9d,
+  snowmanSadTwo: {fileID: 1224758299627429024, guid: 6edcb571d4bffc540a6985d86aaae093,
     type: 3}
-  snowmanSadTree: {fileID: 856512442802094315, guid: f5afa0dcda7b08c45b8fe54aa3da3f9d,
+  snowmanSadTree: {fileID: 3231395781655641338, guid: cd49054e127beb046a4382346113f6a5,
     type: 3}
   snowmanHappyOne: {fileID: 1142524362708391827, guid: f3ed6e8246ab0eb4fb96e145abdd6907,
     type: 3}
-  snowmanHappyTwo: {fileID: 856512442802094315, guid: f5afa0dcda7b08c45b8fe54aa3da3f9d,
+  snowmanHappyTwo: {fileID: 2307234185300371950, guid: 3607a19334ee1a04b900bf078d8c9e1a,
     type: 3}
-  snowmanHappyThree: {fileID: 856512442802094315, guid: f5afa0dcda7b08c45b8fe54aa3da3f9d,
+  snowmanHappyThree: {fileID: 6705860479537348663, guid: d599c6b08d61707418281bbce6e18fb7,
     type: 3}
   grammophone: {fileID: 1798507708}
   saveDeleteCanvas: {fileID: 1877483667}
