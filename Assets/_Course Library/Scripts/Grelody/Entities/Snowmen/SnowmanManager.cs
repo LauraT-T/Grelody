@@ -46,8 +46,8 @@ public class SnowmanManager : MonoBehaviour
         float scaleFactor = Mathf.Clamp(MIN_SCALE + (beatCount * 0.001f), MIN_SCALE, MAX_SCALE); 
         Debug.Log($"Beat count: {beatCount} Snowman scale factor: {scaleFactor}");
 
-        // Instantiate the snowman
-        GameObject newSnowman = Instantiate(snowmanPrefab, spawnPosition, Quaternion.identity);
+        // Instantiate the snowman (and rotate by 180 degrees since it faces the wrong way)
+        GameObject newSnowman = Instantiate(snowmanPrefab, spawnPosition, Quaternion.Euler(0, 180, 0));
         newSnowman.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
 
         // Add the snowman prefab together with the saved melody to list of created snowmen

@@ -29,7 +29,7 @@ public class SnowmanInventoryManager : MonoBehaviour
         GameObject inventorySnowman = Instantiate(snowmanMelody.GetSnowmanPrefab(), inventoryGrid);
 
         // Adapt scale and position
-        inventorySnowman.transform.localScale = inventorySnowman.transform.localScale * 75.0f;
+        inventorySnowman.transform.localScale = inventorySnowman.transform.localScale * 50.0f;
         inventorySnowman.transform.localPosition = GetNextInventoryPosition();
     }
 

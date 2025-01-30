@@ -83,10 +83,10 @@ public class SnowflakeMovement : MonoBehaviour
     private bool hasStopped = false;
     private bool isDisappearing = false;
 
-    // New variables for moving to target position
-    private bool movingToTarget = false;  // Begin moving to target
-    private Vector3 targetPosition;      // Position to move toward
-    public float moveToTargetSpeed = 1f; // Speed of movement to the target
+    // Move towards position where snowman appears
+    private bool movingToTarget = false;  // Begin moving to snowman
+    private Vector3 targetPosition;  // Snowman position
+    public float moveToTargetSpeed = 2f; // Speed of movement
 
     // Collision detection
     private Rigidbody rb;
@@ -125,23 +125,27 @@ public class SnowflakeMovement : MonoBehaviour
             {
                 Destroy(gameObject); // Destroy snowflake upon reaching the target
             }
-            return; // Skip normal movement while moving to target
+
+        // Else move towards the left
+        } else {
+
+            // Up and down swaying effect using a sine wave
+            float newY = initialPosition.y + Mathf.Sin(Time.time * fallSpeed) * swayAmount;
+            transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+
+            // Move left until the stopping position is reached
+            if (transform.position.x > stopXPosition)
+            {
+                transform.Translate(Vector3.left * moveLeftSpeed * Time.deltaTime, Space.World);
+            }
+            else
+            {
+                // Stop moving left after reaching the stop position
+                hasStopped = true;
+            }
         }
 
-        // Up and down swaying effect using a sine wave
-        float newY = initialPosition.y + Mathf.Sin(Time.time * fallSpeed) * swayAmount;
-        transform.position = new Vector3(transform.position.x, newY, transform.position.z);
-
-        // Move left until the stopping position is reached
-        if (transform.position.x > stopXPosition)
-        {
-            transform.Translate(Vector3.left * moveLeftSpeed * Time.deltaTime, Space.World);
-        }
-        else
-        {
-            // Stop moving left after reaching the stop position
-            hasStopped = true;
-        }
+        
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -153,7 +157,7 @@ public class SnowflakeMovement : MonoBehaviour
         }
     }
 
-    // New method to make the snowflake move to a target position
+    // Makes the snowflake move to a target position
     public void MoveToTarget(Vector3 target)
     {
         movingToTarget = true;
