@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      PUSHILIN_campfire_0: 3582799154148709302
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
