@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -2494686667379274984}
   m_Layer: 0
   m_Name: Drum Set
-  m_TagString: Untagged
+  m_TagString: Instrument
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -267,6 +267,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: DrumSet1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 935c827fbbed6aa4da40904380ac295c,
+        type: 3}
+      propertyPath: m_TagString
+      value: Instrument
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

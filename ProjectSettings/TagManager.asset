@@ -7,6 +7,8 @@ TagManager:
   - Box
   - Trail
   - Grammophone
+  - Snowman
+  - Instrument
   layers:
   - Default
   - TransparentFX

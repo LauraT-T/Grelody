@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -4747694937978194330}
   m_Layer: 0
   m_Name: SnowmanSadOne
-  m_TagString: Untagged
+  m_TagString: Snowman
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -280,6 +280,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SnowmanSadOne
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 89c55d1bedc8c594d96abd176946ac19,
+        type: 3}
+      propertyPath: m_TagString
+      value: Snowman
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

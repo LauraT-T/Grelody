@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -6618631087837510984}
   m_Layer: 0
   m_Name: OldPiano
-  m_TagString: Untagged
+  m_TagString: Instrument
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -267,6 +267,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Piano_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2eb9d92193c3be744987b907fdc48512,
+        type: 3}
+      propertyPath: m_TagString
+      value: Instrument
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: 2eb9d92193c3be744987b907fdc48512,
+        type: 3}
+      propertyPath: m_TagString
+      value: Instrument
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
