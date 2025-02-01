@@ -26,7 +26,7 @@ public class SnowmanInventoryManager : MonoBehaviour
     {
         // Add snowman to the inventory (creating a new SnowmanMelody, so that the melody is found for replay)
         GameObject inventorySnowman = Instantiate(snowmanMelody.GetSnowmanPrefab(), inventoryGrid);
-        SnowmanMelody newSnowmanMelody = new SnowmanMelody(inventorySnowman, snowmanMelody.GetMelody());
+        SnowmanMelody newSnowmanMelody = new SnowmanMelody(inventorySnowman, snowmanMelody.GetMelody(), true);
         savedSnowmen.Add(newSnowmanMelody);
 
         // Adapt scale and position
