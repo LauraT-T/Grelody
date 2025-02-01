@@ -24,9 +24,10 @@ public class SnowmanInventoryManager : MonoBehaviour
     // Saves the snowman to the inventory
     public void SaveSnowman(SnowmanMelody snowmanMelody)
     {
-        // Add snowman to the inventory
-        savedSnowmen.Add(snowmanMelody);
+        // Add snowman to the inventory (creating a new SnowmanMelody, so that the melody is found for replay)
         GameObject inventorySnowman = Instantiate(snowmanMelody.GetSnowmanPrefab(), inventoryGrid);
+        SnowmanMelody newSnowmanMelody = new SnowmanMelody(inventorySnowman, snowmanMelody.GetMelody());
+        savedSnowmen.Add(newSnowmanMelody);
 
         // Adapt scale and position
         inventorySnowman.transform.localScale = inventorySnowman.transform.localScale * 25.0f;
@@ -45,5 +46,19 @@ public class SnowmanInventoryManager : MonoBehaviour
     private void OpenCloseInventory()
     {
         inventory.SetActive(!inventory.activeSelf);
+    }
+
+    // Find the SnowmanMelody corresponding to the passed snowman game object
+    public SnowmanMelody FindSnowmanMelody(GameObject snowmanObject)
+    {
+        foreach (SnowmanMelody snowmanMelody in savedSnowmen)
+        {
+            if (snowmanMelody.GetSnowmanPrefab() == snowmanObject)
+            {
+                return snowmanMelody;
+            }
+        }
+        Debug.Log("No SnowmanMelody for this game object found.");
+        return null;
     }
 }

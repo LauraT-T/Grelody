@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 public class Melody
 {
     private List<MelodyEvent> recordedEvents;
+    private bool isPlaying = false;
 
     public Melody() 
     {
@@ -29,20 +30,28 @@ public class Melody
     // Replays the midi events at the specified time stamps
     private IEnumerator ReplayMelody(MidiStreamPlayer midiStreamPlayer)
     {
-        Debug.Log("Starting melody replay");
-        float playbackStartTime = Time.time;
-        foreach (var melodyEvent in this.recordedEvents)
-        {
-            float waitTime = melodyEvent.timeStamp - (Time.time - playbackStartTime);
-            if (waitTime > 0)
-                yield return new WaitForSeconds(waitTime);
+        // Start replay if not playing yet
+        if(!this.isPlaying) {
 
-            if (melodyEvent.midiEvent != null)
+            this.isPlaying = true;
+            Debug.Log("Starting melody replay");
+            float playbackStartTime = Time.time;
+            foreach (var melodyEvent in this.recordedEvents)
             {
-                Debug.Log("Replaying midiEvent");
-                midiStreamPlayer.MPTK_PlayEvent(melodyEvent.midiEvent);
+                float waitTime = melodyEvent.timeStamp - (Time.time - playbackStartTime);
+                if (waitTime > 0)
+                    yield return new WaitForSeconds(waitTime);
+
+                if (melodyEvent.midiEvent != null)
+                {
+                    Debug.Log("Replaying midiEvent");
+                    midiStreamPlayer.MPTK_PlayEvent(melodyEvent.midiEvent);
+                }
             }
+
+            this.isPlaying = false;
         }
+        
     }
 
     public List<MelodyEvent> GetRecordedEvents()

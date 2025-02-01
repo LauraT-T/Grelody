@@ -2167,6 +2167,11 @@ PrefabInstance:
       propertyPath: m_Convex
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3792944424772177851, guid: a49206e40dd072d47b1844bb2d713e07,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6125377157684126347, guid: a49206e40dd072d47b1844bb2d713e07,
         type: 3}
       propertyPath: m_Name
@@ -2190,6 +2195,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1798507713}
+    - targetCorrespondingSourceObject: {fileID: 6125377157684126347, guid: a49206e40dd072d47b1844bb2d713e07,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1798507717}
   m_SourcePrefab: {fileID: 100100000, guid: a49206e40dd072d47b1844bb2d713e07, type: 3}
 --- !u!4 &957756021 stripped
 Transform:
@@ -4737,6 +4746,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 546276b09de6ea54592358f9c5c82537, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1798507717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1798507708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 734bb15c7f4a8e943bfef4396f40d3aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vinylTransform: {fileID: 35026085976375961, guid: 68ecc74e068451f42880583e890a85d5,
+    type: 3}
+  rotationSpeed: 100
 --- !u!1 &1864577659
 GameObject:
   m_ObjectHideFlags: 0
@@ -4958,7 +4982,7 @@ PrefabInstance:
     - target: {fileID: 6598815579406187037, guid: 18ddb545287c546e19cc77dc9fbb2189,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5896,6 +5920,8 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 6761941266938190535, guid: 6d6877c09ea862a4eafcf85668d7478b, type: 3}
     - {fileID: 1847363729241717970, guid: 6d6877c09ea862a4eafcf85668d7478b, type: 3}
+    - {fileID: 1339411834388751838, guid: 6d6877c09ea862a4eafcf85668d7478b, type: 3}
+    - {fileID: 8549376007641457685, guid: 6d6877c09ea862a4eafcf85668d7478b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
