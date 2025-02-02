@@ -4,6 +4,7 @@ using UnityEngine;
 using MidiPlayerTK;
 using UnityEngine.InputSystem;
 
+
 /*
 Controls (for testing)
 
@@ -130,11 +131,11 @@ public class MelodyChordTest : MonoBehaviour
         // UNCOMMENT TO TEST BUILD ON QUEST
         
         AddInstrument(InstrumentType.PIANO);
-        AddInstrument(InstrumentType.GUITAR);
+        /* AddInstrument(InstrumentType.GUITAR);
         AddInstrument(InstrumentType.TRUMPET);
-        AddInstrument(InstrumentType.DRUMS);
+        AddInstrument(InstrumentType.DRUMS); */
 
-        Invoke("StopMusic", 5f); // Stops the music and makes snowman appear after 5 seconds
+        //Invoke("StopMusic", 5f); // Stops the music and makes snowman appear after 5 seconds
         
 
     }
@@ -507,7 +508,7 @@ public class MelodyChordTest : MonoBehaviour
 
      When a rythm instrument is added, it plays a rythm / the drums.
     */
-    void AddInstrument(InstrumentType type)
+    public void AddInstrument(InstrumentType type)
     {
         // No instruments can be added if coroutines are not running and, thus, no music can be heard
         if(!this.coroutinesRunning) {
@@ -546,6 +547,7 @@ public class MelodyChordTest : MonoBehaviour
 
             } else {
                 Debug.Log("No new non-rythm instrument can be added");
+                throw new System.InvalidOperationException("No new non-rythm instrument can be added");
             }
 
        } else {

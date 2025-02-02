@@ -18,22 +18,28 @@ public class InstrumentCollision : MonoBehaviour
         }
     }
 
+    // On collison with game object, check tag and add instrument
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Piano")) {
             Debug.Log("Piano collided with Grammophone");
+            this.instrumentManager.AddInstrumentToGrammophone(InstrumentType.PIANO);
 
         } else if (other.CompareTag("Guitar")) {
             Debug.Log("Guitar collided with Grammophone");
+            this.instrumentManager.AddInstrumentToGrammophone(InstrumentType.GUITAR);
 
         } else if (other.CompareTag("Violin")) {
             Debug.Log("Violin collided with Grammophone");
+            this.instrumentManager.AddInstrumentToGrammophone(InstrumentType.STRINGS);
 
         } else if (other.CompareTag("Trumpet")) {
             Debug.Log("Trumpet collided with Grammophone");
+            this.instrumentManager.AddInstrumentToGrammophone(InstrumentType.TRUMPET);
 
         } else if (other.CompareTag("Drums")) {
             Debug.Log("Drums collided with Grammophone");
+            this.instrumentManager.AddInstrumentToGrammophone(InstrumentType.DRUMS);
         } 
     }
 }
