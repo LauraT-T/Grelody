@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using MidiPlayerTK;
+using UnityEngine.XR.Interaction.Toolkit;
+
 
 public class ReplayMelody : MonoBehaviour
 {
@@ -21,15 +23,22 @@ public class ReplayMelody : MonoBehaviour
     {
         if (other.CompareTag("Snowman"))
         {
-            Debug.Log("Snowman collided with Grammophone!");
+            Debug.Log("Snowman collided with Grammophone");
 
             // Find the corresponding SnowmanMelody in the inventory
             SnowmanMelody snowmanMelody = inventoryManager.FindSnowmanMelody(other.gameObject);
 
             if (snowmanMelody != null)
             {
+
+                DisableGrabbing(other);
+                StartCoroutine(EnableGrabbingAfterDelay(other, 1f));
+
                 // Move the snowman to the vinyl
-                other.transform.position = this.VINYL_POSITION;
+                if (other.transform.position != this.VINYL_POSITION)
+                {
+                    other.transform.position = this.VINYL_POSITION;
+                }
 
                 // Start playing the melody
                 MidiStreamPlayer midiPlayer = FindObjectOfType<MidiStreamPlayer>();
@@ -41,7 +50,8 @@ public class ReplayMelody : MonoBehaviour
                 }
 
                 this.spinCoroutine = SpinSnowman(other.transform);
-                StartCoroutine(SpinSnowman(other.transform));
+                StartCoroutine(this.spinCoroutine);
+                StopSpinningOnGrab(other);
             }
         }
     }
@@ -54,5 +64,47 @@ public class ReplayMelody : MonoBehaviour
             snowman.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
             yield return null;
         }
+    }
+
+    // Disable grabbing temporarily so that snowman can spawn on top of vinyl
+    private void DisableGrabbing(Collider other)
+    {
+        UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable = other.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+        if (grabInteractable != null)
+        {
+            grabInteractable.interactionManager.SelectExit(grabInteractable.firstInteractorSelecting, grabInteractable);
+            grabInteractable.enabled = false; 
+        }
+    }
+
+    // Re-enable grabbing
+    private void EnableGrabbing(Collider other)
+    {
+        UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable = other.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+        if (grabInteractable != null)
+        {
+            grabInteractable.enabled = true;
+        }
+    }
+
+    private IEnumerator EnableGrabbingAfterDelay(Collider obj, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        EnableGrabbing(obj);
+    }
+
+    // Stop spinning
+    private void StopSpinningOnGrab(Collider other)
+    {
+        UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable = other.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+        if (grabInteractable != null)
+        {
+            grabInteractable.selectEntered.AddListener(OnGrabbed);
+        }
+    }
+
+    private void OnGrabbed(SelectEnterEventArgs args)
+    {
+        StopCoroutine(this.spinCoroutine);
     }
 }
