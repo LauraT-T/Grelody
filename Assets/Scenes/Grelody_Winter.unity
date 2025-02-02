@@ -1542,7 +1542,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &647598557
 Transform:
   m_ObjectHideFlags: 0
@@ -5011,12 +5011,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 100
---- !u!224 &1823763923 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 7863554982681176244, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
-    type: 3}
-  m_PrefabInstance: {fileID: 1902501769}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1798507721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5029,6 +5023,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 663d44a54458f104fa02f84c84d7cc59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &1823763923 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7863554982681176244, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
+    type: 3}
+  m_PrefabInstance: {fileID: 1902501769}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1864577659
 GameObject:
   m_ObjectHideFlags: 0

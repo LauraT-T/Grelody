@@ -61,6 +61,9 @@ public class MelodyChordTest : MonoBehaviour
     // Manages the appearance of snowmen for the finished tunes
     private SnowmanManager snowmanManager;
 
+    // Manages the instruments being thrown into and pulled from the grammophone
+    private InstrumentManager instrumentManager;
+
     // Recording of the created tune
     private MelodyRecorder melodyRecorder;
 
@@ -106,6 +109,9 @@ public class MelodyChordTest : MonoBehaviour
 
         // Find the SnowmanManager in the scene
         snowmanManager = (SnowmanManager)FindFirstObjectByType<SnowmanManager>();
+
+        // Find the InstrumentManager in the scene
+        instrumentManager = (InstrumentManager)FindFirstObjectByType<InstrumentManager>();
         
         if (!MidiPlayerGlobal.MPTK_IsReady()) {
             Debug.Log("Not ready yet");
@@ -303,6 +309,9 @@ public class MelodyChordTest : MonoBehaviour
         this.overallVolume = DEFAULT_VOLUME;
         this.tempo = DEFAULT_TEMPO;
         this.compositionProvider = compositionDict[MusicalKey.MAJOR];
+
+        // Make instruments appear at their original positions
+        this.instrumentManager.ResetInstruments();
     }
 
     IEnumerator PlayMelody()
