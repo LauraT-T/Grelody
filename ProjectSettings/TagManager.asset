@@ -9,6 +9,7 @@ TagManager:
   - Grammophone
   - Snowman
   - Instrument
+  - BackToInventory
   layers:
   - Default
   - TransparentFX

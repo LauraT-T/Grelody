@@ -16,6 +16,7 @@ public class SnowmanInventoryManager : MonoBehaviour
     private List<SnowmanMelody> savedSnowmen = new List<SnowmanMelody>();
 
 
+
     public void Start()
     {
         openInventoryButton.onClick.AddListener(OpenCloseInventory);

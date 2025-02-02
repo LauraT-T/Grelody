@@ -24,6 +24,8 @@ public class SnowmanRotationFix : MonoBehaviour
 
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using System.Linq;
+
 
 //Quick and dirty fix for the bug which causes the snowman's rotation to reset when being grabbed
 //(Causing it to look away from the player)
@@ -33,9 +35,17 @@ public class SnowmanRotationFix : MonoBehaviour
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
     private SnowmanInventoryManager inventoryManager;
     private GrammophoneGlow grammophoneGlow;
+    public GameObject backToInventoryButton; // Move Snowman back to inventory
 
     void Start()
     {
+        this.backToInventoryButton = FindObjectsOfType<GameObject>(true)
+                        .FirstOrDefault(obj => obj.name == "BackToInventory");
+
+        if(this.backToInventoryButton == null) {
+            Debug.Log("Button not found.");
+        }
+
         grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         grabInteractable.selectEntered.AddListener(OnGrabbed);
         grabInteractable.selectExited.AddListener(OnReleased);
@@ -46,16 +56,27 @@ public class SnowmanRotationFix : MonoBehaviour
 
         // Find the inventory manager in the scene
         this.inventoryManager = FindObjectOfType<SnowmanInventoryManager>();
+        
+        
     }
 
     private void OnGrabbed(SelectEnterEventArgs args)
     {
         initialRotation = transform.rotation; // Store rotation when first grabbed
-
-        // Vinyl glows if melody can be replayed by moving the snowman there
+       
+       // Check if snowman has been saved to inventory
         SnowmanMelody snowmanMelody = inventoryManager.FindSnowmanMelody(gameObject);
+
         if (snowmanMelody != null) {
+
+            // Vinyl glows if melody can be replayed by moving the snowman there
             grammophoneGlow.EnableVinylGlow();
+
+            // Show button to move snowman back into inventory
+            if (!this.backToInventoryButton.activeSelf) 
+            {
+               this.backToInventoryButton.SetActive(true);
+            }
         }
     }
 
@@ -76,4 +97,25 @@ public class SnowmanRotationFix : MonoBehaviour
             transform.rotation = initialRotation;
         }
     }
+
+    // Handle Collision with the BackToInventory Button
+   /*  private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject == this.backToInventoryButton)
+        {
+            SnowmanMelody snowmanMelody = inventoryManager.FindSnowmanMelody(other.gameObject);
+
+            if (snowmanMelody != null)
+            {
+                // Move the snowman to its saved inventory position
+                transform.position = snowmanMelody.GetInventoryPosition();
+                Debug.Log("Snowman moved back to inventory at position: " + snowmanMelody.GetInventoryPosition());
+                this.backToInventoryButton.SetActive(false);
+            }
+            else
+            {
+                Debug.Log("No corresponding SnowmanMelody found.");
+            }
+        }
+    } */
 }
