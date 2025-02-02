@@ -131,7 +131,7 @@ public class MelodyChordTest : MonoBehaviour
         // UNCOMMENT TO TEST BUILD ON QUEST
         
         AddInstrument(InstrumentType.PIANO);
-        /* AddInstrument(InstrumentType.GUITAR);
+        /* AddInstrument(InstrumentType.GUITAR); 
         AddInstrument(InstrumentType.TRUMPET);
         AddInstrument(InstrumentType.DRUMS); */
 

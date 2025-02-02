@@ -10,10 +10,6 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
     public class StaticHandGesture : MonoBehaviour
     {
         [SerializeField]
-        [Tooltip("The script that should be called, when the hand gesture gets detected.")]
-        MonoBehaviour m_ScriptToCall;
-
-        [SerializeField]
         [Tooltip("The hand tracking events component to subscribe to receive updated joint data to be used for gesture detection.")]
         XRHandTrackingEvents m_HandTrackingEvents;
 
@@ -57,15 +53,6 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
         float m_HoldStartTime;
         Color m_BackgroundDefaultColor;
         Color m_BackgroundHiglightColor = new Color(0f, 0.627451f, 1f);
-
-        /// <summary>
-        /// The hand tracking events component to subscribe to receive updated joint data to be used for gesture detection.
-        /// </summary>
-        public MonoBehaviour scriptToCall
-        {
-            get => m_ScriptToCall;
-            set => m_ScriptToCall = value;
-        }
 
         /// <summary>
         /// The hand tracking events component to subscribe to receive updated joint data to be used for gesture detection.
@@ -186,9 +173,6 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
                 {
                     m_GesturePerformed?.Invoke();
                     m_PerformedTriggered = true;
-                    Debug.Log("Gesture detected.");
-                    scriptToCall = m_ScriptToCall;
-                    scriptToCall.SendMessage("OnHandGesture", SendMessageOptions.DontRequireReceiver);
                     m_Background.color = m_BackgroundHiglightColor;
                 }
             }
