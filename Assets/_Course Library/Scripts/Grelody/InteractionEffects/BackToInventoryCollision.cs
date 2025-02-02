@@ -1,26 +1,15 @@
+using System.Collections;
 using UnityEngine;
+using MidiPlayerTK;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class BackToInventoryCollision : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void OnCollisionEnter(Collision other)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    // Save snowman to inventory when snowman is entering inventory button
-     private void OnCollisionEnter(Collision other)
-    {
-
-        if (other.gameObject.CompareTag("Snowman")) { 
-
-            Debug.Log("Collision snowman - backToInventory detected.");
+        if (other.gameObject.CompareTag("Snowman")) 
+        { 
+            Debug.Log("Collision detected: Snowman - BackToInventory.");
 
             SnowmanInventoryManager inventoryManager = FindObjectOfType<SnowmanInventoryManager>();
             SnowmanMelody snowmanMelody = inventoryManager.FindSnowmanMelody(other.gameObject);
@@ -28,8 +17,18 @@ public class BackToInventoryCollision : MonoBehaviour
             if (snowmanMelody != null)
             {
                 // Move the snowman to its saved inventory position
+                DisableGrabbing(other.gameObject);
+                //StartCoroutine(EnableGrabbingAfterDelay(other.gameObject, 1f));
+
                 other.gameObject.transform.localPosition = snowmanMelody.GetInventoryPosition();
                 Debug.Log("Snowman moved back to inventory at position: " + snowmanMelody.GetInventoryPosition());
+
+                // Ensure Collider is Enabled
+                Collider col = other.gameObject.GetComponent<Collider>();
+                if (col != null)
+                {
+                    col.enabled = true;
+                }
 
                 // Set the parent GameObject (whole button consisting of two snowmen) inactive
                 if (transform.parent != null) 
@@ -45,7 +44,84 @@ public class BackToInventoryCollision : MonoBehaviour
             {
                 Debug.Log("No corresponding SnowmanMelody found.");
             }
+
+            EnableGrabbing(other.gameObject);
         }
-        
+    }
+
+    // Disable grabbing temporarily so that snowman can move properly
+    private void DisableGrabbing(GameObject obj)
+    {
+        UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable = obj.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+
+        if (grabInteractable == null)
+        {
+            Debug.LogError("XRGrabInteractable component is missing");
+            return;
+        }
+
+        // Ensure the XRInteractionManager is assigned
+        if (grabInteractable.interactionManager == null)
+        {
+            XRInteractionManager xrManager = FindObjectOfType<XRInteractionManager>();
+            if (xrManager != null)
+            {
+                grabInteractable.interactionManager = xrManager;
+                Debug.Log("Assigned XRInteractionManager");
+            }
+            else
+            {
+                Debug.LogError("No XRInteractionManager found in the scene");
+                return;
+            }
+        }
+
+        // Check if the object is currently being held before calling SelectExit()
+        if (grabInteractable.firstInteractorSelecting != null)
+        {
+            grabInteractable.interactionManager.SelectExit(grabInteractable.firstInteractorSelecting, grabInteractable);
+            Debug.Log("Successfully detached snowman from interactor.");
+        }
+        else
+        {
+            Debug.LogWarning("Cannot call SelectExit() because firstInteractorSelecting is null.");
+        } 
+
+        grabInteractable.enabled = false;
+        Debug.Log("Grabbing disabled.");
+    }
+
+
+    // Re-enable grabbing
+    private void EnableGrabbing(GameObject obj)
+    {
+        Debug.Log("Enable grabbing is called.");
+        UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable = obj.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+
+        if (grabInteractable == null)
+        {
+            Debug.LogError("XRGrabInteractable component is missing");
+            return;
+        }
+
+        grabInteractable.enabled = true;
+
+        // Ensure that we only call SelectEnter if there is an interactor
+        if (grabInteractable.firstInteractorSelecting != null)
+        {
+            grabInteractable.interactionManager.SelectEnter(grabInteractable.firstInteractorSelecting, grabInteractable);
+            Debug.Log("Grabbing re-enabled and object reassigned.");
+        }
+        else
+        {
+            Debug.Log("Grabbing re-enabled, but no interactor detected yet.");
+        }
+    }
+
+
+    private IEnumerator EnableGrabbingAfterDelay(GameObject obj, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        EnableGrabbing(obj);
     }
 }

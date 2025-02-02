@@ -1,27 +1,3 @@
-/* using UnityEngine;
-
-public class SnowmanRotationFix : MonoBehaviour
-{
-    private Quaternion initialRotation;
-
-    void Start()
-    {
-        initialRotation = transform.rotation;
-    }
-
-    
-    //Quick and dirty fix for the bug which causes the snowman's rotation to reset when being grabbed
-    //(Causing it to look away from the player)
-    
-    void Update()
-    {
-        transform.rotation = initialRotation;
-    }
-
-    
-}
- */
-
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using System.Linq;
@@ -98,24 +74,4 @@ public class SnowmanRotationFix : MonoBehaviour
         }
     }
 
-    // Handle Collision with the BackToInventory Button
-   /*  private void OnCollisionEnter(Collision other)
-    {
-        if (other.gameObject == this.backToInventoryButton)
-        {
-            SnowmanMelody snowmanMelody = inventoryManager.FindSnowmanMelody(other.gameObject);
-
-            if (snowmanMelody != null)
-            {
-                // Move the snowman to its saved inventory position
-                transform.position = snowmanMelody.GetInventoryPosition();
-                Debug.Log("Snowman moved back to inventory at position: " + snowmanMelody.GetInventoryPosition());
-                this.backToInventoryButton.SetActive(false);
-            }
-            else
-            {
-                Debug.Log("No corresponding SnowmanMelody found.");
-            }
-        }
-    } */
 }
