@@ -10,6 +10,11 @@ TagManager:
   - Snowman
   - Instrument
   - BackToInventory
+  - Piano
+  - Drums
+  - Guitar
+  - Trumpet
+  - Violin
   layers:
   - Default
   - TransparentFX

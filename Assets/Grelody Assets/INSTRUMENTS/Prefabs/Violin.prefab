@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 9093551816465739568}
   m_Layer: 0
   m_Name: Violin
-  m_TagString: Instrument
+  m_TagString: Violin
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -271,7 +271,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 8eaccf20ce24a1c4f9fa185b833c35e8,
         type: 3}
       propertyPath: m_TagString
-      value: Instrument
+      value: Violin
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

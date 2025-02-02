@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3432142314773269031}
   m_Layer: 0
   m_Name: Trumpet
-  m_TagString: Instrument
+  m_TagString: Trumpet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -221,7 +221,7 @@ PrefabInstance:
     - target: {fileID: 8128668236925612103, guid: 4145ede31027ec845af3e14055f791cb,
         type: 3}
       propertyPath: m_TagString
-      value: Instrument
+      value: Trumpet
       objectReference: {fileID: 0}
     - target: {fileID: 8681642452852674115, guid: 4145ede31027ec845af3e14055f791cb,
         type: 3}
