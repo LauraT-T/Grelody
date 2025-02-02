@@ -295,6 +295,7 @@ public class MelodyChordTest : MonoBehaviour
             this.majorCounter = 0;
             this.minorCounter = 0;
             this.addedInstruments.Clear();
+            this.instrumentDict.Clear();
         });
 
         // Reset other variables

@@ -4758,8 +4758,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 734bb15c7f4a8e943bfef4396f40d3aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vinylTransform: {fileID: 35026085976375961, guid: 68ecc74e068451f42880583e890a85d5,
-    type: 3}
   rotationSpeed: 100
 --- !u!1 &1864577659
 GameObject:
@@ -4982,7 +4980,7 @@ PrefabInstance:
     - target: {fileID: 6598815579406187037, guid: 18ddb545287c546e19cc77dc9fbb2189,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

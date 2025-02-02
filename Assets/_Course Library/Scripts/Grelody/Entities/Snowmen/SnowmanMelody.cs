@@ -14,6 +14,9 @@ public class SnowmanMelody
     // Whether it was saved to the inventory
     private bool savedToInventory;
 
+    // Inventory position
+    private Vector3 inventoryPosition;
+
     public SnowmanMelody(GameObject snowmanPrefab, Melody melody) 
     {
         this.snowmanPrefab = snowmanPrefab;
@@ -21,11 +24,12 @@ public class SnowmanMelody
         this.savedToInventory = false;
     }
 
-    public SnowmanMelody(GameObject snowmanPrefab, Melody melody, bool savedToInventory) 
+    public SnowmanMelody(GameObject snowmanPrefab, Melody melody, bool savedToInventory, Vector3 inventoryPosition) 
     {
         this.snowmanPrefab = snowmanPrefab;
         this.melody = melody;
         this.savedToInventory = savedToInventory;
+        this.inventoryPosition = inventoryPosition;
     }
 
     public GameObject GetSnowmanPrefab()
@@ -41,5 +45,10 @@ public class SnowmanMelody
     public bool GetSavedToInventory()
     {
         return this.savedToInventory;
+    }
+
+    public Vector3 GetInventoryPosition()
+    {
+        return this.inventoryPosition;
     }
 }

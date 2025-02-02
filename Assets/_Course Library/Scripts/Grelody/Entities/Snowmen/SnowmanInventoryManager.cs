@@ -26,12 +26,13 @@ public class SnowmanInventoryManager : MonoBehaviour
     {
         // Add snowman to the inventory (creating a new SnowmanMelody, so that the melody is found for replay)
         GameObject inventorySnowman = Instantiate(snowmanMelody.GetSnowmanPrefab(), inventoryGrid);
-        SnowmanMelody newSnowmanMelody = new SnowmanMelody(inventorySnowman, snowmanMelody.GetMelody(), true);
+        Vector3 inventoryPosition = GetNextInventoryPosition();
+        SnowmanMelody newSnowmanMelody = new SnowmanMelody(inventorySnowman, snowmanMelody.GetMelody(), true, inventoryPosition);
         savedSnowmen.Add(newSnowmanMelody);
 
         // Adapt scale and position
         inventorySnowman.transform.localScale = inventorySnowman.transform.localScale * 25.0f;
-        inventorySnowman.transform.localPosition = GetNextInventoryPosition();
+        inventorySnowman.transform.localPosition = inventoryPosition;
     }
 
     private Vector3 GetNextInventoryPosition()
