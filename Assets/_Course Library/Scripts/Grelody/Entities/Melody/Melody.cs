@@ -9,12 +9,15 @@ public class Melody
 {
     private List<MelodyEvent> recordedEvents;
     private bool isPlaying = false;
+    private IEnumerator replayCoroutine;
 
     public Melody() 
     {
         this.recordedEvents = new List<MelodyEvent>();
+        this.replayCoroutine = null;
     }
 
+    // Start melody replay
     public void StartReplay(MonoBehaviour coroutineOwner, MidiStreamPlayer midiStreamPlayer) 
     {
         if (coroutineOwner == null)
@@ -23,9 +26,24 @@ public class Melody
             return;
         }
 
-        coroutineOwner.StartCoroutine(ReplayMelody(midiStreamPlayer));
+        this.replayCoroutine = ReplayMelody(midiStreamPlayer);
+        coroutineOwner.StartCoroutine(this.replayCoroutine);
     }
 
+    // Stop melody replay
+    public void StopReplay(MonoBehaviour coroutineOwner)
+    {
+        if (coroutineOwner == null)
+        {
+            Debug.LogError("Coroutine owner is null. Ensure you're passing a valid MonoBehaviour instance.");
+            return;
+        }
+
+        if(this.replayCoroutine != null) {
+            coroutineOwner.StopCoroutine(this.replayCoroutine);
+            this.isPlaying = false;
+        }
+    }
 
     // Replays the midi events at the specified time stamps
     private IEnumerator ReplayMelody(MidiStreamPlayer midiStreamPlayer)

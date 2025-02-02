@@ -6,11 +6,11 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class ReplayMelody : MonoBehaviour
 {
-    public Transform vinylTransform; // The position where the snowman should move
     public float rotationSpeed = 100f; // Speed of rotation while playing
     private SnowmanInventoryManager inventoryManager;
     private IEnumerator spinCoroutine = null;
     private readonly Vector3 VINYL_POSITION = new Vector3(0.55f, 0.76f, -0.84f);
+    private SnowmanMelody snowmanMelody;
 
 
     private void Start()
@@ -26,9 +26,9 @@ public class ReplayMelody : MonoBehaviour
             Debug.Log("Snowman collided with Grammophone");
 
             // Find the corresponding SnowmanMelody in the inventory
-            SnowmanMelody snowmanMelody = inventoryManager.FindSnowmanMelody(other.gameObject);
+            this.snowmanMelody = inventoryManager.FindSnowmanMelody(other.gameObject);
 
-            if (snowmanMelody != null)
+            if (this.snowmanMelody != null)
             {
 
                 DisableGrabbing(other);
@@ -42,7 +42,7 @@ public class ReplayMelody : MonoBehaviour
 
                 // Start playing the melody
                 MidiStreamPlayer midiPlayer = FindObjectOfType<MidiStreamPlayer>();
-                snowmanMelody.GetMelody().StartReplay(this, midiPlayer);
+                this.snowmanMelody.GetMelody().StartReplay(this, midiPlayer);
 
                 // Start spinning the snowman
                 if(this.spinCoroutine != null) {
@@ -105,6 +105,13 @@ public class ReplayMelody : MonoBehaviour
 
     private void OnGrabbed(SelectEnterEventArgs args)
     {
+        // Stop spinning
         StopCoroutine(this.spinCoroutine);
+
+        // Stop melody replay
+        if(this.snowmanMelody != null) {
+            MidiStreamPlayer midiPlayer = FindObjectOfType<MidiStreamPlayer>();
+            this.snowmanMelody.GetMelody().StopReplay(this);
+        }
     }
 }
