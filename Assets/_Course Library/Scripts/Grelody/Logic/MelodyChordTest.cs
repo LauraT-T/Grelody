@@ -135,7 +135,7 @@ public class MelodyChordTest : MonoBehaviour
         AddInstrument(InstrumentType.TRUMPET);
         AddInstrument(InstrumentType.DRUMS); */
 
-        //Invoke("StopMusic", 5f); // Stops the music and makes snowman appear after 5 seconds
+        Invoke("StopMusic", 60f); // Stops the music and makes snowman appear after 5 seconds
         
 
     }
@@ -672,4 +672,21 @@ public class MelodyChordTest : MonoBehaviour
         }
     }
 
+    // changes the composition to Major
+    public void changeToMajor() {
+
+        if (compositionProvider.GetKey() == MusicalKey.MINOR) {
+            this.compositionProvider = compositionDict[MusicalKey.MAJOR];
+        }
+        
+    }
+
+    // changes the composition to Major
+    public void changeToMinor() {
+
+        if (compositionProvider.GetKey() == MusicalKey.MAJOR) {
+            this.compositionProvider = compositionDict[MusicalKey.MINOR];
+        }
+        
+    }
 }
