@@ -71,8 +71,6 @@ public class InvisibleLayerHandler : MonoBehaviour
             return;
         }
 
-        leftHandInteractor.farAttachMode = UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorFarAttachMode.Far;
-
         // Grab object with left hand
         leftHandInteractor.interactionManager.SelectEnter(
         (UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor)leftHandInteractor, 
