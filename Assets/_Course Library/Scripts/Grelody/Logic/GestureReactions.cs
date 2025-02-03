@@ -40,4 +40,17 @@ public class GestureReactions : MonoBehaviour
         }
 
     }
+
+     public void OnLeftFistEnded() {
+        Debug.Log("LeftFistEnded detected");
+
+        // Ungrab instruments
+        InvisibleLayerHandler[] invisibleObjects = FindObjectsOfType<InvisibleLayerHandler>();
+
+        foreach (InvisibleLayerHandler invisibleLayerHandler in invisibleObjects)
+        {
+            invisibleLayerHandler.OnLeftFistEnded();
+        }
+
+    }
 }

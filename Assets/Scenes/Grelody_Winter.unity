@@ -1832,7 +1832,7 @@ GameObject:
   - component: {fileID: 960751015}
   - component: {fileID: 960751014}
   - component: {fileID: 960751020}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Grabbable Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2071,7 +2071,7 @@ Transform:
   m_GameObject: {fileID: 960751013}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.003, y: 0.392, z: -3.3249998}
+  m_LocalPosition: {x: 0.91, y: 0.392, z: -3.3249998}
   m_LocalScale: {x: 0.18, y: 0.18, z: 0.18}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -2091,7 +2091,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   invisibleLayer: InvisibleLayer
   defaultLayer: Default
-  xThreshold: 0
+  xThreshold: 0.5
   leftHandInteractor: {fileID: 198654569}
 --- !u!114 &963349434 stripped
 MonoBehaviour:
@@ -10943,7 +10943,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_GestureEnded.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1382834616}
     - target: {fileID: 7330164915256961379, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
       propertyPath: m_GestureEnded.m_PersistentCalls.m_Calls.Array.data[1].m_Target
@@ -11002,7 +11002,7 @@ PrefabInstance:
     - target: {fileID: 7330164915256961379, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
       propertyPath: m_GestureEnded.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ResetUI
+      value: OnLeftFistEnded
       objectReference: {fileID: 0}
     - target: {fileID: 7330164915256961379, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
@@ -11132,8 +11132,7 @@ PrefabInstance:
     - target: {fileID: 7330164915256961379, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
       propertyPath: m_GestureEnded.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UnityEngine.XR.Hands.Samples.Gestures.DebugTools.XRSelectedHandShapeDebugUI,
-        Unity.XR.Hands.Samples.Gestures
+      value: GestureReactions, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7330164915256961379, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}

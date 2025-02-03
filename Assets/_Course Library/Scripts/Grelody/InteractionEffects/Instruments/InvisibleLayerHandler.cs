@@ -33,7 +33,7 @@ public class InvisibleLayerHandler : MonoBehaviour
         }
 
         // Start the object on the invisible layer
-        //SetLayer(gameObject, invisibleLayerIndex);
+        SetLayer(gameObject, invisibleLayerIndex);
         //OnLeftFist();
     }
 
@@ -77,6 +77,22 @@ public class InvisibleLayerHandler : MonoBehaviour
         (UnityEngine.XR.Interaction.Toolkit.Interactables.IXRSelectInteractable)grabInteractable
         );
 
-        Debug.Log("Grabbed: " + gameObject.name);
+    }
+
+    public void OnLeftFistEnded() {
+        
+        // Ungrab object
+        if (leftHandInteractor == null || grabInteractable == null)
+        {
+            Debug.LogWarning("Left hand interactor or grab interactable is missing.");
+            return;
+        }
+
+        // Ungrab the object by calling SelectExit
+        leftHandInteractor.interactionManager.SelectExit(
+            (UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor)leftHandInteractor,
+            (UnityEngine.XR.Interaction.Toolkit.Interactables.IXRSelectInteractable)grabInteractable
+        );
+            
     }
 }
