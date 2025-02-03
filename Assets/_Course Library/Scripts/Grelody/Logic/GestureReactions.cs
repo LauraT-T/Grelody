@@ -27,4 +27,17 @@ public class GestureReactions : MonoBehaviour
         Debug.Log("ThumbsDown detected.");
         melodyChordTest.changeToMinor();
     }
+
+    public void OnLeftFist() {
+        Debug.Log("LeftFist detected");
+
+        // Find all instruments on an invisible layer which are grabbbed using the left fist gesture
+        InvisibleLayerHandler[] invisibleObjects = FindObjectsOfType<InvisibleLayerHandler>();
+
+        foreach (InvisibleLayerHandler invisibleLayerHandler in invisibleObjects)
+        {
+            invisibleLayerHandler.OnLeftFist();
+        }
+
+    }
 }
