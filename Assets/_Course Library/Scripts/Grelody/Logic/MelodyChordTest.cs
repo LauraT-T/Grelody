@@ -141,7 +141,7 @@ public class MelodyChordTest : MonoBehaviour
         AddInstrument(InstrumentType.TRUMPET);
         AddInstrument(InstrumentType.DRUMS); */
 
-        Invoke("StopMusic", 15f); // Stops the music and makes snowman appear after 5 seconds
+        Invoke("StopMusic", 60f); // Stops the music and makes snowman appear after 5 seconds
         
 
     }
@@ -264,7 +264,7 @@ public class MelodyChordTest : MonoBehaviour
     /*
     Stops the music, makes snowflakes disappear, creates snowman out of the recorded melody
     */
-    void StopMusic()
+    public void StopMusic()
     {
         // Stop music
         this.melodyAdded = false;
