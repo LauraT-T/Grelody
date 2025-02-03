@@ -53,4 +53,18 @@ public class GestureReactions : MonoBehaviour
         }
 
     }
+
+    public void OnRightFist() {
+        Debug.Log("RightFist detected");
+
+        melodyChordTest.ContinueMusic();
+    }
+
+    public void OnRightFistEnded() {
+
+        Debug.Log("RightFist ended");
+
+        melodyChordTest.PauseMusic();
+
+    }
 }

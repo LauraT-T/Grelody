@@ -141,7 +141,7 @@ public class MelodyChordTest : MonoBehaviour
         AddInstrument(InstrumentType.TRUMPET);
         AddInstrument(InstrumentType.DRUMS); */
 
-        Invoke("StopMusic", 60f); // Stops the music and makes snowman appear after 5 seconds
+        Invoke("StopMusic", 15f); // Stops the music and makes snowman appear after 5 seconds
         
 
     }
@@ -697,5 +697,60 @@ public class MelodyChordTest : MonoBehaviour
             this.compositionProvider = compositionDict[MusicalKey.MINOR];
         }
         
+    }
+
+    // pauses the music
+    public void PauseMusic() {
+
+        if (coroutinesRunning) {
+
+            PauseRecording();
+
+            StopAllCoroutines();
+            coroutinesRunning = false;
+            Debug.Log("Music paused");
+        }
+    }
+
+    // continues paused melody
+    public void ContinueMusic () {
+        
+        if (!coroutinesRunning) {
+
+            ContinueRecording();
+
+            this.melodyCoroutine = PlayMelody();
+            this.chordCoroutine = PlayChords();
+            this.bassCoroutine = PlayBassNotes();
+            this.drumsCoroutine = PlayDrumPattern();
+
+            StartCoroutine(this.melodyCoroutine);
+            StartCoroutine(this.chordCoroutine);
+            StartCoroutine(this.bassCoroutine);
+            StartCoroutine(this.drumsCoroutine);
+
+            coroutinesRunning = true;
+            Debug.Log("Music continues playing");
+        }
+    }
+
+    // pauses the melodyRecorder
+    public void PauseRecording() {
+        
+        if (this.melodyRecorder.GetIsRecording()) {
+            this.melodyRecorder.SetIsRecording(false);
+            this.melodyRecorder.SetPauseTimeStart(Time.time);
+            Debug.Log("Recording paused");
+        }
+    }
+
+    // continues the melodyRecorder
+    public void ContinueRecording() {
+
+        if (!this.melodyRecorder.GetIsRecording()) {
+            this.melodyRecorder.SetIsRecording(true);
+            this.melodyRecorder.CalculatePauseLength(Time.time);
+            Debug.Log("Recording continues");
+        }
     }
 }

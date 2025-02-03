@@ -9437,7 +9437,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_GestureEnded.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1382834616}
     - target: {fileID: 4870785027993577020, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
       propertyPath: m_GestureEnded.m_PersistentCalls.m_Calls.Array.data[1].m_Target
@@ -9446,7 +9446,7 @@ PrefabInstance:
     - target: {fileID: 4870785027993577020, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
       propertyPath: m_GesturePerformed.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4870785027993577020, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
@@ -9466,7 +9466,7 @@ PrefabInstance:
     - target: {fileID: 4870785027993577020, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
       propertyPath: m_GestureEnded.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ResetUI
+      value: OnRightFistEnded
       objectReference: {fileID: 0}
     - target: {fileID: 4870785027993577020, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
@@ -9477,7 +9477,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_GesturePerformed.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1382834616}
     - target: {fileID: 4870785027993577020, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
       propertyPath: m_GesturePerformed.m_PersistentCalls.m_Calls.Array.data[1].m_Target
@@ -9496,7 +9496,7 @@ PrefabInstance:
     - target: {fileID: 4870785027993577020, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
       propertyPath: m_GesturePerformed.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: UpdateSelectedHandshapeTextUI
+      value: OnRightFist
       objectReference: {fileID: 0}
     - target: {fileID: 4870785027993577020, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
@@ -9506,8 +9506,7 @@ PrefabInstance:
     - target: {fileID: 4870785027993577020, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
       propertyPath: m_GestureEnded.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UnityEngine.XR.Hands.Samples.Gestures.DebugTools.XRSelectedHandShapeDebugUI,
-        Unity.XR.Hands.Samples.Gestures
+      value: GestureReactions, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4870785027993577020, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
@@ -9518,8 +9517,7 @@ PrefabInstance:
     - target: {fileID: 4870785027993577020, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
       propertyPath: m_GesturePerformed.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UnityEngine.XR.Hands.Samples.Gestures.DebugTools.XRSelectedHandShapeDebugUI,
-        Unity.XR.Hands.Samples.Gestures
+      value: GestureReactions, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4870785027993577020, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
@@ -9546,8 +9544,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_GesturePerformed.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 11400000, guid: 8b21a490579f14243ac2c65d702d0621,
-        type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 4870785027993577020, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
       propertyPath: m_GesturePerformed.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
@@ -9562,7 +9559,7 @@ PrefabInstance:
     - target: {fileID: 4870785027993577020, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
       propertyPath: m_GesturePerformed.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.XR.Hands.Gestures.XRHandPose, Unity.XR.Hands
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 4870785027993577020, guid: 12e7c6e2a052ca344a4b1b5616e1597c,
         type: 3}
