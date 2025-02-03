@@ -136,12 +136,12 @@ public class MelodyChordTest : MonoBehaviour
         
         // UNCOMMENT TO TEST BUILD ON QUEST
         
-        AddInstrument(InstrumentType.PIANO);
+        //AddInstrument(InstrumentType.PIANO);
         /* AddInstrument(InstrumentType.GUITAR); 
         AddInstrument(InstrumentType.TRUMPET);
         AddInstrument(InstrumentType.DRUMS); */
 
-        Invoke("StopMusic", 60f); // Stops the music and makes snowman appear after 5 seconds
+        Invoke("StopMusic", 120f); // Stops the music and makes snowman appear after 5 seconds
         
 
     }
@@ -519,6 +519,12 @@ public class MelodyChordTest : MonoBehaviour
     */
     public void AddInstrument(InstrumentType type)
     {
+        // Instruments can only be added once
+        if(InstrumentIsAdded(type)) {
+            Debug.Log("Instrument already added.");
+            return;
+        }
+
         // No instruments can be added if coroutines are not running and, thus, no music can be heard
         if(!this.coroutinesRunning) {
             Debug.Log("No coroutines running, so no instrument can be added.");
@@ -569,13 +575,18 @@ public class MelodyChordTest : MonoBehaviour
         this.addedInstruments.Add(type);
     }
 
+    public bool InstrumentIsAdded(InstrumentType type)
+    {
+        return instrumentDict.ContainsKey(type);
+    }
+
     /*
     Removes the instrument with the given type
     if it is currently playing by looking up
     in the instrument dictionary what part it is playing (melody, chords, bass, drums)
     and muting the respective part of the tune
     */
-     void RemoveInstrument(InstrumentType type)
+     public void RemoveInstrument(InstrumentType type)
     {
         // If the instrument is currently playing
         if (instrumentDict.ContainsKey(type)) { 

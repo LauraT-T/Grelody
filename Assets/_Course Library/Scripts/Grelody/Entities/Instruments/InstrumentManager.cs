@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using MidiPlayerTK;
 using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class InstrumentManager : MonoBehaviour
 {
@@ -13,6 +14,10 @@ public class InstrumentManager : MonoBehaviour
     public GameObject violin;
     public GameObject trumpet;
     public GameObject drums;
+    public string invisibleLayer = "InvisibleLayer"; // Name of the invisible layer
+    public string defaultLayer = "Default"; // Name of the visible layer
+    private int invisibleLayerIndex;
+    private int defaultLayerIndex;
     private MelodyChordTest melodyChordTest;
 
     // Store original positions of instruments in instrument inventory
@@ -24,6 +29,10 @@ public class InstrumentManager : MonoBehaviour
     
     void Start()
     {
+        // Get layer indices
+        invisibleLayerIndex = LayerMask.NameToLayer(invisibleLayer);
+        defaultLayerIndex = LayerMask.NameToLayer(defaultLayer);
+
         MidiStreamPlayer midiPlayer = FindObjectOfType<MidiStreamPlayer>();
         this.melodyChordTest = midiPlayer.GetComponent<MelodyChordTest>();
 
@@ -46,11 +55,11 @@ public class InstrumentManager : MonoBehaviour
         // List of currently invisible instruments
         this.invisibleInstruments = new List<GameObject>();
 
-        AddInstrumentToGrammophone(InstrumentType.PIANO);
+        /* AddInstrumentToGrammophone(InstrumentType.PIANO);
         AddInstrumentToGrammophone(InstrumentType.STRINGS);
         AddInstrumentToGrammophone(InstrumentType.TRUMPET);
         AddInstrumentToGrammophone(InstrumentType.DRUMS);
-        AddInstrumentToGrammophone(InstrumentType.GUITAR);
+        AddInstrumentToGrammophone(InstrumentType.GUITAR); */
     }
 
     // Add instrument and make corresponding game object disappear
@@ -62,7 +71,7 @@ public class InstrumentManager : MonoBehaviour
         } catch (System.InvalidOperationException e) {
             Debug.LogWarning(e.Message);
             return;
-        }
+        }  
 
         int index;
         
@@ -72,6 +81,8 @@ public class InstrumentManager : MonoBehaviour
                 Debug.Log("ADD TO GRAMMOPHONE PIANO");
                 this.invisibleInstruments.Add(this.piano);
 
+                DisableGrabbing(this.piano);
+
                 // Set position
                 index = this.invisibleInstruments.IndexOf(this.piano);
                 this.piano.transform.position = this.invisiblePositions[index];
@@ -80,12 +91,14 @@ public class InstrumentManager : MonoBehaviour
                 // Set parent
                 this.invisibleInstruments[index].transform.SetParent(invisibleInstrumentsParent.transform);
 
-                // Make invisible 
+                EnableGrabbing(this.piano);
                 
                 break;
             case InstrumentType.GUITAR:
                 Debug.Log("ADD TO GRAMMOPHONE GUITAR");
                 this.invisibleInstruments.Add(this.guitar);
+
+                DisableGrabbing(this.guitar);
 
                 // Set position
                 index = this.invisibleInstruments.IndexOf(this.guitar);
@@ -95,12 +108,14 @@ public class InstrumentManager : MonoBehaviour
                 // Set parent
                 this.invisibleInstruments[index].transform.SetParent(invisibleInstrumentsParent.transform);
 
-                // Make invisible
+                EnableGrabbing(this.guitar);
 
                 break;
             case InstrumentType.STRINGS:
                 Debug.Log("ADD TO GRAMMOPHONE STRINGS");
                 this.invisibleInstruments.Add(this.violin);
+
+                DisableGrabbing(this.violin);
 
                 // Set position
                 index = this.invisibleInstruments.IndexOf(this.violin);
@@ -110,12 +125,14 @@ public class InstrumentManager : MonoBehaviour
                 // Set parent
                 this.invisibleInstruments[index].transform.SetParent(invisibleInstrumentsParent.transform);
 
-                // Make invisible
+                EnableGrabbing(this.violin);
 
                 break;
             case InstrumentType.TRUMPET:
                 Debug.Log("ADD TO GRAMMOPHONE TRUMPET");
                 this.invisibleInstruments.Add(this.trumpet);
+
+                DisableGrabbing(this.trumpet);
 
                 // Set position
                 index = this.invisibleInstruments.IndexOf(this.trumpet);
@@ -125,12 +142,14 @@ public class InstrumentManager : MonoBehaviour
                 // Set parent
                 this.invisibleInstruments[index].transform.SetParent(invisibleInstrumentsParent.transform);
 
-                // Make invisible
+                EnableGrabbing(this.trumpet);
 
                 break;
             case InstrumentType.DRUMS:
                 Debug.Log("ADD TO GRAMMOPHONE DRUMS");
                 this.invisibleInstruments.Add(this.drums);
+
+                DisableGrabbing(this.drums);
 
                 // Set position
                 index = this.invisibleInstruments.IndexOf(this.drums);
@@ -140,12 +159,19 @@ public class InstrumentManager : MonoBehaviour
                 // Set parent
                 this.invisibleInstruments[index].transform.SetParent(invisibleInstrumentsParent.transform);
                 
-                // Make invisible
+                EnableGrabbing(this.drums);
+
                 break;
             default:
                 Debug.LogWarning("Unknown instrument");
                 break;
         }
+    }
+
+    // Remove instrument from melody
+    public void RemoveFromGrammophone(InstrumentType type)
+    {
+        this.melodyChordTest.RemoveInstrument(type);
     }
 
     // Reset all instruments to their original positions and make them visible
@@ -161,8 +187,33 @@ public class InstrumentManager : MonoBehaviour
             GameObject instrument = GetInstrumentByType(type);
             if (instrument != null)
             {
-                instrument.SetActive(true);
                 instrument.transform.position = originalPosition;
+            }
+        }
+    }
+
+    public void ResetVisibleInstruments()
+    {
+        foreach (var entry in instrumentPositions)
+        {
+            InstrumentType type = entry.Key;
+            Vector3 originalPosition = entry.Value;
+
+            GameObject instrument = GetInstrumentByType(type);
+            /* if (instrument != null && instrument.layer != invisibleLayerIndex)
+            {
+                instrument.transform.position = originalPosition;
+                instrument.transform.SetParent(null);
+                this.invisibleInstruments.Remove(instrument);
+            } */
+
+            if (!this.melodyChordTest.InstrumentIsAdded(type))
+            {
+                instrument.transform.position = originalPosition;
+                instrument.transform.SetParent(null);
+                if(this.invisibleInstruments.Contains(instrument)) {
+                    this.invisibleInstruments.Remove(instrument);
+                }
             }
         }
     }
@@ -191,4 +242,73 @@ public class InstrumentManager : MonoBehaviour
 
         this.invisibleInstruments.Clear();
     }
+
+    // Disable grabbing temporarily so that instrument can move properly
+    private void DisableGrabbing(GameObject obj)
+    {
+        UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable = obj.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+
+        if (grabInteractable == null)
+        {
+            Debug.LogError("XRGrabInteractable component is missing");
+            return;
+        }
+
+        // Ensure the XRInteractionManager is assigned
+        if (grabInteractable.interactionManager == null)
+        {
+            XRInteractionManager xrManager = FindObjectOfType<XRInteractionManager>();
+            if (xrManager != null)
+            {
+                grabInteractable.interactionManager = xrManager;
+                Debug.Log("Assigned XRInteractionManager");
+            }
+            else
+            {
+                Debug.LogError("No XRInteractionManager found in the scene");
+                return;
+            }
+        }
+
+        // Check if the object is currently being held before calling SelectExit()
+        if (grabInteractable.firstInteractorSelecting != null)
+        {
+            grabInteractable.interactionManager.SelectExit(grabInteractable.firstInteractorSelecting, grabInteractable);
+            Debug.Log("Successfully detached snowman from interactor.");
+        }
+        else
+        {
+            Debug.LogWarning("Cannot call SelectExit() because firstInteractorSelecting is null.");
+        } 
+
+        grabInteractable.enabled = false;
+        Debug.Log("Grabbing disabled.");
+    }
+
+    // Re-enable grabbing
+    private void EnableGrabbing(GameObject obj)
+    {
+        Debug.Log("Enable grabbing is called.");
+        UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable = obj.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+
+        if (grabInteractable == null)
+        {
+            Debug.LogError("XRGrabInteractable component is missing");
+            return;
+        }
+
+        grabInteractable.enabled = true;
+
+        // Ensure that we only call SelectEnter if there is an interactor
+        if (grabInteractable.firstInteractorSelecting != null)
+        {
+            grabInteractable.interactionManager.SelectEnter(grabInteractable.firstInteractorSelecting, grabInteractable);
+            Debug.Log("Grabbing re-enabled and object reassigned.");
+        }
+        else
+        {
+            Debug.Log("Grabbing re-enabled, but no interactor detected yet.");
+        }
+    }
+
 }

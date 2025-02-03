@@ -12,9 +12,13 @@ public class InstrumentVisibility : MonoBehaviour
     private int defaultLayerIndex;
 
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
+    private InstrumentManager instrumentManager;
 
     void Start()
     {
+        // Find instrument manager
+        this.instrumentManager = (InstrumentManager)FindFirstObjectByType<InstrumentManager>();
+
         // Get layer indices
         invisibleLayerIndex = LayerMask.NameToLayer(invisibleLayer);
         defaultLayerIndex = LayerMask.NameToLayer(defaultLayer);
@@ -42,6 +46,34 @@ public class InstrumentVisibility : MonoBehaviour
         {
             if(gameObject.layer != defaultLayerIndex) {
                 SetLayer(gameObject, defaultLayerIndex);
+
+                // Remove instrument from melody
+                switch (gameObject.tag)
+                {
+                    case "Piano":
+                        this.instrumentManager.RemoveFromGrammophone(InstrumentType.PIANO);
+                        break;
+
+                    case "Guitar":
+                        this.instrumentManager.RemoveFromGrammophone(InstrumentType.GUITAR);
+                        break;
+
+                    case "Violin":
+                        this.instrumentManager.RemoveFromGrammophone(InstrumentType.STRINGS);
+                        break;
+
+                    case "Trumpet":
+                        this.instrumentManager.RemoveFromGrammophone(InstrumentType.TRUMPET);
+                        break;
+
+                    case "Drums":
+                        this.instrumentManager.RemoveFromGrammophone(InstrumentType.DRUMS);
+                        break;
+
+                    default:
+                        Debug.Log("Unknown Tag");
+                        break;
+                }
             }
         }
     }
@@ -64,7 +96,8 @@ public class InstrumentVisibility : MonoBehaviour
     private void OnGrabbed(SelectEnterEventArgs args)
     {
         if(transform.parent == this.invisibleInstrumentsParent.transform) {
-            transform.parent = null;
+            //transform.parent = null;
+            transform.SetParent(null);
         }
     }
 }

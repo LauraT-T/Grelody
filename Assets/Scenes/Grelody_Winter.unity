@@ -161,6 +161,8 @@ MonoBehaviour:
   violin: {fileID: 1399169749}
   trumpet: {fileID: 1747581979}
   drums: {fileID: 1000922986}
+  invisibleLayer: InvisibleLayer
+  defaultLayer: Default
 --- !u!4 &91547717
 Transform:
   m_ObjectHideFlags: 0
@@ -3521,6 +3523,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1336924251}
     m_Modifications:
+    - target: {fileID: 4136909774227520247, guid: faadf90139c5a0a4bbbca03e5278f06d,
+        type: 3}
+      propertyPath: m_TagString
+      value: Violin
+      objectReference: {fileID: 0}
     - target: {fileID: 4750454367389047580, guid: faadf90139c5a0a4bbbca03e5278f06d,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -4708,6 +4715,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2569572666311480344, guid: e29071aeb259b01479ea1059e4c148c9,
+        type: 3}
+      propertyPath: m_TagString
+      value: Trumpet
+      objectReference: {fileID: 0}
     - target: {fileID: 2841757638893724240, guid: e29071aeb259b01479ea1059e4c148c9,
         type: 3}
       propertyPath: m_Name
@@ -4762,6 +4774,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Piano
+      objectReference: {fileID: 0}
+    - target: {fileID: 5578656347754327875, guid: 871ae104d2f5bf5439e3649f46b85d32,
+        type: 3}
+      propertyPath: m_TagString
+      value: Violin
       objectReference: {fileID: 0}
     - target: {fileID: 7699823637332553027, guid: 871ae104d2f5bf5439e3649f46b85d32,
         type: 3}

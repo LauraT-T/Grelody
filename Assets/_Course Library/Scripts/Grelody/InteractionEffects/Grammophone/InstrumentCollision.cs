@@ -47,5 +47,13 @@ public class InstrumentCollision : MonoBehaviour
             Debug.Log("Drums collided with Grammophone");
             this.instrumentManager.AddInstrumentToGrammophone(InstrumentType.DRUMS);
         } 
+
+        //StartCoroutine(ResetAfterDelay(5f));
+    }
+
+    private IEnumerator ResetAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        this.instrumentManager.ResetVisibleInstruments();
     }
 }
