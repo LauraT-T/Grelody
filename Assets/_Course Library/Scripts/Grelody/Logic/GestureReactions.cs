@@ -31,7 +31,7 @@ public class GestureReactions : MonoBehaviour
     public void OnLeftFist() {
         Debug.Log("LeftFist detected");
 
-        // Find all instruments on an invisible layer which are grabbbed using the left fist gesture
+        // Test cube, can be deleted later
         InvisibleLayerHandler[] invisibleObjects = FindObjectsOfType<InvisibleLayerHandler>();
 
         foreach (InvisibleLayerHandler invisibleLayerHandler in invisibleObjects)
@@ -39,17 +39,42 @@ public class GestureReactions : MonoBehaviour
             invisibleLayerHandler.OnLeftFist();
         }
 
+        // Cube for removing all the instruments
+        RemoveInstruments removeInstruments = FindFirstObjectByType<RemoveInstruments>();
+
+        if (removeInstruments != null) 
+        {
+            removeInstruments.OnLeftFist();
+        }
+        else 
+        {
+            Debug.LogWarning("RemoveInstruments script not found in the scene.");
+        }
+
     }
 
      public void OnLeftFistEnded() {
         Debug.Log("LeftFistEnded detected");
 
-        // Ungrab instruments
+        // test cube, can be deletes later
         InvisibleLayerHandler[] invisibleObjects = FindObjectsOfType<InvisibleLayerHandler>();
 
         foreach (InvisibleLayerHandler invisibleLayerHandler in invisibleObjects)
         {
             invisibleLayerHandler.OnLeftFistEnded();
+        }
+
+
+        // Cube for removing all the instruments
+        RemoveInstruments removeInstruments = FindFirstObjectByType<RemoveInstruments>();
+
+        if (removeInstruments != null) 
+        {
+            removeInstruments.OnLeftFistEnded();
+        }
+        else 
+        {
+            Debug.LogWarning("RemoveInstruments script not found in the scene.");
         }
 
     }
