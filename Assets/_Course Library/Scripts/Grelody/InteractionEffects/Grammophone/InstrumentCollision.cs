@@ -8,6 +8,7 @@ public class InstrumentCollision : MonoBehaviour
 {
 
     private InstrumentManager instrumentManager;
+    public GameObject invisibleInstrumentsParent;
     
 
     private void Start()
@@ -21,6 +22,11 @@ public class InstrumentCollision : MonoBehaviour
     // On collison with game object, check tag and add instrument
     private void OnTriggerEnter(Collider other)
     {
+        // Do not react to collisons with instruments already added and currently invisible
+        if (other.transform.parent != null && other.transform.parent == this.invisibleInstrumentsParent.transform) {
+            return;
+        }
+
         if (other.CompareTag("Piano")) {
             Debug.Log("Piano collided with Grammophone");
             this.instrumentManager.AddInstrumentToGrammophone(InstrumentType.PIANO);
