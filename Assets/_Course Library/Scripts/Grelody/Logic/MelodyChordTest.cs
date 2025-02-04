@@ -264,7 +264,7 @@ public class MelodyChordTest : MonoBehaviour
     /*
     Stops the music, makes snowflakes disappear, creates snowman out of the recorded melody
     */
-    void StopMusic()
+    public void StopMusic()
     {
         // Stop music
         this.melodyAdded = false;
@@ -708,5 +708,60 @@ public class MelodyChordTest : MonoBehaviour
             this.compositionProvider = compositionDict[MusicalKey.MINOR];
         }
         
+    }
+
+    // pauses the music
+    public void PauseMusic() {
+
+        if (coroutinesRunning) {
+
+            PauseRecording();
+
+            StopAllCoroutines();
+            coroutinesRunning = false;
+            Debug.Log("Music paused");
+        }
+    }
+
+    // continues paused melody
+    public void ContinueMusic () {
+        
+        if (!coroutinesRunning) {
+
+            ContinueRecording();
+
+            this.melodyCoroutine = PlayMelody();
+            this.chordCoroutine = PlayChords();
+            this.bassCoroutine = PlayBassNotes();
+            this.drumsCoroutine = PlayDrumPattern();
+
+            StartCoroutine(this.melodyCoroutine);
+            StartCoroutine(this.chordCoroutine);
+            StartCoroutine(this.bassCoroutine);
+            StartCoroutine(this.drumsCoroutine);
+
+            coroutinesRunning = true;
+            Debug.Log("Music continues playing");
+        }
+    }
+
+    // pauses the melodyRecorder
+    public void PauseRecording() {
+        
+        if (this.melodyRecorder.GetIsRecording()) {
+            this.melodyRecorder.SetIsRecording(false);
+            this.melodyRecorder.SetPauseTimeStart(Time.time);
+            Debug.Log("Recording paused");
+        }
+    }
+
+    // continues the melodyRecorder
+    public void ContinueRecording() {
+
+        if (!this.melodyRecorder.GetIsRecording()) {
+            this.melodyRecorder.SetIsRecording(true);
+            this.melodyRecorder.CalculatePauseLength(Time.time);
+            Debug.Log("Recording continues");
+        }
     }
 }

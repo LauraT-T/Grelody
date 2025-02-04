@@ -4,6 +4,7 @@ public class GestureReactions : MonoBehaviour
 {
     //Variables
     private MelodyChordTest melodyChordTest;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -77,5 +78,25 @@ public class GestureReactions : MonoBehaviour
             Debug.LogWarning("RemoveInstruments script not found in the scene.");
         }
 
+    }
+
+    public void OnRightFist() {
+        Debug.Log("RightFist detected");
+        
+        melodyChordTest.ContinueMusic();
+    }
+
+    public void OnRightFistEnded() {
+
+        Debug.Log("RightFist ended");
+
+        melodyChordTest.PauseMusic();
+
+    }
+
+    // generic name due to placeholder gesture
+    public void EndMelody() {
+        Debug.Log("Gesture detected, melody ended");
+        melodyChordTest.StopMusic();
     }
 }
