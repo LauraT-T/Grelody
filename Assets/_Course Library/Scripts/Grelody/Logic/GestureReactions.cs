@@ -80,18 +80,32 @@ public class GestureReactions : MonoBehaviour
 
     }
 
+    // not used -> see right hand fist gets handled in KurbelDetection
     public void OnRightFist() {
         Debug.Log("RightFist detected");
         
         melodyChordTest.ContinueMusic();
     }
 
+    // not used -> see right hand fist gets handled in KurbelDetection
     public void OnRightFistEnded() {
 
         Debug.Log("RightFist ended");
 
         melodyChordTest.PauseMusic();
 
+    }
+
+    public void OnPalmUp() {
+        Debug.Log("PalmUp detected");
+
+        melodyChordTest.IncreaseVolume();
+    }
+
+    public void OnPalmDown() {
+        Debug.Log("PalmDown detected");
+
+        melodyChordTest.DecreaseVolume();
     }
 
     // generic name due to placeholder gesture

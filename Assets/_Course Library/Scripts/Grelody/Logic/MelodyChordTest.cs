@@ -764,4 +764,18 @@ public class MelodyChordTest : MonoBehaviour
             Debug.Log("Recording continues");
         }
     }
+
+    // increases the volume
+    public void IncreaseVolume() {
+        overallVolume = Mathf.Clamp(overallVolume + 0.1f, 0.0f, 1.0f);
+        SetOverallVolume(overallVolume);
+        Debug.Log($"Volume increased: {overallVolume}");
+    }
+
+    // decreases the volume
+    public void DecreaseVolume() {
+        overallVolume = Mathf.Clamp(overallVolume - 0.1f, 0.0f, 1.0f);
+        SetOverallVolume(overallVolume);
+        Debug.Log($"Volume decreased: {overallVolume}");
+    }
 }
