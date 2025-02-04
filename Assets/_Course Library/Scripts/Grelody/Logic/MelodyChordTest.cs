@@ -160,9 +160,9 @@ public class MelodyChordTest : MonoBehaviour
         if (Keyboard.current.downArrowKey.isPressed)
         {
             overallVolume = Mathf.Clamp(overallVolume - 0.01f, 0.0f, 1.0f);
-            SetOverallVolume(overallVolume);
-            Debug.Log($"Volume decreased: {overallVolume}");
-        }
+            SetOverallVolume(overallVolume); 
+            Debug.Log($"Volume decreased: {overallVolume}"); 
+        } 
 
         // Switch between major and minor when pressing K
         if (Keyboard.current.kKey.wasPressedThisFrame)

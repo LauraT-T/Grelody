@@ -7,7 +7,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 /*
 Invisible cube.
 Can be grabbed by making a left fist gesture.
-Is ungrabbed by ending the left fist gesture.
+Is released by ending the left fist gesture.
 Moving the cube moves all added instruments, making it possible to remove them from the grammophone.
 */
 public class RemoveInstruments : MonoBehaviour

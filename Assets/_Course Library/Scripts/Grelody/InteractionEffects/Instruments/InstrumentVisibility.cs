@@ -1,6 +1,11 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
+/*
+Attached to each instrument.
+Makes them invisible when being added to the grammophone
+and visible again when being pulled out towards the left, surpassing the specified x-threshold.
+*/
 public class InstrumentVisibility : MonoBehaviour
 {
     public string invisibleLayer = "InvisibleLayer"; // Name of the invisible layer
@@ -28,6 +33,7 @@ public class InstrumentVisibility : MonoBehaviour
 
         grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         grabInteractable.selectEntered.AddListener(OnGrabbed);
+        grabInteractable.selectExited.AddListener(OnUngrabbed);
 
         Debug.Log($"Instrument: {gameObject.name}, Layer: {gameObject.layer}, Parent: {transform.parent}");
     }
@@ -96,8 +102,15 @@ public class InstrumentVisibility : MonoBehaviour
     private void OnGrabbed(SelectEnterEventArgs args)
     {
         if(transform.parent == this.invisibleInstrumentsParent.transform) {
-            //transform.parent = null;
-            transform.SetParent(null);
+            transform.SetParent(null, true);
+        }
+    }
+
+    // Ensure parent stays null and does not reset when releasing the instrument
+     private void OnUngrabbed(SelectExitEventArgs args)
+    {
+        if(transform.parent == this.invisibleInstrumentsParent.transform) {
+            transform.SetParent(null, true);
         }
     }
 }
