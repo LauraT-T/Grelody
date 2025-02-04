@@ -23,7 +23,11 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
 
         [SerializeField]
         [Tooltip("Threshold to adjust the sensitivity of the cranking motion.")]
-        float m_CircularMotionThreshold = 10f;
+        float m_CircularMotionThreshold;
+
+        [SerializeField]
+        [Tooltip("The degree of movement that is needed to detect the hand movement.")]
+        float m_DegreesToRotate;
 
         [SerializeField]
         [Tooltip("The minimum amount of time the hand must be held in the required shape and orientation for the gesture to be performed.")]
@@ -87,6 +91,15 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
         {
             get => m_CircularMotionThreshold;
             set => m_CircularMotionThreshold = value;
+        }
+
+        /// <summary>
+        /// The needed degree of the movement to detect the movement
+        /// </summary>
+        public float degreesToRotate
+        {
+            get => m_DegreesToRotate;
+            set => m_DegreesToRotate = value;
         }
 
         /// <summary>
@@ -194,7 +207,7 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
             Vector3 currentHandPosition = GetRightHandPosition();
             Vector3 movement = currentHandPosition - previousHandPosition;
 
-            if (movement.magnitude > 0.1f) // Ensure movement is happening
+            if (movement.magnitude > 0.01f) // Ensure movement is happening
             {
                 Vector3 handPlaneNormal = Vector3.up; // Define crank plane
                 Vector3 projectedMovement = Vector3.ProjectOnPlane(movement, handPlaneNormal);
@@ -208,7 +221,7 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
                 if (Mathf.Abs(angle) > circularMotionThreshold) // Ignore small noise
                 {
                     totalRotation += angle;
-                    if (Mathf.Abs(totalRotation) >= 10f) // Movement of 1°
+                    if (Mathf.Abs(totalRotation) >= degreesToRotate) // Movement of certain degree to see if the movement gets detected or is too small
                     {
                         isCranking = true;
                         totalRotation = 0f; // Reset counter

@@ -3574,7 +3574,8 @@ MonoBehaviour:
   m_HandTrackingEvents: {fileID: 948728031}
   m_HandShapeOrPose: {fileID: 11400000, guid: 8b21a490579f14243ac2c65d702d0621, type: 2}
   m_TargetTransform: {fileID: 957756021}
-  m_CircularMotionThreshold: 3
+  m_CircularMotionThreshold: 2
+  m_DegreesToRotate: 3
   m_MinimumHoldTime: 0.2
   m_GestureDetectionInterval: 0.1
   m_StaticGestures:
