@@ -5,10 +5,27 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class BackToInventoryCollision : MonoBehaviour
 {
+    public AudioSource audioSource;
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+       if (audioSource == null)
+        {
+            Debug.LogError("No AudioSource found on " + gameObject.name);
+        }
+    }
+
     private void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.CompareTag("Snowman")) 
         { 
+            // Play sound
+            if (audioSource != null && !audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
+
             Debug.Log("Collision detected: Snowman - BackToInventory.");
 
             SnowmanInventoryManager inventoryManager = FindObjectOfType<SnowmanInventoryManager>();
@@ -18,19 +35,18 @@ public class BackToInventoryCollision : MonoBehaviour
             {
                 // Move the snowman to its saved inventory position
                 DisableGrabbing(other.gameObject);
-                //StartCoroutine(EnableGrabbingAfterDelay(other.gameObject, 1f));
 
                 other.gameObject.transform.localPosition = snowmanMelody.GetInventoryPosition();
                 Debug.Log("Snowman moved back to inventory at position: " + snowmanMelody.GetInventoryPosition());
 
-                // Ensure Collider is Enabled
+                // Ensure Collider is enabled
                 Collider col = other.gameObject.GetComponent<Collider>();
                 if (col != null)
                 {
                     col.enabled = true;
                 }
 
-                // Set the parent GameObject (whole button consisting of two snowmen) inactive
+                // Set the parent GameObject (whole button consisting of two snowmen) inactive 
                 if (transform.parent != null) 
                 {
                     transform.parent.gameObject.SetActive(false);
@@ -116,12 +132,5 @@ public class BackToInventoryCollision : MonoBehaviour
         {
             Debug.Log("Grabbing re-enabled, but no interactor detected yet.");
         }
-    }
-
-
-    private IEnumerator EnableGrabbingAfterDelay(GameObject obj, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        EnableGrabbing(obj);
     }
 }

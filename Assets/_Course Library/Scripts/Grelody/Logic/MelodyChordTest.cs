@@ -137,11 +137,11 @@ public class MelodyChordTest : MonoBehaviour
         // UNCOMMENT TO TEST BUILD ON QUEST
         
         AddInstrument(InstrumentType.PIANO);
-        /* AddInstrument(InstrumentType.GUITAR); 
-        AddInstrument(InstrumentType.TRUMPET);
-        AddInstrument(InstrumentType.DRUMS); */
+        AddInstrument(InstrumentType.GUITAR); 
+        /*AddInstrument(InstrumentType.TRUMPET);
+        AddInstrument(InstrumentType.DRUMS);*/
 
-        Invoke("StopMusic", 300f); // Stops the music and makes snowman appear after 5 seconds
+        Invoke("StopMusic", 30f); // Stops the music and makes snowman appear after 30 seconds
         
 
     }

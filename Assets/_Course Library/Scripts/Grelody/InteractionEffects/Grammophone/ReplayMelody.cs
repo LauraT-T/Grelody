@@ -34,10 +34,18 @@ public class ReplayMelody : MonoBehaviour
                 DisableGrabbing(other);
                 StartCoroutine(EnableGrabbingAfterDelay(other, 1f));
 
+                // Adapt vinyl position for different snowman types
+                Vector3 adjustedVinylPosition = VINYL_POSITION;
+                if (other.gameObject.name.Contains("One")){
+                    adjustedVinylPosition.y -= 0.09f;
+                } else if(other.gameObject.name.Contains("Three")) {
+                    adjustedVinylPosition.y += 0.03f;
+                }
+
                 // Move the snowman to the vinyl
-                if (other.transform.position != this.VINYL_POSITION)
+                if (other.transform.position != adjustedVinylPosition)
                 {
-                    other.transform.position = this.VINYL_POSITION;
+                    other.transform.position = adjustedVinylPosition;
                 }
 
                 // Start playing the melody
