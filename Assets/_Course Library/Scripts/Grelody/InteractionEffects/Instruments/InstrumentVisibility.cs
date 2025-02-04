@@ -18,9 +18,12 @@ public class InstrumentVisibility : MonoBehaviour
 
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
     private InstrumentManager instrumentManager;
+    private GrammophoneGlow grammophoneGlow;
 
     void Start()
     {
+       this.grammophoneGlow = (GrammophoneGlow)FindFirstObjectByType<GrammophoneGlow>();
+
         // Find instrument manager
         this.instrumentManager = (InstrumentManager)FindFirstObjectByType<InstrumentManager>();
 
@@ -104,6 +107,8 @@ public class InstrumentVisibility : MonoBehaviour
     // Make it possible to add instrument to grammophone when being grabbed by removing parent
     private void OnGrabbed(SelectEnterEventArgs args)
     {
+        grammophoneGlow.EnableFunnelGlow();
+
         if(transform.parent == this.invisibleInstrumentsParent.transform) {
             transform.SetParent(null, true);
         }
@@ -112,6 +117,8 @@ public class InstrumentVisibility : MonoBehaviour
     // Ensure parent stays null and does not reset when releasing the instrument
      private void OnUngrabbed(SelectExitEventArgs args)
     {
+        grammophoneGlow.DisableFunnelGlow();
+        
         if(transform.parent == this.invisibleInstrumentsParent.transform) {
             transform.SetParent(null, true);
         }

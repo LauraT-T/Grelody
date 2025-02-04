@@ -37,6 +37,8 @@ public class GrammophoneGlow : MonoBehaviour
                 }
             }
         }
+
+        DisableAllEmission();
     }
 
     // Turn on all glow effects
