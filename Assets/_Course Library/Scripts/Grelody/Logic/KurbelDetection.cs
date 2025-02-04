@@ -48,7 +48,7 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
         float m_TimeOfLastConditionCheck;
         float m_HoldStartTime;
 
-        private bool isRightHandFist = false;
+        private bool melodyInProgress = false;
         private Vector3 previousHandPosition;
         private float totalRotation = 0f;
         private bool isCranking = false;
@@ -170,7 +170,14 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
                 var holdTimer = Time.timeSinceLevelLoad - m_HoldStartTime;
                 if (holdTimer > m_MinimumHoldTime)
                 {
-                    CheckForCrank();
+                    // if a melody is already being created then continue this melody
+                    if (melodyChordTest.GetMelodyInProgress()) {
+                        CheckForCrank();
+                    }
+                    // if no melody is currently being created, start a new melody
+                    else {
+                        melodyChordTest.StartMusic();
+                    }
                     //m_GesturePerformed?.Invoke();
                     //m_PerformedTriggered = true;
                 }

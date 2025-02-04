@@ -64,6 +64,6 @@ class MelodyRecorder
     }
 
     public void CalculatePauseLength(float pause) {
-        this.pauseTimeLenght += pause - this.pauseTimeStart;
+        this.pauseTimeLenght += pause - this.pauseTimeStart - 0.2f; // -0.2f to avoid notes from overlapping
     }
 }

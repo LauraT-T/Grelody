@@ -54,6 +54,8 @@ public class MelodyChordTest : MonoBehaviour
     private bool drumsAdded = false;
     private Dictionary<InstrumentType, TuneComponent> instrumentDict; // Which instrument plays what? (melody, chords, bass, drums)
 
+    private bool melodyInProgress = false;
+
 
     // Manages the appearance of snowflakes for the notes
     private SnowflakeManager snowflakeManager;
@@ -131,17 +133,19 @@ public class MelodyChordTest : MonoBehaviour
 
         // Recorder to save the created melody
         this.melodyRecorder = new MelodyRecorder();
+
+        PauseMusic(); // pauses music until player resumes it, so no pause is in the beginning of the melody
         
 
         
         // UNCOMMENT TO TEST BUILD ON QUEST
         
-        AddInstrument(InstrumentType.PIANO);
+        /* AddInstrument(InstrumentType.PIANO);
         AddInstrument(InstrumentType.GUITAR); 
-        /*AddInstrument(InstrumentType.TRUMPET);
+        AddInstrument(InstrumentType.TRUMPET);
         AddInstrument(InstrumentType.DRUMS);*/
 
-        Invoke("StopMusic", 30f); // Stops the music and makes snowman appear after 30 seconds
+        //Invoke("StopMusic", 30f); // Stops the music and makes snowman appear after 30 seconds
         
 
     }
@@ -243,8 +247,10 @@ public class MelodyChordTest : MonoBehaviour
         }
     }
 
-    void StartMusic()
+    public void StartMusic()
     {
+        this.melodyInProgress = true;
+
         StopAllCoroutines();
 
         this.melodyCoroutine = PlayMelody();
@@ -266,6 +272,7 @@ public class MelodyChordTest : MonoBehaviour
     */
     public void StopMusic()
     {
+        this.melodyInProgress = false;
         // Stop music
         this.melodyAdded = false;
         this.chordsAdded = false;
@@ -777,5 +784,9 @@ public class MelodyChordTest : MonoBehaviour
         overallVolume = Mathf.Clamp(overallVolume - 0.1f, 0.0f, 1.0f);
         SetOverallVolume(overallVolume);
         Debug.Log($"Volume decreased: {overallVolume}");
+    }
+
+    public bool GetMelodyInProgress() {
+        return melodyInProgress;
     }
 }
