@@ -119,7 +119,7 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
 
         void OnEnable()
         {
-            m_HandTrackingEvents.jointsUpdated.AddListener(Update);
+            m_HandTrackingEvents.jointsUpdated.AddListener(OnJointsUpdated);
 
             m_HandShape = m_HandShapeOrPose as XRHandShape;
             m_HandPose = m_HandShapeOrPose as XRHandPose;
@@ -127,9 +127,9 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
                 m_HandPose.relativeOrientation.targetTransform = m_TargetTransform;
         }
 
-        void OnDisable() => m_HandTrackingEvents.jointsUpdated.RemoveListener(Update);
+        void OnDisable() => m_HandTrackingEvents.jointsUpdated.RemoveListener(OnJointsUpdated);
 
-        void Update(XRHandJointsUpdatedEventArgs eventArgs)
+        void OnJointsUpdated(XRHandJointsUpdatedEventArgs eventArgs)
         {
             if (!isActiveAndEnabled || Time.timeSinceLevelLoad < m_TimeOfLastConditionCheck + m_GestureDetectionInterval) return;
 
