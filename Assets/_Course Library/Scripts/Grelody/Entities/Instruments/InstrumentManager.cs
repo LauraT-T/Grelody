@@ -235,10 +235,22 @@ public class InstrumentManager : MonoBehaviour
     // Set parent to null and clear list of added instruments
     public void SetParentsToNull()
     {
-        foreach (var instrument in invisibleInstruments)
+        foreach (var entry in instrumentPositions)
+        {
+            InstrumentType type = entry.Key;
+            Vector3 originalPosition = entry.Value;
+
+            GameObject instrument = GetInstrumentByType(type);
+            if (instrument != null)
+            {
+                instrument.transform.SetParent(null);
+            }
+        }
+
+       /*  foreach (var instrument in invisibleInstruments)
         {
             instrument.transform.SetParent(null);
-        }
+        } */
 
         this.invisibleInstruments.Clear();
     }

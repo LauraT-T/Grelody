@@ -48,10 +48,10 @@ public class InstrumentVisibility : MonoBehaviour
         }
 
         // If invisible, make sure the parent is the correct one
-        if (gameObject.layer == invisibleLayerIndex && transform.parent != invisibleInstrumentsParent.transform)
+        /* if (gameObject.layer == invisibleLayerIndex && transform.parent != invisibleInstrumentsParent.transform)
         {
            transform.SetParent(invisibleInstrumentsParent.transform, true);
-        }
+        } */
 
         // If object surpasses the xThreshold or is not added to grammophone, make it visible
         if (transform.position.x < xThreshold || transform.parent != this.invisibleInstrumentsParent.transform)
