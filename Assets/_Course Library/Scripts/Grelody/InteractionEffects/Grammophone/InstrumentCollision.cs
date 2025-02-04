@@ -7,12 +7,18 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class InstrumentCollision : MonoBehaviour
 {
 
+    public AudioSource audioSource;
     private InstrumentManager instrumentManager;
     public GameObject invisibleInstrumentsParent;
     
 
     private void Start()
     {
+        if (audioSource == null)
+        {
+            Debug.LogError("No AudioSource found on " + gameObject.name);
+        }
+
         this.instrumentManager = (InstrumentManager)FindFirstObjectByType<InstrumentManager>();
         if(this.instrumentManager != null) {
             Debug.Log("InstrumentManager found");
@@ -25,6 +31,12 @@ public class InstrumentCollision : MonoBehaviour
         // Do not react to collisons with instruments already added and currently invisible
         if (other.transform.parent != null && other.transform.parent == this.invisibleInstrumentsParent.transform) {
             return;
+        }
+
+         // Play sound
+        if (audioSource != null && !audioSource.isPlaying)
+        {
+            audioSource.Play();
         }
 
         if (other.CompareTag("Piano")) {
@@ -47,13 +59,5 @@ public class InstrumentCollision : MonoBehaviour
             Debug.Log("Drums collided with Grammophone");
             this.instrumentManager.AddInstrumentToGrammophone(InstrumentType.DRUMS);
         } 
-
-        //StartCoroutine(ResetAfterDelay(5f));
-    }
-
-    private IEnumerator ResetAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        this.instrumentManager.ResetVisibleInstruments();
     }
 }
