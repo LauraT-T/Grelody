@@ -28,9 +28,6 @@ public class InstrumentVisibility : MonoBehaviour
         invisibleLayerIndex = LayerMask.NameToLayer(invisibleLayer);
         defaultLayerIndex = LayerMask.NameToLayer(defaultLayer);
 
-        // Start the object on the invisible layer
-        SetLayer(gameObject, invisibleLayerIndex);
-
         grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         grabInteractable.selectEntered.AddListener(OnGrabbed);
         grabInteractable.selectExited.AddListener(OnUngrabbed);
@@ -41,10 +38,16 @@ public class InstrumentVisibility : MonoBehaviour
     void Update()
     {
 
-        // Ensure all objects start invisible
+        // Ensure all objects are invisible if added to grammophone and having subsequent parent
         if (gameObject.layer != invisibleLayerIndex && transform.parent == invisibleInstrumentsParent.transform)
         {
             SetLayer(gameObject, invisibleLayerIndex);
+        }
+
+        // If invisible, make sure the parent is the correct one
+        if (gameObject.layer == invisibleLayerIndex && transform.parent != invisibleInstrumentsParent.transform)
+        {
+           transform.SetParent(invisibleInstrumentsParent.transform, true);
         }
 
         // If object surpasses the xThreshold or is not added to grammophone, make it visible

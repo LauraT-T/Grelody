@@ -1,7 +1,5 @@
 using UnityEngine;
-
 using UnityEngine.XR.Hands;
-using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit;
 
 /*
@@ -20,6 +18,9 @@ public class RemoveInstruments : MonoBehaviour
 
     public UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor leftHandInteractor;
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
+    
+    public InvisibleInstruments invisibleInstruments; // Reference to manage instrument movement
+
 
     void Start()
     {
@@ -33,55 +34,51 @@ public class RemoveInstruments : MonoBehaviour
         {
             Debug.LogError("XRGrabInteractable component missing on " + gameObject.name);
         }
-
-        // Start the object on the invisible layer
-        SetLayer(gameObject, invisibleLayerIndex);
     }
 
     void Update()
     {
     }
 
-    // Set the layer for the object and its children
-    private void SetLayer(GameObject obj, int layer)
-    {
-        obj.layer = layer;
-        foreach (Transform child in obj.transform)
-        {
-            child.gameObject.layer = layer;
-        }
-    }
- 
     public void OnLeftFist()
     {
-
         if (grabInteractable == null)
         {
             Debug.LogError("Cannot grab object. XRGrabInteractable is missing.");
             return;
         }
 
+        // Ensure instruments do not move along when cube jumps into player's hand
+        invisibleInstruments.StopMovement(); 
+
         // Grab object with left hand
         leftHandInteractor.interactionManager.SelectEnter(
-        (UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor)leftHandInteractor, 
-        (UnityEngine.XR.Interaction.Toolkit.Interactables.IXRSelectInteractable)grabInteractable
+            (UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor)leftHandInteractor,
+            (UnityEngine.XR.Interaction.Toolkit.Interactables.IXRSelectInteractable)grabInteractable
         );
 
+        // Delay before re-enabling movement of instruments
+        Invoke(nameof(EnableMovementAfterDelay), 0.3f);
     }
 
-    public void OnLeftFistEnded() {
-        
-        // Ungrab object
+    private void EnableMovementAfterDelay()
+    {
+        invisibleInstruments.EnableMovement();
+    }
+
+    public void OnLeftFistEnded()
+    {
         if (leftHandInteractor == null || grabInteractable == null)
         {
             Debug.LogWarning("Left hand interactor or grab interactable is missing.");
             return;
         }
 
+        // Release object
         leftHandInteractor.interactionManager.SelectExit(
             (UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor)leftHandInteractor,
             (UnityEngine.XR.Interaction.Toolkit.Interactables.IXRSelectInteractable)grabInteractable
         );
-            
     }
 }
+

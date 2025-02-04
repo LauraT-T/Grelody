@@ -4902,7 +4902,7 @@ GameObject:
   - component: {fileID: 1770400279}
   - component: {fileID: 1770400278}
   - component: {fileID: 1770400277}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RemoveInstruments
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4939,6 +4939,7 @@ MonoBehaviour:
   invisibleLayer: InvisibleLayer
   defaultLayer: Default
   leftHandInteractor: {fileID: 198654569}
+  invisibleInstruments: {fileID: 1591741734}
 --- !u!114 &1770400278
 MonoBehaviour:
   m_ObjectHideFlags: 0
