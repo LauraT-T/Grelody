@@ -218,6 +218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31dc007b91c082746b6eae945c7d56d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  backToInventoryButton: {fileID: 0}
 --- !u!1001 &2029186075592083455
 PrefabInstance:
   m_ObjectHideFlags: 0

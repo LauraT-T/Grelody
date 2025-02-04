@@ -34,10 +34,16 @@ public class ReplayMelody : MonoBehaviour
                 DisableGrabbing(other);
                 StartCoroutine(EnableGrabbingAfterDelay(other, 1f));
 
-                // Move the snowman to the vinyl
-                if (other.transform.position != this.VINYL_POSITION)
+                Vector3 adjustedVinylPosition = VINYL_POSITION;
+                if (other.gameObject.name.Contains("One"))
                 {
-                    other.transform.position = this.VINYL_POSITION;
+                    adjustedVinylPosition.y -= 0.09f;
+                }
+
+                // Move the snowman to the vinyl
+                if (other.transform.position != adjustedVinylPosition)
+                {
+                    other.transform.position = adjustedVinylPosition;
                 }
 
                 // Start playing the melody
