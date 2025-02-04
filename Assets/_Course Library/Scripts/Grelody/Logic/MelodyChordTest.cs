@@ -526,10 +526,10 @@ public class MelodyChordTest : MonoBehaviour
         }
 
         // No instruments can be added if coroutines are not running and, thus, no music can be heard
-        if(!this.coroutinesRunning) {
+        /* if(!this.coroutinesRunning) {
             Debug.Log("No coroutines running, so no instrument can be added.");
             return;
-        }
+        } */
 
         // Start recording if instrument is added for the first time
         if(this.addedInstruments.Count == 0 && !this.melodyRecorder.GetIsRecording()) {
