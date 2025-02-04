@@ -33,31 +33,37 @@ public class InstrumentCollision : MonoBehaviour
             return;
         }
 
+        // Sounds get individually played when an instrument gets added to avoid bug where sound always plays while creating melody
          // Play sound
-        if (audioSource != null && !audioSource.isPlaying)
+        /* if (audioSource != null && !audioSource.isPlaying)
         {
             audioSource.Play();
-        }
+        } */
 
         if (other.CompareTag("Piano")) {
             Debug.Log("Piano collided with Grammophone");
             this.instrumentManager.AddInstrumentToGrammophone(InstrumentType.PIANO);
+            audioSource.Play();
 
         } else if (other.CompareTag("Guitar")) {
             Debug.Log("Guitar collided with Grammophone");
             this.instrumentManager.AddInstrumentToGrammophone(InstrumentType.GUITAR);
+            audioSource.Play();
 
         } else if (other.CompareTag("Violin")) {
             Debug.Log("Violin collided with Grammophone");
             this.instrumentManager.AddInstrumentToGrammophone(InstrumentType.STRINGS);
+            audioSource.Play();
 
         } else if (other.CompareTag("Trumpet")) {
             Debug.Log("Trumpet collided with Grammophone");
             this.instrumentManager.AddInstrumentToGrammophone(InstrumentType.TRUMPET);
+            audioSource.Play();
 
         } else if (other.CompareTag("Drums")) {
             Debug.Log("Drums collided with Grammophone");
             this.instrumentManager.AddInstrumentToGrammophone(InstrumentType.DRUMS);
+            audioSource.Play();
         } 
     }
 }
