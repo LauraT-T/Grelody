@@ -1,5 +1,10 @@
 using UnityEngine;
 
+/*
+Parent object to all invisible instruments added to the grammophone.
+By moving the invisible cube which the script RemoveInstruments is attached to,
+the parent object moves along and makes it possible to remove the instruments from the grammophone.
+*/
 public class InvisibleInstruments : MonoBehaviour
 {
     public GameObject removeInstrumentsCube;

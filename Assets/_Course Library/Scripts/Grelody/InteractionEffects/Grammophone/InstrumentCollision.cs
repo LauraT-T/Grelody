@@ -34,11 +34,6 @@ public class InstrumentCollision : MonoBehaviour
         }
 
         // Sounds get individually played when an instrument gets added to avoid bug where sound always plays while creating melody
-         // Play sound
-        /* if (audioSource != null && !audioSource.isPlaying)
-        {
-            audioSource.Play();
-        } */
 
         if (other.CompareTag("Piano")) {
             Debug.Log("Piano collided with Grammophone");
@@ -64,6 +59,10 @@ public class InstrumentCollision : MonoBehaviour
             Debug.Log("Drums collided with Grammophone");
             this.instrumentManager.AddInstrumentToGrammophone(InstrumentType.DRUMS);
             audioSource.Play();
-        } 
+
+        // Putting snowman on vinyl to replay melody
+        } else if(other.CompareTag("Snowman")) {
+            audioSource.Play();
+        }
     }
 }

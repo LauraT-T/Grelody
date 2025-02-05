@@ -107,6 +107,7 @@ public class InstrumentVisibility : MonoBehaviour
     // Make it possible to add instrument to grammophone when being grabbed by removing parent
     private void OnGrabbed(SelectEnterEventArgs args)
     {
+        // Grammophone glows to indicate that the instrument can be added there
         grammophoneGlow.EnableFunnelGlow();
 
         if(transform.parent == this.invisibleInstrumentsParent.transform) {
@@ -117,6 +118,7 @@ public class InstrumentVisibility : MonoBehaviour
     // Ensure parent stays null and does not reset when releasing the instrument
      private void OnUngrabbed(SelectExitEventArgs args)
     {
+        // Disable grammophone glow when releasing the instrument
         grammophoneGlow.DisableFunnelGlow();
         
         if(transform.parent == this.invisibleInstrumentsParent.transform) {

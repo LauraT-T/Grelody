@@ -10,12 +10,6 @@ Moving the cube moves all added instruments, making it possible to remove them f
 */
 public class RemoveInstruments : MonoBehaviour
 {
-    public string invisibleLayer = "InvisibleLayer"; // Name of the invisible layer
-    public string defaultLayer = "Default"; // Name of the visible layer
-
-    private int invisibleLayerIndex;
-    private int defaultLayerIndex;
-
     public UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor leftHandInteractor;
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
     
@@ -24,20 +18,12 @@ public class RemoveInstruments : MonoBehaviour
 
     void Start()
     {
-        // Get layer indices
-        invisibleLayerIndex = LayerMask.NameToLayer(invisibleLayer);
-        defaultLayerIndex = LayerMask.NameToLayer(defaultLayer);
-
         // Get XR Grab Interactable component
         grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         if (grabInteractable == null)
         {
             Debug.LogError("XRGrabInteractable component missing on " + gameObject.name);
         }
-    }
-
-    void Update()
-    {
     }
 
     public void OnLeftFist()

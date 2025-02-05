@@ -54,12 +54,6 @@ public class InstrumentManager : MonoBehaviour
 
         // List of currently invisible instruments
         this.invisibleInstruments = new List<GameObject>();
-
-        /* AddInstrumentToGrammophone(InstrumentType.PIANO);
-        AddInstrumentToGrammophone(InstrumentType.STRINGS);
-        AddInstrumentToGrammophone(InstrumentType.TRUMPET);
-        AddInstrumentToGrammophone(InstrumentType.DRUMS);
-        AddInstrumentToGrammophone(InstrumentType.GUITAR); */
     }
 
     // Add instrument and make corresponding game object disappear
@@ -200,12 +194,6 @@ public class InstrumentManager : MonoBehaviour
             Vector3 originalPosition = entry.Value;
 
             GameObject instrument = GetInstrumentByType(type);
-            /* if (instrument != null && instrument.layer != invisibleLayerIndex)
-            {
-                instrument.transform.position = originalPosition;
-                instrument.transform.SetParent(null);
-                this.invisibleInstruments.Remove(instrument);
-            } */
 
             if (!this.melodyChordTest.InstrumentIsAdded(type))
             {
@@ -246,11 +234,6 @@ public class InstrumentManager : MonoBehaviour
                 instrument.transform.SetParent(null);
             }
         }
-
-       /*  foreach (var instrument in invisibleInstruments)
-        {
-            instrument.transform.SetParent(null);
-        } */
 
         this.invisibleInstruments.Clear();
     }
