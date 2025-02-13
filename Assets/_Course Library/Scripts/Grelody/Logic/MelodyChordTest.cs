@@ -303,7 +303,7 @@ public class MelodyChordTest : MonoBehaviour
             snowmanManager.SpawnSnowman(SNOWMAN_POSITION, this.addedInstruments.Count, isHappy, recordedMelody, beatCount);
 
             // Start replay of recorded melody
-            recordedMelody.StartReplay(this, this.midiStreamPlayer); // TODO: move elsewhere?
+            //recordedMelody.StartReplay(this, this.midiStreamPlayer); // TODO: move elsewhere?
 
             // Reset variables needed for snowman creation
             this.majorCounter = 0;
